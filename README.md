@@ -8,7 +8,7 @@ TUGAS UTS
   Tugas UTS Programming web, <br>
   Dosen pengampu : Pak Tengku Khairil Ahsyar S.kom., M.kom
 
-  <a href="https://github.com/erliandikasyahputra.github.io"><strong>➥Website</strong></a>
+  <a href="https://erliandikasyahputra.github.io"><strong>➥Website</strong></a>
 
 </div>
 
