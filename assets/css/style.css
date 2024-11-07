@@ -521,7 +521,7 @@ body::-webkit-scrollbar-thumb {
 
 .timeline-item .item-period { font: unset; }
 
-.timeline-item .item-title { color: var(--black); }
+.timeline-item .item-title { color: antiquewhite }
 
 .item-address {color:hsl(0, 0%, 100%)}
 
@@ -810,7 +810,17 @@ textarea.input-field {
   /**
    * HEADER
    */
-
+   .logo {
+    display: flex;
+    align-items: center; /* Menyusun teks dan gambar dalam satu garis */
+  }
+  
+  .logo-img {
+    width: 30px; /* Menyesuaikan ukuran gambar */
+    height: auto; /* Menjaga rasio gambar */
+    margin-right: 10px; /* Memberi jarak antara gambar dan teks */
+  }
+  
   .header {
     background-color: var(--black);
     border-block-end: none;
@@ -923,9 +933,9 @@ textarea.input-field {
     position:relative;
     right: 50px;
     left: 50px;
-    width: 410px;
+    width: 400px;
     height: 620px;
-    background-image: url('../images/portfolio-1.jpg');
+    background-image: url('../images/hmm.jpg');
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 100%;
@@ -1004,6 +1014,17 @@ textarea.input-field {
   .scrollbar-item { min-width: calc(33.33% - 26.66px); }
 
   :is(.portfolio, .news) .section-title { margin-block-end: 80px; }
+
+ 
+  .card-banner {
+    background-color: black; /* Mengatur latar belakang menjadi hitam */
+  } 
+  .card-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Gambar akan tetap terlihat penuh tanpa terpotong */
+  }
+  
 
 
 
