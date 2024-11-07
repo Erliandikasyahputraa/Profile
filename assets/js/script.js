@@ -1,27 +1,23 @@
 'use strict';
 
-
-
 /**
- * add event on element
+ * Add event on element
  */
-
 const addEventOnElem = function (elem, type, callback) {
-  if (elem.length > 1) {
-    for (let i = 0; i < elem.length; i++) {
-      elem[i].addEventListener(type, callback);
+  if (elem) {
+    if (elem.length > 1) {
+      for (let i = 0; i < elem.length; i++) {
+        elem[i].addEventListener(type, callback);
+      }
+    } else {
+      elem.addEventListener(type, callback);
     }
-  } else {
-    elem.addEventListener(type, callback);
   }
 }
 
-
-
 /**
- * toggle navbar
+ * Toggle navbar
  */
-
 const navbar = document.querySelector("[data-navbar]");
 const navLinks = document.querySelectorAll("[data-nav-link]");
 const navToggler = document.querySelector("[data-nav-toggler]");
@@ -40,12 +36,9 @@ const closeNavbar = function () {
 
 addEventOnElem(navLinks, "click", closeNavbar);
 
-
-
 /**
- * header active
+ * Header active state on scroll
  */
-
 const header = document.querySelector("[data-header]");
 
 window.addEventListener("scroll", function () {

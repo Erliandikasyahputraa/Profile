@@ -322,6 +322,33 @@ body::-webkit-scrollbar-thumb {
   line-height: 0.9;
   font-weight: var(--fw-700);
 }
+.logo-img {
+  max-width: 100px; /* Atur ukuran maksimal untuk layar besar */
+  height: auto;
+  margin-right: 10px; /* Beri jarak antara gambar dan teks jika perlu */
+  transition: 0.3s ease; /* Tambahkan transisi untuk efek yang halus */
+}
+
+@media (max-width: 768px) {
+  .logo-img {
+    max-width: 60px; /* Ubah ukuran logo pada layar kecil */
+  }
+
+  .logo {
+    font-size: 1.8rem; /* Sesuaikan ukuran font teks untuk layar kecil */
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-img {
+    max-width: 50px; /* Ukuran lebih kecil untuk layar sangat kecil */
+  }
+  
+  .logo {
+    font-size: 1.5rem; /* Sesuaikan ukuran teks */
+  }
+}
+
 
 .nav-toggle-btn .line {
   width: 30px;
