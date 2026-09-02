@@ -11,19 +11,10 @@
 <body>
 
 <div class="grain" aria-hidden="true"></div>
-<div id="inkLayer" class="ink-layer" aria-hidden="true">
-  <svg id="inkSVG" preserveAspectRatio="none">
-    <defs>
-      <filter id="inkBlob">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.014" numOctaves="3" seed="5" result="noise"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="36" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-    </defs>
-    <circle id="inkCircle" cx="0" cy="0" r="0" style="filter:url(#inkBlob)"/>
-  </svg>
-</div>
+<div id="inkLayer" class="ink-layer" aria-hidden="true"></div>
 <canvas id="cursor-canvas" aria-hidden="true"></canvas>
 
+<!-- ═══ NAVBAR ══════════════════════════════════════════════ -->
 <nav class="navbar" role="navigation" aria-label="Main navigation">
   <a href="index.html" class="navbar__logo" aria-label="Home">ES</a>
   <div class="navbar__divider" aria-hidden="true"></div>
@@ -33,45 +24,52 @@
     <li><a href="experience.html" class="navbar__link">Experience</a></li>
   </ul>
   <button class="navbar__toggle" id="themeToggle" aria-label="Toggle colour theme" type="button">
-    <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+    <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
     <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+  <button class="navbar__menu-btn" id="mobileMenuBtn" aria-label="Open navigation menu" aria-expanded="false" type="button">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
 </nav>
 
+<div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Navigation">
+  <button class="mobile-nav__close" id="mobileNavClose" aria-label="Close menu" type="button">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <a href="index.html"      class="mobile-nav__link" data-mnav>Home</a>
+  <a href="projects.html"   class="mobile-nav__link" data-mnav>Projects</a>
+  <a href="experience.html" class="mobile-nav__link" data-mnav>Experience</a>
+  <div class="mobile-nav__bottom">
+    <button class="navbar__toggle" id="themeToggleMobile" aria-label="Toggle theme" type="button">
+      <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+      <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</div>
+
 <main>
   <div class="page-404" role="main">
-
-    <!-- Pixel clouds (CSS box-shadow art) -->
-    <div aria-hidden="true" style="position:absolute;top:20%;left:10%;opacity:.13">
-      <div style="display:block;width:4px;height:4px;box-shadow:0 0 0 0 var(--fg),4px 0 0 0 var(--fg),8px 0 0 0 var(--fg),12px 0 0 0 var(--fg),4px -4px 0 0 var(--fg),8px -4px 0 0 var(--fg),0 4px 0 0 var(--fg),4px 4px 0 0 var(--fg),8px 4px 0 0 var(--fg),12px 4px 0 0 var(--fg),16px 4px 0 0 var(--fg)"></div>
-    </div>
-    <div aria-hidden="true" style="position:absolute;top:30%;right:15%;opacity:.09">
-      <div style="display:block;width:4px;height:4px;box-shadow:4px 0 0 0 var(--fg),8px 0 0 0 var(--fg),0 4px 0 0 var(--fg),4px 4px 0 0 var(--fg),8px 4px 0 0 var(--fg),12px 4px 0 0 var(--fg)"></div>
+    <div class="page-404__badge" aria-label="Status: Page not found">
+      <span class="page-404__badge-dot" aria-hidden="true"></span>
+      <span>Status 404 &nbsp;·&nbsp; Page Not Found</span>
     </div>
 
-    <p class="page-404__number" aria-label="Error 404">404</p>
-    <p class="page-404__label">Page not found</p>
-
-    <!-- Pixel T-Rex via CSS box-shadow -->
-    <div class="dino-container-404" aria-hidden="true">
-      <div class="dino-px"></div>
-    </div>
-
-    <p class="page-404__msg">
-      This page doesn't exist.<br>Let's get you back on track.
+    <h1 class="page-404__number" aria-label="404">404</h1>
+    <h2 class="page-404__title">Lost in Cyberspace</h2>
+    <p class="page-404__desc">
+      The page you are looking for doesn't exist, has been moved, or is temporarily unavailable.
     </p>
-    <div class="page-404__ground" aria-hidden="true"></div>
 
     <a href="index.html" class="page-404__home">
-      Go Home
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Home
     </a>
-
   </div>
 </main>
 
 <script src="assets/js/data.js"></script>
 <script src="assets/js/theme.js"></script>
+<script src="assets/js/app.js"></script>
 <script src="assets/js/cursor.js"></script>
 </body>
 </html>

@@ -24,8 +24,7 @@
 (function () {
   'use strict';
 
-  // Device & accessibility checks
-  if (window.matchMedia('(pointer: coarse)').matches) return;
+  // Accessibility check
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const canvas = document.getElementById('cursor-canvas');
@@ -228,21 +227,34 @@
   resize();
   window.addEventListener('resize', resize, { passive: true });
 
-  /* ── Real-time Mouse Listener ─────────────── */
+  /* ── Touch Detection (Disable custom cursor on pure touch tap) ── */
+  let isTouchActive = false;
+  window.addEventListener('touchstart', () => {
+    isTouchActive = true;
+    mouseInside   = false;
+    document.documentElement.classList.remove('custom-cursor-active');
+    if (ctx) ctx.clearRect(0, 0, W, H);
+  }, { passive: true });
+
+  /* ── Real-time Pointer Listener (Laptop, Mini Screen, or Mobile with Mouse) ── */
   document.addEventListener('mousemove', e => {
+    // Ignore synthetic mousemove from mobile touch tap
+    if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return;
+
+    isTouchActive = false;
     mouseX = e.clientX;
     mouseY = e.clientY;
     lastMouseMoveTime = performance.now();
 
     if (!hasMoved) {
       hasMoved    = true;
-      mouseInside = true;
-      foodX = mouseX;
-      foodY = mouseY;
-      dinoX = mouseX - 160;
-      dinoY = mouseY + 70;
+      foodX       = mouseX;
+      foodY       = mouseY;
+      dinoX       = Math.max(10, Math.min(W - 80, mouseX - 120));
+      dinoY       = Math.max(10, Math.min(H - 60, mouseY + 40));
     }
     mouseInside = true;
+    document.documentElement.classList.add('custom-cursor-active');
 
     // Dynamic State Interruption: If mouse is actively moving, return to lazy follow
     if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING) {
@@ -250,8 +262,16 @@
     }
   });
 
-  document.addEventListener('mouseenter', () => { mouseInside = true; });
-  document.addEventListener('mouseleave', () => { mouseInside = false; });
+  document.addEventListener('mouseenter', () => {
+    if (!isTouchActive) {
+      mouseInside = true;
+      document.documentElement.classList.add('custom-cursor-active');
+    }
+  });
+  document.addEventListener('mouseleave', () => {
+    mouseInside = false;
+    document.documentElement.classList.remove('custom-cursor-active');
+  });
 
   /* ── Color Theme Extraction ──────────────── */
   function getFG() {
@@ -345,7 +365,8 @@
     ctx.clearRect(0, 0, W, H);
 
     // Strict startup safety: do not render anything until real mouse interaction
-    if (!hasMoved || !mouseInside) {
+    if (!hasMoved || !mouseInside || isTouchActive) {
+      ctx.clearRect(0, 0, W, H);
       requestAnimationFrame(tick);
       return;
     }
@@ -472,9 +493,12 @@
     }
 
     velX *= DAMPING;
-    velY *= DAMPING;
     dinoX += velX;
     dinoY += velY;
+
+    // Viewport bounds clamp so T-Rex never leaves the screen on small laptops/displays
+    dinoX = Math.max(0, Math.min(W - spriteW, dinoX));
+    dinoY = Math.max(0, Math.min(H - spriteH, dinoY));
 
     const currentSpeed = Math.hypot(velX, velY);
 

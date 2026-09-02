@@ -48,15 +48,23 @@ body {
   transition: background 600ms var(--ease), color 600ms var(--ease);
 }
 
-/* Hide default OS cursor globally on desktop so only the pixel meat cursor is visible */
-@media (pointer: fine) {
-  *, *::before, *::after, html, body, a, button, input, select, textarea, [role="button"], [tabindex], svg, img {
-    cursor: none !important;
-  }
+/* Custom pixel meat cursor active only when physical mouse/trackpad pointer is in use */
+html.custom-cursor-active,
+html.custom-cursor-active *,
+html.custom-cursor-active *::before,
+html.custom-cursor-active *::after {
+  cursor: none !important;
 }
-@media (pointer: coarse) {
-  body { cursor: auto; }
-  a, button, [role="button"] { cursor: pointer; }
+
+/* Default cursor behavior when touch is in use or mouse is idle */
+html:not(.custom-cursor-active) {
+  cursor: auto;
+}
+html:not(.custom-cursor-active) a,
+html:not(.custom-cursor-active) button,
+html:not(.custom-cursor-active) [role="button"],
+html:not(.custom-cursor-active) [tabindex] {
+  cursor: pointer;
 }
 
 img,video { display:block; max-width:100%; }
@@ -1175,6 +1183,85 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   .certs-grid { grid-template-columns:1fr; }
   .highlights { grid-template-columns:1fr 1fr; }
   .pdetail__back-bar-title { max-width:18ch; }
+}
+
+/* ── 18. 404 NOT FOUND PAGE ─────────────────── */
+.page-404 {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: calc(var(--nav-h) + 64px) var(--gutter) 4rem;
+  position: relative;
+  z-index: 10;
+}
+.page-404__badge {
+  font-family: var(--font-mono);
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: 4px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-glass);
+}
+.page-404__badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg);
+}
+.page-404__number {
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 15vw, 10rem);
+  font-weight: 700;
+  letter-spacing: -.06em;
+  line-height: .9;
+  color: var(--fg);
+  margin: 0 0 1rem;
+  user-select: none;
+}
+.page-404__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 1.875rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--fg);
+  margin-bottom: .75rem;
+}
+.page-404__desc {
+  font-size: .9375rem;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 44ch;
+  margin: 0 auto 2.25rem;
+}
+.page-404__home {
+  display: inline-flex;
+  align-items: center;
+  gap: .625rem;
+  padding: .75rem 1.75rem;
+  background: var(--fg);
+  color: var(--bg);
+  border: 1px solid var(--fg);
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: .875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 150ms, transform 150ms;
+}
+.page-404__home:hover {
+  opacity: .88;
+  transform: translateY(-2px);
 }
 
 /* ── 19. REDUCED MOTION ─────────────────────── */
