@@ -13,7 +13,7 @@
  */
 (function () {
   const KEY      = 'portfolio-theme';
-  const DURATION = 850; // ms — slightly slower for dramatic effect
+  const DURATION = 400; // ms — snappy liquid bloom
 
   /* ── Apply theme ─────────────────────────── */
   function applyTheme(t) {
@@ -161,8 +161,8 @@
         c.el.setAttribute('r',  c.mR * R * et);
       });
 
-      /* Switch theme when screen is fully covered by liquid ink mass */
-      if (t >= 0.64 && !switched) {
+      /* Switch theme promptly when screen is covered */
+      if (t >= 0.35 && !switched) {
         switched = true;
         current  = next;
         applyTheme(current);
@@ -172,13 +172,13 @@
       if (t < 1) {
         requestAnimationFrame(frame);
       } else {
-        /* Smooth, velvety fade overlay out */
-        svg.style.transition = 'opacity 260ms cubic-bezier(0.16, 1, 0.3, 1)';
+        /* Smooth fade overlay out */
+        svg.style.transition = 'opacity 180ms cubic-bezier(0.16, 1, 0.3, 1)';
         svg.style.opacity    = '0';
         setTimeout(() => {
           svg.remove();
           animating = false;
-        }, 280);
+        }, 200);
       }
     }
 

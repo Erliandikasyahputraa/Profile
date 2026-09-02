@@ -285,9 +285,13 @@
     document.documentElement.classList.remove('custom-cursor-active');
   });
 
-  /* ── Click: Predator Roar — triggers on any click, anywhere on page ── */
-  document.addEventListener('click', () => {
+  /* ── Click: Predator Roar — triggers on clicks, except on toggles/controls ── */
+  document.addEventListener('click', (e) => {
     if (!mouseInside || isTouchActive) return;
+    // Don't trigger roar on theme toggle or language toggle to prevent audio/performance clash
+    if (e.target.closest('#themeToggle, #themeToggleMobile, #langToggle, #langToggleMobile, .navbar__toggle, .navbar__lang-pill, .modal-close-btn')) {
+      return;
+    }
     // Trigger roar on any click — it's a cool surprise, no hitbox required.
     // Guard: don't interrupt eating, don't stack.
     if (currentState !== STATES.EATING && currentState !== STATES.ROARING) {

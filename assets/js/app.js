@@ -15,26 +15,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ── 0. Global Technical Metadata ─────────── */
   const TECH_INFO = {
-    'laravel': { category: 'Backend Framework', desc: 'Arsitektur MVC, RESTful API endpoints, migrasi database & Eloquent ORM.' },
-    'livewire': { category: 'Full-Stack UI', desc: 'Komponen UI reaktif real-time tanpa konfigurasi JavaScript API terpisah.' },
-    'alpine.js': { category: 'Micro Frontend', desc: 'Manipulasi DOM deklaratif dan manajemen state interaktif modal / dropdown secara ringan.' },
-    'tailwind css': { category: 'CSS System', desc: 'Desain antarmuka modular dengan utility-first tokens dan performa render cepat.' },
-    'bootstrap': { category: 'UI Framework', desc: 'Komponen tata letak responsif standar industri dan sistem grid multi-device.' },
-    'react': { category: 'Frontend Library', desc: 'Arsitektur komponen berbasis virtual DOM dengan manajemen state reaktif.' },
-    'typescript': { category: 'Type Safety', desc: 'Static typing ketat untuk mencegah bug runtime dan mempermudah pemeliharaan skrip.' },
-    'vite': { category: 'Build Tool', desc: 'Bundler generasi baru dengan Instant Hot Module Reload (HMR) dan optimalisasi bundle.' },
-    'flutter': { category: 'Cross-Platform UI', desc: 'Framework native mobile terpadu berbasis Dart dengan grafis 60fps yang responsif.' },
-    'dart': { category: 'Language', desc: 'Bahasa berorientasi objek yang dioptimalkan untuk performa client-side.' },
-    'kotlin': { category: 'Android Native', desc: 'Bahasa resmi Android modern dengan null-safety, coroutines, dan sintaks ekspresif.' },
-    'jetpack compose': { category: 'Declarative UI', desc: 'Toolkit UI modern Android berbasis deklaratif untuk menyederhanakan kode layout.' },
-    'firebase': { category: 'BaaS & Cloud', desc: 'Cloud Firestore real-time database, cloud authentication, dan hosting terkelola.' },
-    'mysql': { category: 'Relational DB', desc: 'Basis data relasional ACID-compliant untuk integritas data transaksi dan query cepat.' },
-    'postgresql': { category: 'Relational DB', desc: 'Database enterprise dengan dukungan fitur JSONB dan reliabilitas tinggi.' },
-    'supabase': { category: 'BaaS & Postgres', desc: 'PostgreSQL terkelola dengan Row Level Security (RLS) dan autentikasi terpadu.' },
-    'indexeddb': { category: 'Client Database', desc: 'Penyimpanan terstruktur offline-first client-side berkapasitas besar.' },
-    'dexie.js': { category: 'IndexedDB Wrapper', desc: 'Abstraksi query reaktif dan manajemen skema untuk IndexedDB lokal.' },
-    'shadcn ui': { category: 'Component System', desc: 'Komponen headless aksesibel berbasis Radix UI dan Tailwind CSS.' },
-    'cloud & ml': { category: 'Intelligence', desc: 'Integrasi Machine Learning model inference dan Google Cloud Platform services.' },
+    'laravel': { category: 'Backend Framework', desc: 'MVC architecture, RESTful API endpoints, database migrations & Eloquent ORM.' },
+    'livewire': { category: 'Full-Stack UI', desc: 'Real-time reactive UI components without writing separate JavaScript API configuration.' },
+    'alpine.js': { category: 'Micro Frontend', desc: 'Lightweight declarative DOM manipulation and interactive state management for modals and dropdowns.' },
+    'tailwind css': { category: 'CSS System', desc: 'Modular UI design with utility-first tokens and fast render performance.' },
+    'bootstrap': { category: 'UI Framework', desc: 'Industry-standard responsive layout components and multi-device grid system.' },
+    'react': { category: 'Frontend Library', desc: 'Component-based virtual DOM architecture with reactive state management.' },
+    'typescript': { category: 'Type Safety', desc: 'Strict static typing to prevent runtime bugs and simplify long-term script maintenance.' },
+    'vite': { category: 'Build Tool', desc: 'Next-gen bundler with Instant Hot Module Reload (HMR) and optimized bundle output.' },
+    'flutter': { category: 'Cross-Platform UI', desc: 'Unified native mobile framework in Dart delivering responsive 60fps graphics.' },
+    'dart': { category: 'Language', desc: 'Object-oriented language optimized for client-side performance.' },
+    'kotlin': { category: 'Android Native', desc: 'Modern official Android language with null-safety, coroutines, and expressive syntax.' },
+    'jetpack compose': { category: 'Declarative UI', desc: 'Modern declarative Android UI toolkit that simplifies layout code.' },
+    'firebase': { category: 'BaaS & Cloud', desc: 'Cloud Firestore real-time database, cloud authentication, and managed hosting.' },
+    'mysql': { category: 'Relational DB', desc: 'ACID-compliant relational database for transactional data integrity and fast queries.' },
+    'postgresql': { category: 'Relational DB', desc: 'Enterprise database with JSONB support and high reliability.' },
+    'supabase': { category: 'BaaS & Postgres', desc: 'Managed PostgreSQL with Row Level Security (RLS) and integrated authentication.' },
+    'indexeddb': { category: 'Client Database', desc: 'Large-capacity offline-first structured storage on the client side.' },
+    'dexie.js': { category: 'IndexedDB Wrapper', desc: 'Reactive query abstraction and schema management for local IndexedDB.' },
+    'shadcn ui': { category: 'Component System', desc: 'Accessible headless components built on Radix UI and Tailwind CSS.' },
+    'cloud & ml': { category: 'Intelligence', desc: 'Machine Learning model inference integration and Google Cloud Platform services.' },
   };
 
   function getTechMeta(name) {
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     for (const [k, val] of Object.entries(TECH_INFO)) {
       if (key.includes(k)) return val;
     }
-    return { category: 'Core Stack', desc: `Komponen dan dependensi teknis untuk implementasi ${name}.` };
+    return { category: 'Core Stack', desc: `Technical component and dependency for ${name} implementation.` };
   }
 
   /* ── Robust Page Detection ────────────────── */
@@ -53,8 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
     home:     has('hero') || has('expPreviewMap'),
     projects: has('projectRows'),
     detail:   has('pdetailRoot') || has('projectDetail'),
-    exp:      has('expFullMap'),
+    exp:      has('expFullMap') || has('certsGrid'),
   };
+
+  /* ── Bilingual Data Field Helper ──────────── */
+  function pField(obj, field) {
+    if (!obj) return '';
+    if (window.currentLang === 'id') {
+      return obj[field + '_id'] || obj[field] || '';
+    }
+    return obj[field] || '';
+  }
 
   /* ── CV link ─────────────────────────────── */
   document.querySelectorAll('#cvBtn').forEach(el => {
@@ -82,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ════════════════════════════════════════════ */
   let modalBackdrop = null;
   let isModalOpen = false;
+  let currentActiveModal = null;
 
   function ensureModal() {
     if (modalBackdrop) return modalBackdrop;
@@ -107,141 +117,173 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openModal(type, targetId) {
     const modal = ensureModal();
+    currentActiveModal = { type, targetId };
 
     if (type === 'project') {
       const project = (D.projects || []).find(p => p.slug === targetId) || D.projects[0];
       if (!project) return;
-      const hasImg = project.images && project.images.length > 0;
+      const realImg = project.images && project.images.length > 0;
+      const tempImg = project.temporaryPreviewImages && project.temporaryPreviewImages.length > 0;
+      const hasImg = realImg || tempImg;
+      const activeImages = realImg ? project.images : (tempImg ? project.temporaryPreviewImages.map(src => ({ src, alt: 'Temporary preview' })) : []);
       const isFeatured = project.featured === true || project.tier === 'featured';
+
+      const shortDesc = pField(project, 'shortDescription');
+      const whyText = pField(project, 'why');
+      const probText = pField(project, 'problem');
+      const solText = pField(project, 'solution');
+      const roleText = pField(project, 'role');
+      const techDetailsText = pField(project, 'techDetails');
 
       modal.innerHTML = `
         <div class="modal-container" role="document">
           <!-- Top Bar -->
           <div class="modal-topbar">
             <span class="modal-topbar__num">PROJECT ${project.index}</span>
+            <span class="modal-topbar__center">${(project.displayName || project.name).toUpperCase()}</span>
             <button class="modal-close-btn" id="modalCloseBtn" type="button" aria-label="Close project modal">
-              <span>CLOSE</span>
+              <span>${window.t('modal_close')}</span>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
 
           <!-- 3-Column Modal Grid (30% / 40% / 30%) -->
           <div class="modal-body-grid">
-            <!-- 30% Left: Metadata -->
-            <div class="modal-col-meta">
-              <div class="modal-meta-item">
-                <span class="modal-meta-lbl">PROJECT NO.</span>
-                <span class="modal-meta-val mono">${project.index}</span>
-              </div>
-              <div class="modal-meta-item">
-                <span class="modal-meta-lbl">YEAR</span>
-                <span class="modal-meta-val">${project.year}</span>
-              </div>
-              ${isFeatured ? `
-                <div class="modal-meta-item">
-                  <span class="modal-meta-lbl">HIGHLIGHT</span>
-                  <span class="modal-meta-badge">FEATURED CASE STUDY</span>
-                </div>
-              ` : ''}
-              ${project.role ? `
-                <div class="modal-meta-item">
-                  <span class="modal-meta-lbl">ROLE &amp; FOCUS</span>
-                  <span class="modal-meta-val">${project.role}</span>
-                </div>
-              ` : ''}
-              ${project.status ? `
-                <div class="modal-meta-item">
-                  <span class="modal-meta-lbl">STATUS</span>
-                  <span class="modal-meta-val">${project.status.toUpperCase()}</span>
-                </div>
-              ` : ''}
-            </div>
-
-            <!-- 40% Center: Project Narrative -->
-            <div class="modal-col-story">
-              <div class="modal-story-header">
-                <h2 class="modal-story-title">${project.displayName || project.name}</h2>
-                <p class="modal-story-sub">${project.shortDescription}</p>
-              </div>
-
-              ${project.shortDescription ? `
+            <!-- 30% Left: STORY -->
+            <div class="modal-col-meta" style="justify-content: flex-start;">
+              ${shortDesc ? `
                 <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">OVERVIEW</h3>
-                  <p class="modal-sec-text">${project.shortDescription}</p>
+                  <h3 class="modal-sec-lbl">${window.t('modal_label_overview')}</h3>
+                  <p class="modal-sec-text">${shortDesc}</p>
                 </div>
               ` : ''}
 
-              ${project.problem ? `
+              ${whyText ? `
                 <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">THE PROBLEM</h3>
-                  <p class="modal-sec-text">${project.problem}</p>
+                  <h3 class="modal-sec-lbl">${window.t('modal_label_why')}</h3>
+                  <p class="modal-sec-text">${whyText}</p>
                 </div>
               ` : ''}
 
-              ${project.solution ? `
+              ${probText ? `
                 <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">THE SOLUTION &amp; ARCHITECTURE</h3>
-                  <p class="modal-sec-text">${project.solution}</p>
+                  <h3 class="modal-sec-lbl">${window.t('modal_label_problem')}</h3>
+                  <p class="modal-sec-text">${probText}</p>
                 </div>
               ` : ''}
 
-              ${project.features && project.features.length ? `
+              ${solText ? `
                 <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">KEY FEATURES</h3>
-                  <ul class="modal-sec-bullets">
-                    ${project.features.map(f => `<li>${f}</li>`).join('')}
-                  </ul>
+                  <h3 class="modal-sec-lbl">${window.t('modal_label_solution')}</h3>
+                  <p class="modal-sec-text">${solText}</p>
                 </div>
               ` : ''}
 
               ${project.challenges ? `
                 <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">ENGINEERING CHALLENGES</h3>
+                  <h3 class="modal-sec-lbl">CHALLENGES</h3>
                   <p class="modal-sec-text">${project.challenges}</p>
                 </div>
               ` : ''}
 
               ${project.outcome ? `
                 <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">OUTCOME &amp; IMPACT</h3>
+                  <h3 class="modal-sec-lbl">OUTCOME</h3>
                   <p class="modal-sec-text">${project.outcome}</p>
                 </div>
               ` : ''}
+
+              <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                <div class="modal-meta-item">
+                  <span class="modal-meta-lbl">${window.t('modal_meta_year')}</span>
+                  <span class="modal-meta-val">${project.year || 'TBA'}</span>
+                </div>
+                ${roleText ? `
+                  <div class="modal-meta-item">
+                    <span class="modal-meta-lbl">${window.t('modal_meta_role')}</span>
+                    <span class="modal-meta-val">${roleText}</span>
+                  </div>
+                ` : ''}
+                ${project.status ? `
+                  <div class="modal-meta-item">
+                    <span class="modal-meta-lbl">${window.t('modal_meta_status')}</span>
+                    <span class="modal-meta-val">${project.status.toUpperCase()}</span>
+                  </div>
+                ` : ''}
+                ${isFeatured ? `
+                  <div class="modal-meta-item">
+                    <span class="modal-meta-lbl">${window.t('modal_meta_highlight')}</span>
+                    <span class="modal-meta-badge">${window.t('badge_featured')}</span>
+                  </div>
+                ` : ''}
+              </div>
             </div>
 
-            <!-- 30% Right: Visual & Clean Tech Stack -->
-            <div class="modal-col-visual">
+            <!-- 40% Center: SHOWCASE -->
+            <div class="modal-col-story">
               <div class="modal-visual-wrap">
                 ${hasImg ? `
-                  <img src="${project.images[0].src}" alt="${project.images[0].alt || project.name}" loading="lazy">
+                  <div style="position:relative; width:100%; height:100%;">
+                    <img id="modalMainImg" src="${activeImages[0].src}" alt="${activeImages[0].alt || project.name}" loading="lazy">
+                    ${!realImg && tempImg ? `<div class="temp-preview-badge">${window.t('badge_temporary_preview')}</div>` : ''}
+                  </div>
                 ` : `
                   <div class="modal-visual-fallback">
-                    <span style="font-family:var(--font-display);font-size:1.125rem;font-weight:700;color:var(--fg);display:block;">${project.displayName || project.name}</span>
-                    <span style="font-family:var(--font-mono);font-size:.5625rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:.35rem;">System Architecture Spec</span>
+                    <span style="font-family:var(--font-display);font-size:1.125rem;font-weight:700;color:var(--fg);display:block;">${window.t('badge_project_preview')}</span>
+                    <span style="font-family:var(--font-mono);font-size:.5625rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:.35rem;">${window.t('badge_awaiting_assets')}</span>
                   </div>
                 `}
               </div>
 
+              ${(hasImg && activeImages.length > 1) ? `
+                <div class="modal-thumbnails" style="margin-top: 1rem; margin-bottom: 2rem;">
+                  ${activeImages.map((img, i) => `
+                    <button class="modal-thumb-btn ${i === 0 ? 'active' : ''}" data-src="${img.src}" aria-label="View screenshot ${i + 1}">
+                      <img src="${img.src}" alt="Thumbnail ${i + 1}" loading="lazy">
+                    </button>
+                  `).join('')}
+                </div>
+              ` : '<div style="margin-bottom: 2rem;"></div>'}
+
+              ${project.features && project.features.length ? `
+                <div class="modal-story-sec">
+                  <h3 class="modal-sec-lbl">${window.t('modal_key_features')}</h3>
+                  <ul class="modal-sec-bullets">
+                    ${project.features.map(f => `<li>${f}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- 30% Right: TECH & LINKS -->
+            <div class="modal-col-visual" style="background: rgba(0,0,0,0.01);">
               ${project.techStack && project.techStack.length ? `
                 <div class="modal-tech-box">
-                  <h3 class="modal-tech-lbl">TECH STACK</h3>
+                  <h3 class="modal-tech-lbl">${window.t('modal_label_tech_stack')}</h3>
                   <ul class="modal-tech-clean-list">
                     ${project.techStack.map(t => `<li class="modal-tech-clean-item">${t}</li>`).join('')}
                   </ul>
                 </div>
               ` : ''}
 
+              ${techDetailsText ? `
+                <div class="modal-story-sec" style="margin-top: 2.5rem;">
+                  <h3 class="modal-sec-lbl">${window.t('modal_label_tech')}</h3>
+                  <p class="modal-sec-text">${techDetailsText}</p>
+                </div>
+              ` : ''}
+
               ${(project.liveDemo || project.github) ? `
-                <div class="modal-links-box">
+                <div class="modal-links-box" style="margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem;">
                   ${project.liveDemo ? `
                     <a href="${project.liveDemo}" target="_blank" rel="noopener noreferrer" class="modal-action-btn primary" aria-label="Live demo for ${project.name}">
-                      <span>Live Demo</span>
+                      <span>${window.t('modal_btn_live_demo')}</span>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
                     </a>
                   ` : ''}
                   ${project.github ? `
                     <a href="${project.github}" target="_blank" rel="noopener noreferrer" class="modal-action-btn secondary" aria-label="GitHub repo for ${project.name}">
-                      <span>GitHub</span>
+                      <span>${window.t('modal_btn_github')}</span>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
                     </a>
                   ` : ''}
@@ -251,106 +293,161 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
+
+      // Attach thumbnail click events
+      if (hasImg && activeImages.length > 1) {
+        setTimeout(() => {
+          const mainImg = document.getElementById('modalMainImg');
+          const thumbs = modal.querySelectorAll('.modal-thumb-btn');
+          thumbs.forEach(t => {
+            t.addEventListener('click', () => {
+              thumbs.forEach(btn => btn.classList.remove('active'));
+              t.classList.add('active');
+              if (mainImg) mainImg.src = t.getAttribute('data-src');
+            });
+          });
+        }, 50);
+      }
     } else if (type === 'experience') {
       const idx = typeof targetId === 'number' ? targetId : (D.experience || []).findIndex(e => e.id === targetId);
       const item = (D.experience || [])[idx >= 0 ? idx : 0];
       if (!item) return;
 
+      const hasImg = item.temporaryPreviewImages && item.temporaryPreviewImages.length > 0;
+      const activeImages = hasImg ? item.temporaryPreviewImages.map(src => ({ src, alt: 'Preview' })) : [];
+
+      const begText = pField(item, 'beginning');
+      const headText = pField(item, 'headline');
+      const probText = pField(item, 'problem');
+      const workText = pField(item, 'work') || pField(item, 'turningPoint');
+      const impText = pField(item, 'impact') || pField(item, 'whatITookWithMe');
+
       modal.innerHTML = `
         <div class="modal-container" role="document">
           <!-- Top Bar -->
           <div class="modal-topbar">
-            <span class="modal-topbar__num">MILESTONE 0${idx + 1} / 0${D.experience.length}</span>
+            <span class="modal-topbar__num">EXPERIENCE</span>
+            <span class="modal-topbar__center">${(item.role + ' / ' + item.org).toUpperCase()}</span>
             <button class="modal-close-btn" id="modalCloseBtn" type="button" aria-label="Close experience modal">
-              <span>CLOSE</span>
+              <span>${window.t('modal_close')}</span>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
 
           <!-- 3-Column Modal Grid (30% / 40% / 30%) -->
           <div class="modal-body-grid">
-            <!-- 30% Left: Experience Metadata -->
-            <div class="modal-col-meta">
-              <div class="modal-meta-item">
-                <span class="modal-meta-lbl">PERIOD</span>
-                <span class="modal-meta-val">${item.period}</span>
-              </div>
-              <div class="modal-meta-item">
-                <span class="modal-meta-lbl">ORGANIZATION</span>
-                <span class="modal-meta-val">${item.org}</span>
-              </div>
-              <div class="modal-meta-item">
-                <span class="modal-meta-lbl">ROLE</span>
-                <span class="modal-meta-val">${item.role}</span>
-              </div>
-              <div class="modal-meta-item">
-                <span class="modal-meta-lbl">LOCATION</span>
-                <span class="modal-meta-val">${item.location || 'Pekanbaru, Riau'}</span>
-              </div>
-              ${item.gpa ? `
+            <!-- 30% Left: STORY -->
+            <div class="modal-col-meta" style="justify-content: flex-start;">
+              ${begText ? `
+                <div class="modal-story-sec">
+                  <h3 class="modal-sec-lbl">${window.t('modal_exp_beginning')}</h3>
+                  <p class="modal-sec-text">${begText}</p>
+                </div>
+              ` : ''}
+
+              ${headText ? `
+                <div class="modal-story-sec">
+                  <h3 class="modal-sec-lbl">${window.t('modal_label_why')}</h3>
+                  <p class="modal-sec-text">${headText}</p>
+                </div>
+              ` : ''}
+
+              ${probText ? `
+                <div class="modal-story-sec">
+                  <h3 class="modal-sec-lbl">${window.t('modal_exp_problem')}</h3>
+                  <p class="modal-sec-text">${probText}</p>
+                </div>
+              ` : ''}
+
+              ${workText ? `
+                <div class="modal-story-sec">
+                  <h3 class="modal-sec-lbl">${window.t('modal_exp_work')}</h3>
+                  <p class="modal-sec-text">${workText}</p>
+                </div>
+              ` : ''}
+
+              <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
                 <div class="modal-meta-item">
-                  <span class="modal-meta-lbl">ACADEMIC RECORD</span>
-                  <span class="modal-meta-badge">GPA ${item.gpa}</span>
+                  <span class="modal-meta-lbl">${window.t('modal_meta_period')}</span>
+                  <span class="modal-meta-val">${item.period}</span>
                 </div>
-              ` : ''}
+                <div class="modal-meta-item">
+                  <span class="modal-meta-lbl">${window.t('modal_meta_role')}</span>
+                  <span class="modal-meta-val">${item.role}</span>
+                </div>
+                <div class="modal-meta-item">
+                  <span class="modal-meta-lbl">${window.currentLang === 'id' ? 'LOKASI' : 'LOCATION'}</span>
+                  <span class="modal-meta-val">${item.location || 'Pekanbaru, Riau'}</span>
+                </div>
+                ${item.gpa ? `
+                  <div class="modal-meta-item">
+                    <span class="modal-meta-lbl">${window.currentLang === 'id' ? 'REKAM AKADEMIK' : 'ACADEMIC RECORD'}</span>
+                    <span class="modal-meta-val">${item.gpa}</span>
+                  </div>
+                ` : ''}
+              </div>
             </div>
 
-            <!-- 40% Center: Reflective Engineering Storytelling -->
+            <!-- 40% Center: SHOWCASE -->
             <div class="modal-col-story">
-              <div class="modal-story-header">
-                <h2 class="modal-story-title">${item.headline || item.role}</h2>
-                <p class="modal-story-sub">${item.role} &nbsp;·&nbsp; <strong>${item.org}</strong></p>
+              <div class="modal-visual-wrap">
+                ${hasImg ? `
+                  <div style="position:relative; width:100%; height:100%;">
+                    <img id="modalMainImg" src="${activeImages[0].src}" alt="Main visual preview" loading="lazy">
+                    <div class="temp-preview-badge">${window.t('badge_temporary_preview')}</div>
+                  </div>
+                ` : `
+                  <div class="modal-visual-fallback">
+                    <span style="font-family:var(--font-display);font-size:1.125rem;font-weight:700;color:var(--fg);display:block;">${window.t('badge_project_preview')}</span>
+                    <span style="font-family:var(--font-mono);font-size:.5625rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:.35rem;">${window.t('badge_awaiting_assets')}</span>
+                  </div>
+                `}
               </div>
 
-              ${item.beginning ? `
+              ${(hasImg && activeImages.length > 1) ? `
+                <div class="modal-thumbnails" style="margin-top: 1rem; margin-bottom: 2rem;">
+                  ${activeImages.map((img, i) => `
+                    <button class="modal-thumb-btn ${i === 0 ? 'active' : ''}" data-src="${img.src}" aria-label="View screenshot ${i + 1}">
+                      <img src="${img.src}" alt="Thumbnail ${i + 1}" loading="lazy">
+                    </button>
+                  `).join('')}
+                </div>
+              ` : '<div style="margin-bottom: 2rem;"></div>'}
+
+              ${item.bullets && item.bullets.length ? `
                 <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">THE BEGINNING</h3>
-                  <p class="modal-sec-text">${item.beginning}</p>
+                  <h3 class="modal-sec-lbl">${window.currentLang === 'id' ? 'TANGGUNG JAWAB UTAMA' : 'KEY RESPONSIBILITIES'}</h3>
+                  <ul class="modal-sec-bullets">
+                    ${item.bullets.map(b => `<li>${b}</li>`).join('')}
+                  </ul>
                 </div>
               ` : ''}
 
-              ${item.work ? `
-                <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">THE WORK</h3>
-                  <p class="modal-sec-text">${item.work}</p>
-                </div>
-              ` : ''}
-
-              ${item.problem ? `
-                <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">THE PROBLEM</h3>
-                  <p class="modal-sec-text">${item.problem}</p>
-                </div>
-              ` : ''}
-
-              ${item.turningPoint ? `
-                <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">THE TURNING POINT</h3>
-                  <p class="modal-sec-text">${item.turningPoint}</p>
-                </div>
-              ` : ''}
-
-              ${item.whatITookWithMe ? `
-                <div class="modal-story-sec">
-                  <h3 class="modal-sec-lbl">WHAT I TOOK WITH ME</h3>
-                  <p class="modal-sec-text">${item.whatITookWithMe}</p>
+              ${impText ? `
+                <div class="modal-story-sec" style="margin-top: 1.5rem;">
+                  <h3 class="modal-sec-lbl">${window.t('modal_exp_impact')}</h3>
+                  <p class="modal-sec-text">${impText}</p>
                 </div>
               ` : ''}
             </div>
 
-            <!-- 30% Right: Technologies & Tools Clean List -->
-            <div class="modal-col-visual">
-              <div class="modal-tech-box">
-                <h3 class="modal-tech-lbl">TECHNOLOGY &amp; ENVIRONMENT</h3>
-                <ul class="modal-tech-clean-list">
-                  ${(item.technologies || item.tags || []).map(t => `<li class="modal-tech-clean-item">${t}</li>`).join('')}
-                </ul>
-              </div>
+            <!-- 30% Right: TECH & LINKS -->
+            <div class="modal-col-visual" style="background: rgba(0,0,0,0.01);">
+              ${(item.technologies || item.tags) && (item.technologies || item.tags).length ? `
+                <div class="modal-tech-box">
+                  <h3 class="modal-tech-lbl">${window.currentLang === 'id' ? 'ALAT & LINGKUNGAN KERJA' : 'TECH & ENVIRONMENT'}</h3>
+                  <ul class="modal-tech-clean-list">
+                    ${(item.technologies || item.tags).map(t => `<li class="modal-tech-clean-item">${t}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
 
-              <div class="modal-story-sec" style="margin-top:auto; padding-top:1.5rem; border-top:1px solid var(--border);">
-                <span class="modal-meta-lbl">MILESTONE BADGE</span>
-                <p style="font-family:var(--font-mono); font-size:.75rem; color:var(--fg); font-weight:600; margin-top:.35rem;">${item.typeLabel}</p>
-              </div>
+              ${item.workflow ? `
+                <div class="modal-story-sec" style="margin-top: 2.5rem;">
+                  <h3 class="modal-sec-lbl">${window.t('modal_label_tech')}</h3>
+                  <p class="modal-sec-text">${item.workflow}</p>
+                </div>
+              ` : ''}
             </div>
           </div>
         </div>
@@ -359,6 +456,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modal.querySelector('#modalCloseBtn')?.addEventListener('click', closeModal);
 
+    const mainImg = modal.querySelector('#modalMainImg');
+    const thumbBtns = modal.querySelectorAll('.modal-thumb-btn');
+    if (mainImg && thumbBtns.length > 0) {
+      thumbBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          thumbBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          mainImg.style.opacity = '0';
+          setTimeout(() => {
+            mainImg.src = btn.dataset.src;
+            mainImg.style.opacity = '1';
+          }, 150);
+        });
+      });
+    }
+
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -366,17 +479,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeModal() {
-    if (!modalBackdrop || !isModalOpen) return;
+    if (!modalBackdrop) return;
     modalBackdrop.classList.remove('open');
     modalBackdrop.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     isModalOpen = false;
+    currentActiveModal = null;
   }
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isModalOpen) {
-      closeModal();
+  /* ── langchange re-render ───────────────── */
+  document.addEventListener('langchange', () => {
+    if (IS.projects && window.renderProjectRows) {
+      window.renderProjectRows(window.activeProjectFilter || 'all');
     }
+    if (IS.exp) {
+      buildExpFullMap();
+      buildCerts();
+    }
+    if (IS.home) {
+      buildExpPreviewMap();
+      buildHomeTrailer();
+    }
+    if (IS.detail && typeof initDetailPage === 'function') {
+      initDetailPage();
+    }
+    if (isModalOpen && currentActiveModal) {
+      openModal(currentActiveModal.type, currentActiveModal.targetId);
+    }
+  });
+
+  /* also sync mobile lang toggle */
+  document.getElementById('langToggleMobile')?.addEventListener('click', () => {
+    const next = window.currentLang === 'en' ? 'id' : 'en';
+    if (window.applyLang) window.applyLang(next);
   });
 
   /* ════════════════════════════════════════════
@@ -410,25 +545,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const card = getOrCreateSneakPeekCard(container);
     activeSneakPeekCard = card;
 
-    const badge = item.badge || item.typeLabel || 'MILESTONE';
+    const badge = pField(item, 'badge') || pField(item, 'typeLabel') || 'MILESTONE';
     const year = item.year || item.period || '';
-    const title = item.title || item.role || '';
+    const title = pField(item, 'title') || item.role || '';
     const subtitle = item.subtitle || (item.org ? item.org.split(',')[0] : '');
-    const desc = item.context || item.beginning || item.reflection || item.headline || (item.bullets ? item.bullets[0] : '');
+    const desc = pField(item, 'reflection') || pField(item, 'context') || pField(item, 'beginning') || pField(item, 'headline') || (item.bullets ? item.bullets[0] : '');
 
     card.innerHTML = `
       <div class="msp-header">
-        <span class="msp-badge">${badge}</span>
         <span class="msp-year">${year}</span>
       </div>
       <div class="msp-title">${title}</div>
-      ${subtitle ? `<div class="msp-sub">${subtitle}</div>` : ''}
-      <div class="msp-desc">${desc}</div>
-      <div class="msp-footer">
-        <span>Click to open case study</span>
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </div>
+      <div class="msp-desc">"${desc}"</div>
     `;
+    card.dataset.index = item.expIndex !== undefined ? item.expIndex : '';
 
     // Position relative to container
     const cRect = container.getBoundingClientRect();
@@ -465,10 +595,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const stage = document.getElementById('expMapStage') || wrap;
 
     const milestones = D.journeyMilestones || [
-      { year: '2022', badge: '01 · ORIGIN', title: 'Learning the Foundations', reflection: 'Started my journey by learning how systems work from the ground up.', expIndex: 0 },
-      { year: '2023 — 2024', badge: '02 · HARDWARE & OPS', title: 'Keeping Real Systems Running', reflection: 'Maintained 83 workstations across 3 labs. Troubleshooting hardware, software, LAN, and everything in between.', expIndex: 1 },
-      { year: '2024', badge: '03 · SCALE & CODE', title: 'From Software to Infrastructure', reflection: 'Deployed 256 access points across 14 buildings with a 13-person team. Learned where code meets physical systems.', expIndex: 2 },
-      { year: '2024 — 2025', badge: '04 · TEAM & SYSTEMS', title: 'Engineering With Others', reflection: 'Leading a team, solving problems together, documenting, reviewing, and building better systems.', expIndex: 3 },
+      { year: '2022', badge: '01 · ORIGIN', title: 'FOUNDATIONS', reflection: 'Started my journey by learning how systems work from the ground up.', expIndex: 0 },
+      { year: '2023–24', badge: '02 · HARDWARE & OPS', title: 'REAL SYSTEMS', reflection: 'Maintained 83 workstations across three labs.', expIndex: 1 },
+      { year: '2024', badge: '03 · SCALE & CODE', title: 'INFRASTRUCTURE', reflection: 'Helped deploy 256 access points across 14 buildings.', expIndex: 2 },
+      { year: '2024–25', badge: '04 · TEAM & SYSTEMS', title: 'ENGINEERING', reflection: 'Leading a team, solving problems together, documenting, reviewing, and building better systems.', expIndex: 3 },
     ];
 
     const isMobile = window.innerWidth < 768;
@@ -595,10 +725,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const tx = nd.textX;
         const ty = nd.textY;
 
-        g.appendChild(mkSVGText(nd.item.badge, tx, ty, 'map-label-tag', 'middle'));
+        const badgeStr = pField(nd.item, 'badge');
+        const titleStr = pField(nd.item, 'title');
+
+        g.appendChild(mkSVGText(badgeStr, tx, ty, 'map-label-tag', 'middle'));
         g.appendChild(mkSVGText(nd.item.year, tx, ty + 16, 'map-label-year', 'middle'));
-        g.appendChild(mkSVGText(nd.item.title, tx, ty + 34, 'map-label-title', 'middle'));
-        g.appendChild(mkSVGText(`"${nd.item.reflection}"`, tx, ty + 50, 'map-label-reflection', 'middle'));
+        g.appendChild(mkSVGText(titleStr, tx, ty + 30, 'map-label-title', 'middle'));
 
         // Sneak Peek Hover & Focus Events
         g.addEventListener('mouseenter', () => showMapSneakPeek(g, stage, nd.item));
@@ -606,10 +738,19 @@ document.addEventListener('DOMContentLoaded', () => {
         g.addEventListener('focus', () => showMapSneakPeek(g, stage, nd.item));
         g.addEventListener('blur', hideMapSneakPeek);
 
-        // Click opens modal
-        g.addEventListener('click', () => {
-          hideMapSneakPeek();
-          openModal('experience', nd.item.expIndex);
+        // Click logic
+        g.addEventListener('click', (e) => {
+          if (isMobile) {
+            if (activeSneakPeekCard && activeSneakPeekCard.dataset.index === String(nd.item.expIndex)) {
+              hideMapSneakPeek();
+              openModal('experience', nd.item.expIndex);
+            } else {
+              showMapSneakPeek(g, stage, nd.item);
+            }
+          } else {
+            hideMapSneakPeek();
+            openModal('experience', nd.item.expIndex);
+          }
         });
         g.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -826,16 +967,26 @@ document.addEventListener('DOMContentLoaded', () => {
           const textAnchor = nd.isLeft ? 'start' : 'end';
           const textX = nd.isLeft ? nd.x + 16 : nd.x - 16;
 
-          g.appendChild(mkSVGText(nd.item.year, textX, nd.y - 10, 'map-label-year', textAnchor));
-          g.appendChild(mkSVGText(nd.item.title, textX, nd.y + 6, 'map-label-title', textAnchor));
-          g.appendChild(mkSVGText(`"${nd.item.reflection.slice(0, 36)}..."`, textX, nd.y + 20, 'map-label-reflection', textAnchor));
+          g.appendChild(mkSVGText(nd.item.badge, textX, nd.y - 10, 'map-label-tag', textAnchor));
+          g.appendChild(mkSVGText(nd.item.year, textX, nd.y + 6, 'map-label-year', textAnchor));
+          g.appendChild(mkSVGText(nd.item.title, textX, nd.y + 20, 'map-label-title', textAnchor));
 
-          g.addEventListener('mouseenter', () => showMapSneakPeek(g, stage, nd.item));
-          g.addEventListener('mouseleave', hideMapSneakPeek);
+          g.addEventListener('mouseenter', () => { if(!isMobile) showMapSneakPeek(g, stage, nd.item); });
+          g.addEventListener('mouseleave', () => { if(!isMobile) hideMapSneakPeek(); });
 
-          g.addEventListener('click', () => {
-            hideMapSneakPeek();
-            openModal('experience', nd.item.expIndex);
+          g.addEventListener('click', (e) => {
+            if (isMobile) {
+              if (activeSneakPeekCard && activeSneakPeekCard.dataset.index === String(nd.item.expIndex)) {
+                hideMapSneakPeek();
+                openModal('experience', nd.item.expIndex);
+              } else {
+                hideMapSneakPeek();
+                showMapSneakPeek(g, stage, nd.item);
+              }
+            } else {
+              hideMapSneakPeek();
+              openModal('experience', nd.item.expIndex);
+            }
           });
           g.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -896,19 +1047,49 @@ document.addEventListener('DOMContentLoaded', () => {
         'aria-label': `${p.displayName || p.name} — ${p.year}. Click to view case study.`,
       });
 
-      const hasImg = p.images && p.images.length > 0;
+      const realImg = p.images && p.images.length > 0;
+      const tempImg = p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0;
+      const hasImg = realImg || tempImg;
+      const activeImages = realImg ? p.images : (tempImg ? p.temporaryPreviewImages.map(src => ({ src, alt: 'Temporary preview' })) : []);
+      
+      // Mini cards fan for hover effect (identical to projects archive page)
+      let cardsFanHtml = '';
+      if (hasImg) {
+        const cardImages = activeImages.length >= 3 ? activeImages.slice(0, 3) : [activeImages[0], activeImages[0], activeImages[0]];
+        cardsFanHtml = `
+          <div class="prow__cards-fan">
+            ${cardImages.map((cImg, i) => `
+              <div class="prow__mini-card card-${i + 1}">
+                <img src="${cImg.src}" alt="Mini preview" loading="lazy">
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
       card.innerHTML = `
+        <div class="pcard__img">
+          ${hasImg ? `
+            <div class="prow__img-wrap" style="position:relative; width:100%; height:100%; overflow:visible; display:flex; align-items:center; justify-content:center;">
+              <img class="pcard__main-img" src="${activeImages[0].src}" alt="${activeImages[0].alt || p.name}" loading="lazy">
+              <div class="prow__img-overlay"></div>
+              ${cardsFanHtml}
+              ${!realImg && tempImg ? `<div class="temp-preview-badge">${window.t('badge_temporary_preview')}</div>` : ''}
+            </div>
+          ` : `
+            <div class="pcard__img-ph">
+              <span class="pcard__ph-title">${window.t('badge_project_preview')}</span>
+            </div>
+          `}
+        </div>
         <div class="pcard__top">
           <span class="pcard__idx">${p.index}</span>
           <svg class="pcard__arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
         </div>
         <div class="pcard__body">
           <h3 class="pcard__name">${p.displayName || p.name}</h3>
-          <p class="pcard__desc">${p.shortDescription}</p>
-          ${p.techStack ? `<div class="pcard__tags">${p.techStack.slice(0,3).map(t=>`<span class="pcard__tag">${t}</span>`).join('')}</div>` : ''}
-        </div>
-        <div class="pcard__img">
-          ${hasImg ? `<img src="${p.images[0].src}" alt="${p.images[0].alt || p.name}" loading="lazy">` : `<span class="pcard__img-ph">${p.name}</span>`}
+          <p class="pcard__desc">${pField(p, 'shortDescription')}</p>
+          ${p.techStack ? `<div class="pcard__tags">${p.techStack.slice(0,4).map(t=>`<span class="pcard__tag">${t}</span>`).join('')}</div>` : ''}
         </div>
       `;
 
@@ -926,45 +1107,74 @@ document.addEventListener('DOMContentLoaded', () => {
     initHorizontalScroll();
   }
 
-  /* ── Horizontal scroll interaction ─────── */
+  /* ── Horizontal drag & wheel scroll interaction ── */
   function initHorizontalScroll() {
-    const section = document.getElementById('projects');
-    const track   = document.getElementById('projectsTrack');
-    const fill    = document.getElementById('projFill');
-    if (!section || !track) return;
+    const track = document.getElementById('projectsTrack');
+    const outer = track ? track.parentElement : null;
+    const fill  = document.getElementById('progressFill');
+    if (!outer || !track) return;
 
-    const END_BUFFER = 96;
-
-    function getOverflow() {
-      const parentW = track.parentElement ? track.parentElement.clientWidth : window.innerWidth;
-      return Math.max(0, (track.scrollWidth + END_BUFFER) - parentW);
-    }
-
-    function setHeight() {
-      const ov = getOverflow();
-      section.style.height = (ov + window.innerHeight * 1.15) + 'px';
-    }
-    setHeight();
-    window.addEventListener('resize', setHeight, { passive: true });
-
-    function onScroll() {
-      const secTop = section.getBoundingClientRect().top + window.scrollY;
-      const scrolled = window.scrollY - secTop;
-      const totalScroll = section.offsetHeight - window.innerHeight;
-      const ov = getOverflow();
-
-      if (scrolled <= 0) {
-        track.style.transform = 'translateX(0)';
-        if (fill) fill.style.width = '0%';
+    function updateProgress() {
+      if (!fill) return;
+      const maxScroll = outer.scrollWidth - outer.clientWidth;
+      if (maxScroll <= 0) {
+        fill.style.width = '100%';
         return;
       }
-      const p = Math.min(Math.max(scrolled / totalScroll, 0), 1);
-      track.style.transform = `translateX(-${p * ov}px)`;
-      if (fill) fill.style.width = (p * 100) + '%';
+      const pct = Math.min(Math.max((outer.scrollLeft / maxScroll) * 100, 0), 100);
+      fill.style.width = pct + '%';
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    outer.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    // Wheel scrolling: smoothly translate vertical wheel into horizontal carousel scroll
+    outer.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        const maxScroll = outer.scrollWidth - outer.clientWidth;
+        const atStart = outer.scrollLeft <= 1;
+        const atEnd = outer.scrollLeft >= maxScroll - 4;
+
+        if ((e.deltaY > 0 && !atEnd) || (e.deltaY < 0 && !atStart)) {
+          e.preventDefault();
+          outer.scrollLeft += e.deltaY;
+          updateProgress();
+        }
+      }
+    }, { passive: false });
+
+    // Drag to scroll
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    outer.addEventListener('mousedown', (e) => {
+      isDown = true;
+      outer.style.cursor = 'grabbing';
+      startX = e.pageX - outer.offsetLeft;
+      scrollLeft = outer.scrollLeft;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isDown) return;
+      isDown = false;
+      outer.style.cursor = 'grab';
+    });
+
+    outer.addEventListener('mouseleave', () => {
+      if (!isDown) return;
+      isDown = false;
+      outer.style.cursor = 'grab';
+    });
+
+    outer.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - outer.offsetLeft;
+      const walk = (x - startX) * 1.2;
+      outer.scrollLeft = scrollLeft - walk;
+      updateProgress();
+    });
   }
 
   /* ════════════════════════════════════════════
@@ -975,8 +1185,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function initProjectsPage() {
-    const filterTabs = document.querySelectorAll('.filter-tab');
+    const filterTabs = document.querySelectorAll('.filter-tab, .archive-filter-btn');
     const rowsContainer = document.getElementById('projectRows');
+    const countEl = document.getElementById('projectCount');
+    if (countEl && D.projects) {
+      countEl.textContent = String(D.projects.length).padStart(2, '0');
+    }
     if (!rowsContainer || !D.projects) return;
 
     let activeFilter = 'all';
@@ -1005,86 +1219,142 @@ document.addEventListener('DOMContentLoaded', () => {
             return tags.includes(filter) || cat.includes(filter);
           });
 
+      if (countEl) {
+        countEl.textContent = String(list.length).padStart(2, '0');
+      }
+
       list.forEach((p) => {
-        const hasImg = p.images && p.images.length > 0;
+        const realImg = p.images && p.images.length > 0;
+        const tempImg = p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0;
+        const hasImg = realImg || tempImg;
+        const activeImages = realImg ? p.images : (tempImg ? p.temporaryPreviewImages.map(src => ({ src, alt: 'Temporary preview' })) : []);
         const isFeatured = p.featured === true || p.tier === 'featured';
 
-        const blockEl = el('article', {
-          class: `project-block${isFeatured ? ' featured' : ''}`,
+        const rowEl = el('article', {
+          class: `project-row${isFeatured ? ' featured' : ''}`,
           role: 'listitem',
           'data-slug': p.slug,
           tabindex: '0',
           'aria-label': `${p.displayName || p.name} — ${p.year}. Click to view full engineering case study.`,
         });
 
-        /* ── 30% AREA 1: META ───────────────── */
-        const metaCol = el('div', { class: 'pblock__meta' });
-        metaCol.innerHTML = `
-          <span class="pblock__num">${p.index}</span>
-          <span class="pblock__year">${p.year}</span>
-          ${isFeatured ? `<span class="pblock__featured-badge"><svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> FEATURED</span>` : ''}
-          ${p.status ? `<p class="pblock__status">Status: ${p.status}</p>` : ''}
+        // Main content wrapper (3 Symmetrical Columns: Left Story 1fr, Center Image 1.2fr, Right Tech 1fr)
+        const mainWrap = el('div', { class: 'prow__main' });
+
+        // 1. Left Column (Story / Overview / Value)
+        const leftCol = el('div', { class: 'prow__content-col prow__left' });
+        const catStr = (pField(p, 'category') || 'PROJECT').toUpperCase();
+        const roleStr = (pField(p, 'role') || 'ROLE').toUpperCase();
+        let metaString = `${catStr} · ${roleStr} · ${p.year || '2025'}`;
+        
+        let valueHtml = '';
+        const whyOrProb = pField(p, 'why') || pField(p, 'problem');
+        if (whyOrProb) {
+          valueHtml = `
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed var(--border);">
+              <span style="font-family: var(--font-mono); font-size: .5625rem; font-weight: 700; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; display: block; margin-bottom: .5rem;">${window.t('value_label')}</span>
+              <p style="font-size: .875rem; line-height: 1.6; color: var(--fg);">${whyOrProb}</p>
+            </div>
+          `;
+        }
+
+        leftCol.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+            <span class="prow__index">${p.index}</span>
+            <span style="font-family: var(--font-mono); font-size: .5625rem; font-weight: 700; color: var(--muted); letter-spacing: .08em; text-transform: uppercase;">${catStr}</span>
+          </div>
+          <h2 class="prow__title">${p.displayName || p.name}</h2>
+          <p class="prow__desc" style="margin-top: .75rem;">${pField(p, 'shortDescription')}</p>
+          ${valueHtml}
+          <div class="prow__meta" style="margin-top: 1.5rem;">${metaString}</div>
         `;
 
-        /* ── 40% AREA 2: CONTENT ────────────── */
-        const contentCol = el('div', { class: 'pblock__content' });
-        contentCol.innerHTML = `
-          <h2 class="pblock__title">${p.displayName || p.name}</h2>
-          <p class="pblock__desc">${p.shortDescription}</p>
-          ${p.techStack ? `<div class="pblock__stack">${p.techStack.map(t => `<span class="pblock__stack-tag">${t}</span>`).join('')}</div>` : ''}
-          <div class="pblock__cta">
-            <span>View case study</span>
+        // 2. Center Column (Image)
+        const centerCol = el('div', { class: 'prow__img-col prow__center' });
+        if (hasImg) {
+          const imgWrap = el('div', { style: 'position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center;' });
+          
+          // Main image
+          imgWrap.appendChild(el('img', { src: activeImages[0].src, alt: activeImages[0].alt || p.name, loading: 'lazy' }));
+          
+          // Overlay to darken main image on hover
+          const overlay = el('div', { class: 'prow__img-overlay' });
+          imgWrap.appendChild(overlay);
+
+          // Mini cards fan
+          if (activeImages.length > 0) {
+            const fanWrap = el('div', { class: 'prow__cards-fan' });
+            const cardImages = activeImages.length >= 3 ? activeImages.slice(0, 3) : [activeImages[0], activeImages[0], activeImages[0]];
+            cardImages.forEach((cImg, i) => {
+              const card = el('div', { class: `prow__mini-card card-${i+1}` });
+              card.appendChild(el('img', { src: cImg.src, alt: 'Mini preview', loading: 'lazy' }));
+              fanWrap.appendChild(card);
+            });
+            imgWrap.appendChild(fanWrap);
+          }
+
+          if (!realImg && tempImg) {
+            const badge = el('div', { class: 'temp-preview-badge' });
+            badge.textContent = window.t('badge_temporary_preview');
+            imgWrap.appendChild(badge);
+          }
+          centerCol.appendChild(imgWrap);
+        } else {
+          centerCol.innerHTML = `
+            <div class="prow__img-ph">
+              <span class="prow__ph-title">${window.t('badge_project_preview')}</span>
+            </div>
+          `;
+        }
+
+        // 3. Right Column (Tech & CTA)
+        const rightCol = el('div', { class: 'prow__right', style: 'display: flex; flex-direction: column; gap: 1.5rem; padding-top: 0.5rem;' });
+        
+        // Tech stack chips (Show ALL compactly)
+        let techHtml = '';
+        if (p.techStack && p.techStack.length) {
+          techHtml = `
+            <div>
+              <span style="font-family: var(--font-mono); font-size: .5625rem; font-weight: 700; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .75rem; display: block;">${window.t('tech_col_label')}</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                ${p.techStack.map(t => `<span style="font-family: var(--font-mono); font-size: .65rem; padding: 3px 8px; border: 1px solid var(--border); border-radius: 4px; color: var(--fg); white-space: nowrap; background: rgba(0,0,0,0.02);">${t}</span>`).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        let techDetailsHtml = '';
+        const techDetailsText = pField(p, 'techDetails');
+        if (techDetailsText) {
+          techDetailsHtml = `
+            <div style="margin-top: -0.5rem;">
+              <span style="font-family: var(--font-mono); font-size: .5625rem; font-weight: 700; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; display: block; margin-bottom: .5rem;">${window.t('architecture_label')}</span>
+              <p style="font-size: .8125rem; line-height: 1.6; color: var(--muted);">${techDetailsText}</p>
+            </div>
+          `;
+        }
+        
+        rightCol.innerHTML = `
+          ${techHtml}
+          ${techDetailsHtml}
+          <div class="prow__cta" style="margin-top: auto;">
+            ${window.t('project_row_cta')}
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </div>
         `;
 
-        /* ── 30% AREA 3: VISUAL & LINKS ─────── */
-        const visualCol = el('div', { class: 'pblock__visual' });
-        const imgWrap = el('div', { class: 'pblock__img-wrap' });
-        if (hasImg) {
-          imgWrap.appendChild(el('img', { src: p.images[0].src, alt: p.images[0].alt || p.name, loading: 'lazy' }));
-        } else {
-          imgWrap.innerHTML = `
-            <div class="pblock__img-fallback">
-              <span class="pblock__img-fallback-title">${p.displayName || p.name}</span>
-              <span class="pblock__img-fallback-sub">Architecture &amp; Spec</span>
-            </div>
-          `;
-        }
-        visualCol.appendChild(imgWrap);
+        mainWrap.appendChild(leftCol);
+        mainWrap.appendChild(centerCol);
+        mainWrap.appendChild(rightCol);
 
-        // Secondary External Links
-        const linksWrap = el('div', { class: 'pblock__links' });
-        if (p.github) {
-          linksWrap.innerHTML += `
-            <a href="${p.github}" target="_blank" rel="noopener noreferrer" class="pblock__link" aria-label="GitHub repository for ${p.name}">
-              GitHub
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-            </a>
-          `;
-        }
-        if (p.liveDemo) {
-          linksWrap.innerHTML += `
-            <a href="${p.liveDemo}" target="_blank" rel="noopener noreferrer" class="pblock__link" aria-label="Live demo for ${p.name}">
-              Live Demo
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-            </a>
-          `;
-        }
-        if (linksWrap.children.length > 0) {
-          visualCol.appendChild(linksWrap);
-        }
+        rowEl.appendChild(mainWrap);
 
-        blockEl.appendChild(metaCol);
-        blockEl.appendChild(contentCol);
-        blockEl.appendChild(visualCol);
-
-        // Click opens the 30/40/30 Project Modal
-        blockEl.addEventListener('click', (e) => {
+        // Click opens modal
+        rowEl.addEventListener('click', (e) => {
           if (e.target.closest('a')) return;
           openModal('project', p.slug);
         });
-        blockEl.addEventListener('keydown', (e) => {
+        rowEl.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             if (e.target.closest('a')) return;
             e.preventDefault();
@@ -1092,13 +1362,25 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
-        rowsContainer.appendChild(blockEl);
+        rowsContainer.appendChild(rowEl);
       });
+
+      if (list.length === 0) {
+        rowsContainer.innerHTML = `
+          <div class="prow__empty">
+            <span class="prow__empty-text">${window.t('empty_category')}</span>
+          </div>
+        `;
+      }
     }
+
+    window.renderProjectRows = renderRows;
+    window.activeProjectFilter = activeFilter;
 
     filterTabs.forEach(tab => {
       tab.addEventListener('click', () => {
         activeFilter = tab.dataset.filter;
+        window.activeProjectFilter = activeFilter;
         filterTabs.forEach(t => {
           t.classList.toggle('active', t === tab);
           t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
@@ -1111,7 +1393,93 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ════════════════════════════════════════════
-     EXPERIENCE PAGE — WAVE MAP
+     PROJECT DETAIL PAGE (project.html)
+  ════════════════════════════════════════════ */
+  if (IS.detail) {
+    initDetailPage();
+  }
+
+  function initDetailPage() {
+    const root = document.getElementById('pdetailRoot');
+    if (!root) return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug') || urlParams.get('id') || 'penny-path';
+    const project = (D.projects || []).find(p => p.slug === slug) || D.projects[0];
+    if (!project) {
+      root.innerHTML = `<p>${window.t('pdetail_not_found')}</p>`;
+      return;
+    }
+    document.title = `${project.displayName || project.name} — Erliandika Syahputra`;
+
+    const realImg = project.images && project.images.length > 0;
+    const tempImg = project.temporaryPreviewImages && project.temporaryPreviewImages.length > 0;
+    const activeImages = realImg ? project.images : (tempImg ? project.temporaryPreviewImages.map(src => ({ src, alt: 'Preview' })) : []);
+
+    const whyOrProb = pField(project, 'why') || pField(project, 'problem');
+    const catStr = (pField(project, 'category') || 'PROJECT').toUpperCase();
+    const shortDesc = pField(project, 'shortDescription');
+    const techDetails = pField(project, 'techDetails');
+
+    root.innerHTML = `
+      <div style="margin-bottom: 2rem;">
+        <a href="projects.html" class="pdetail__back" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); text-transform: uppercase;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>${window.t('pdetail_back')}</span>
+        </a>
+      </div>
+      <div class="project-row" style="cursor: default; border: none; padding: 0;">
+        <div class="prow__main">
+          <div class="prow__left">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+              <span class="prow__index">${project.index}</span>
+              <span style="font-family: var(--font-mono); font-size: .5625rem; font-weight: 700; color: var(--muted); letter-spacing: .08em; text-transform: uppercase;">${catStr}</span>
+            </div>
+            <h1 class="prow__title" style="font-size: 2.25rem;">${project.displayName || project.name}</h1>
+            <p class="prow__desc" style="margin-top: .75rem; font-size: 1rem;">${shortDesc}</p>
+            ${whyOrProb ? `
+              <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed var(--border);">
+                <span style="font-family: var(--font-mono); font-size: .5625rem; font-weight: 700; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; display: block; margin-bottom: .5rem;">${window.t('value_label')}</span>
+                <p style="font-size: .875rem; line-height: 1.6; color: var(--fg);">${whyOrProb}</p>
+              </div>
+            ` : ''}
+            <div class="prow__meta" style="margin-top: 1.5rem;">${catStr} · ${project.year || '2025'}</div>
+          </div>
+          <div class="prow__center">
+            ${activeImages.length ? `
+              <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-md);">
+                <img src="${activeImages[0].src}" alt="${project.name}" style="width: 100%; height: auto; display: block;">
+              </div>
+            ` : ''}
+          </div>
+          <div class="prow__right">
+            ${project.techStack && project.techStack.length ? `
+              <div>
+                <span style="font-family: var(--font-mono); font-size: .5625rem; font-weight: 700; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .75rem; display: block;">${window.t('tech_col_label')}</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                  ${project.techStack.map(t => `<span style="font-family: var(--font-mono); font-size: .65rem; padding: 3px 8px; border: 1px solid var(--border); border-radius: 4px; color: var(--fg); white-space: nowrap; background: rgba(0,0,0,0.02);">${t}</span>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+            ${techDetails ? `
+              <div>
+                <span style="font-family: var(--font-mono); font-size: .5625rem; font-weight: 700; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; display: block; margin-bottom: .5rem;">${window.t('architecture_label')}</span>
+                <p style="font-size: .8125rem; line-height: 1.6; color: var(--muted);">${techDetails}</p>
+              </div>
+            ` : ''}
+            ${(project.liveDemo || project.github) ? `
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
+                ${project.liveDemo ? `<a href="${project.liveDemo}" target="_blank" rel="noopener noreferrer" class="modal-action-btn primary"><span>${window.t('modal_btn_live_demo')}</span></a>` : ''}
+                ${project.github ? `<a href="${project.github}" target="_blank" rel="noopener noreferrer" class="modal-action-btn secondary"><span>${window.t('modal_btn_github')}</span></a>` : ''}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ════════════════════════════════════════════
+     EXPERIENCE PAGE — MAP & CERTS
   ════════════════════════════════════════════ */
   if (IS.exp) {
     buildExpFullMap();
@@ -1139,11 +1507,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const hintBar = el('div', { class: 'exp-map-prompt', 'aria-live': 'polite' });
     hintBar.innerHTML = `
       <span class="exp-map-prompt__dot"></span>
-      <span class="exp-map-prompt__text">Klik salah satu milestone pada peta untuk membaca kisah engineering journey</span>
+      <span class="exp-map-prompt__text">${window.t('map_prompt_text')}</span>
     `;
     wrap.appendChild(hintBar);
 
-    const svgWrap = el('div', { class: 'exp-map-svg-container', style: 'position: relative;' });
+    const svgWrap = el('div', { class: 'exp-map-svg-container' });
     const svg = mkSVG('svg');
     svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
     svg.setAttribute('width', '100%');
@@ -1181,7 +1549,7 @@ document.addEventListener('DOMContentLoaded', () => {
         g.setAttribute('data-index', nd.index);
         g.setAttribute('tabindex', '0');
         g.setAttribute('role', 'button');
-        g.setAttribute('aria-label', `Pilih milestone ${nd.item.year}: ${nd.item.role} di ${nd.item.org}`);
+        g.setAttribute('aria-label', `Milestone ${nd.item.year}: ${nd.item.role} at ${nd.item.org}`);
 
         const isAbove = nd.side === 'above';
         const anchor  = nd.x > VW * 0.75 ? 'end' : (nd.x < VW * 0.35 ? 'start' : 'middle');
@@ -1192,14 +1560,7 @@ document.addEventListener('DOMContentLoaded', () => {
         g.appendChild(mkSVGText(nd.item.org,  xPos, isAbove ? yBase - 14 : yBase + 14, 'map-label-org',  anchor));
         g.appendChild(mkSVGText(nd.item.role, xPos, isAbove ? yBase : yBase + 28, 'map-label-role', anchor));
 
-        // Interactive Sneak Peek on Hover & Focus
-        g.addEventListener('mouseenter', () => showMapSneakPeek(g, svgWrap, nd.item));
-        g.addEventListener('mouseleave', hideMapSneakPeek);
-        g.addEventListener('focus', () => showMapSneakPeek(g, svgWrap, nd.item));
-        g.addEventListener('blur', hideMapSneakPeek);
-
         const selectNode = () => {
-          hideMapSneakPeek();
           openModal('experience', nd.index);
         };
 
@@ -1248,7 +1609,7 @@ document.addEventListener('DOMContentLoaded', () => {
         class: 'cert-card',
         role: 'listitem',
         tabindex: '0',
-        'aria-label': `${c.title} by ${c.issuer}`,
+        'aria-label': `${c.name || c.title} by ${c.issuer}`,
       });
 
       card.innerHTML = `
@@ -1256,12 +1617,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="cert-card__issuer">${c.issuer}</span>
           <span class="cert-card__year">${c.year}</span>
         </div>
-        <h3 class="cert-card__title">${c.title}</h3>
-        ${c.credentialId ? `<p class="cert-card__id">Credential ID: <code>${c.credentialId}</code></p>` : ''}
+        <h3 class="cert-card__name">${c.name || c.title}</h3>
+        ${c.category ? `<div style="font-family:var(--font-mono); font-size:0.625rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:0.25rem;">${pField(c, 'category')}</div>` : ''}
+        ${c.credential ? `<p class="cert-card__id" style="font-family:var(--font-mono); font-size:0.65rem; color:var(--muted); margin-top:0.5rem;">Credential ID: <code>${c.credential}</code></p>` : ''}
         ${c.link ? `
-          <a href="${c.link}" target="_blank" rel="noopener noreferrer" class="cert-card__link">
-            Verify Credential
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          <a href="${c.link}" target="_blank" rel="noopener noreferrer" class="cert-card__link" style="display:inline-flex; align-items:center; gap:0.35rem; font-family:var(--font-mono); font-size:0.65rem; color:var(--fg); margin-top:0.75rem; text-decoration:underline;">
+            ${window.t('cert_verify')}
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7H7M17 7v10"/></svg>
           </a>` : ''}
       `;
 
