@@ -629,17 +629,14 @@ document.addEventListener('DOMContentLoaded', () => {
       waypointAnchor.setAttribute('class', 'map-waypoint-anchor');
       waypointAnchor.setAttribute('aria-label', 'Explore the full journey on Experience page');
 
-      const wpX = 764, wpY = 175;
+      const wpX = 790, wpY = 179;
       waypointAnchor.innerHTML = `
         <g class="map-waypoint-group" transform="translate(${wpX}, ${wpY})">
-          <!-- Radar pulse — last-known-checkpoint feel -->
+          <!-- Radar pulse -->
           <circle cx="16" cy="16" r="14" class="waypoint-radar" />
-
-          <!-- Clean minimal X crosshair — no rock mound -->
+          <!-- Minimal X — already half-swallowed by fog -->
           <path d="M 7 7 L 25 25 M 25 7 L 7 25" stroke="var(--fg)" stroke-width="2.4" stroke-linecap="round" class="waypoint-x" />
-          <!-- Outer square frame (cartographic benchmark) -->
-          <rect x="1" y="1" width="30" height="30" fill="none" stroke="var(--fg)" stroke-width="1" opacity="0.35" />
-
+          <rect x="1" y="1" width="30" height="30" fill="none" stroke="var(--fg)" stroke-width="1" opacity="0.30" />
           <!-- Floating Pill Tooltip -->
           <g class="waypoint-pill-tooltip" transform="translate(16, 0)">
             <rect x="-78" y="-22" width="156" height="26" rx="13" class="wp-pill-bg" />
@@ -649,14 +646,30 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       svg.appendChild(waypointAnchor);
 
+      // ── Clickable Fog Zone ──
+      // The ENTIRE fog area is one large <a> linking to experience.html.
+      // It covers from the leading wisps (~x=820) to right edge of viewBox.
+      // Mystery glyph '?' and TERRA INCOGNITA live inside this anchor too.
+      const fogAnchor = mkSVG('a');
+      fogAnchor.setAttribute('href', 'experience.html');
+      fogAnchor.setAttribute('class', 'map-mystery-anchor');
+      fogAnchor.setAttribute('aria-label', 'Explore the full journey — experience.html');
+      fogAnchor.style.cursor = 'pointer';
+
+      // Invisible hit-rect spanning the fog zone — makes all clouds clickable
+      const fogHitRect = mkSVG('rect');
+      fogHitRect.setAttribute('x', '820');
+      fogHitRect.setAttribute('y', '0');
+      fogHitRect.setAttribute('width', '340');
+      fogHitRect.setAttribute('height', '340');
+      fogHitRect.setAttribute('fill', 'transparent');
+      fogAnchor.appendChild(fogHitRect);
+
       // ── Soft Organic Light-Gray Clouds / Mist ──
-      // Clouds start at x≈820 — X marker at x=780 sits just at the fog's leading edge.
-      // Multiple layers: ambient mist (very blurred) + defined cloud puffs (gentle blur)
-      // + fine organic contour lines — all using CSS variables for light/dark adaptation.
       const cloudsG = mkSVG('g');
       cloudsG.setAttribute('class', 'map-soft-clouds');
       cloudsG.innerHTML = `
-        <!-- Layer 1: Wide ambient base mist (most blurred, lowest opacity) -->
+        <!-- Layer 1: Wide ambient base mist (very blurred, lowest opacity) -->
         <g filter="url(#mistBlur)" opacity="0.52">
           <ellipse cx="900"  cy="170" rx="80"  ry="60"  fill="var(--fog-color-3)" />
           <ellipse cx="960"  cy="130" rx="100" ry="75"  fill="var(--fog-color-2)" />
@@ -666,14 +679,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <ellipse cx="1090" cy="170" rx="105" ry="85"  fill="var(--fog-color)"  />
         </g>
 
-        <!-- Layer 2: Defined cloud puff shapes (gentle blur) -->
+        <!-- Layer 2: Defined cloud puffs (gentle blur) — leading wisps overlap X marker -->
         <g filter="url(#cloudBlur)" opacity="0.7">
-          <!-- Leading wisps that overlap the X marker slightly -->
-          <circle cx="842" cy="175" r="28"  fill="var(--fog-color-3)" />
-          <circle cx="865" cy="145" r="35"  fill="var(--fog-color-3)" />
-          <circle cx="870" cy="205" r="30"  fill="var(--fog-color-3)" />
+          <circle cx="845" cy="180" r="30"  fill="var(--fog-color-3)" />
+          <circle cx="862" cy="150" r="36"  fill="var(--fog-color-3)" />
+          <circle cx="870" cy="210" r="32"  fill="var(--fog-color-3)" />
 
-          <!-- Main cloud body -->
           <circle cx="910" cy="100" r="52"  fill="var(--fog-color-2)" />
           <circle cx="920" cy="170" r="65"  fill="var(--fog-color)"  />
           <circle cx="910" cy="245" r="55"  fill="var(--fog-color-2)" />
@@ -687,26 +698,21 @@ document.addEventListener('DOMContentLoaded', () => {
           <circle cx="1105" cy="155" r="80"  fill="var(--fog-color)"  />
         </g>
 
-        <!-- Layer 3: Organic cloud edge silhouettes (hairline strokes, no fill) -->
-        <path d="M 840 185 C 858 160, 895 148, 925 155 C 948 138, 980 132, 1010 140"
+        <!-- Layer 3: Organic cloud edge hairlines -->
+        <path d="M 835 185 C 858 160, 895 148, 925 155 C 948 138, 980 132, 1010 140"
               stroke="var(--fog-color-2)" stroke-width="1.4" fill="none" opacity="0.6" />
-        <path d="M 850 210 C 870 230, 908 235, 935 225 C 960 240, 998 242, 1025 232"
+        <path d="M 848 212 C 870 230, 908 235, 935 225 C 960 240, 998 242, 1025 232"
               stroke="var(--fog-color-2)" stroke-width="1.2" fill="none" opacity="0.5" />
         <path d="M 890 108 C 912  88, 952  84, 978  96 C 1000  74, 1040  78, 1068  92"
               stroke="var(--fog-color)"   stroke-width="1"   fill="none" opacity="0.45" />
         <path d="M 920 265 C 945 250, 978 252, 1005 265 C 1028 255, 1060 260, 1085 270"
               stroke="var(--fog-color)"   stroke-width="1"   fill="none" opacity="0.4" />
       `;
-      svg.appendChild(cloudsG);
+      fogAnchor.appendChild(cloudsG);
 
-      // ── Mystery Glyph '?' & 'TERRA INCOGNITA' — deep inside fog ──
-      const mysteryAnchor = mkSVG('a');
-      mysteryAnchor.setAttribute('href', 'experience.html');
-      mysteryAnchor.setAttribute('class', 'map-mystery-anchor');
-      mysteryAnchor.setAttribute('aria-label', 'Explore the unknown journey on Experience page');
-
+      // ── Mystery Glyph '?' & 'TERRA INCOGNITA' ── inside clickable fogAnchor
       const mysteryG = mkSVG('g');
-      mysteryG.setAttribute('transform', 'translate(1025, 155)');
+      mysteryG.setAttribute('transform', 'translate(1025, 152)');
 
       const qText = mkSVG('text');
       qText.setAttribute('x', '0');
@@ -724,8 +730,8 @@ document.addEventListener('DOMContentLoaded', () => {
       subText.textContent = 'TERRA INCOGNITA';
       mysteryG.appendChild(subText);
 
-      mysteryAnchor.appendChild(mysteryG);
-      svg.appendChild(mysteryAnchor);
+      fogAnchor.appendChild(mysteryG);
+      svg.appendChild(fogAnchor);
 
       wrap.innerHTML = '';
       wrap.appendChild(svg);
