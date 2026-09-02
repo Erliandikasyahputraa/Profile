@@ -501,10 +501,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <mask id="trailMistMask">
           <linearGradient id="trailMistGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%"   stop-color="#fff" stop-opacity="1" />
-            <stop offset="68%"  stop-color="#fff" stop-opacity="1" />
-            <stop offset="78%"  stop-color="#fff" stop-opacity="0.8" />
-            <stop offset="88%"  stop-color="#fff" stop-opacity="0.35" />
-            <stop offset="98%"  stop-color="#fff" stop-opacity="0.08" />
+            <stop offset="63%"  stop-color="#fff" stop-opacity="1" />
+            <stop offset="72%"  stop-color="#fff" stop-opacity="0.75" />
+            <stop offset="82%"  stop-color="#fff" stop-opacity="0.3" />
+            <stop offset="94%"  stop-color="#fff" stop-opacity="0.06" />
             <stop offset="100%" stop-color="#fff" stop-opacity="0" />
           </linearGradient>
           <rect x="0" y="0" width="100%" height="100%" fill="url(#trailMistGrad)" />
@@ -512,75 +512,18 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       svg.appendChild(defs);
 
-      // ── Abstract Cartographic Survey Markers (no figurative icons) ──
-      // Each milestone gets a unique minimal geometric glyph:
-      // M1 → elevation contour rings  M2 → compass crosshair
-      // M3 → signal triangulation     M4 → grid intersection mark
-      const surveyG = mkSVG('g');
-      surveyG.setAttribute('class', 'map-sketches');
-      surveyG.innerHTML = `
-        <!-- M1: Elevation contour rings (topographic circle ripples) at Origin ~x:235,y:155 -->
-        <g class="map-survey" transform="translate(105, 185)" opacity="0.55">
-          <ellipse cx="0" cy="0" rx="36" ry="16" fill="none" stroke="var(--fg)" stroke-width="0.85" />
-          <ellipse cx="0" cy="0" rx="26" ry="10" fill="none" stroke="var(--fg)" stroke-width="0.8" />
-          <ellipse cx="0" cy="0" rx="15" ry="6" fill="none" stroke="var(--fg)" stroke-width="0.75" />
-          <line x1="0" y1="-18" x2="0" y2="-28" stroke="var(--fg)" stroke-width="0.8" stroke-dasharray="2 2" />
-          <circle cx="0" cy="0" r="2" fill="var(--fg)" />
-        </g>
-
-        <!-- M2: Compass rose / crosshair (precision instrument) at HW&Ops ~x:360,y:225 -->
-        <g class="map-survey" transform="translate(310, 262)" opacity="0.5">
-          <circle cx="0" cy="0" r="18" fill="none" stroke="var(--fg)" stroke-width="0.85" stroke-dasharray="4 3" />
-          <line x1="-22" y1="0" x2="22" y2="0" stroke="var(--fg)" stroke-width="0.9" />
-          <line x1="0" y1="-22" x2="0" y2="22" stroke="var(--fg)" stroke-width="0.9" />
-          <line x1="-14" y1="-14" x2="14" y2="14" stroke="var(--fg)" stroke-width="0.55" opacity="0.5" />
-          <line x1="14" y1="-14" x2="-14" y2="14" stroke="var(--fg)" stroke-width="0.55" opacity="0.5" />
-          <circle cx="0" cy="-22" r="2" fill="var(--fg)" />
-          <circle cx="0" cy="0" r="3.5" fill="none" stroke="var(--fg)" stroke-width="1" />
-          <circle cx="0" cy="0" r="1.5" fill="var(--fg)" />
-        </g>
-
-        <!-- M3: Signal triangulation / trilateration (3 nodes + dashed arcs) at Scale ~x:505,y:145 -->
-        <g class="map-survey" transform="translate(460, 56)" opacity="0.5">
-          <circle cx="-18" cy="18" r="3" fill="none" stroke="var(--fg)" stroke-width="0.85" />
-          <circle cx="18"  cy="18" r="3" fill="none" stroke="var(--fg)" stroke-width="0.85" />
-          <circle cx="0"   cy="-6" r="3" fill="none" stroke="var(--fg)" stroke-width="0.85" />
-          <line x1="-18" y1="18" x2="18" y2="18" stroke="var(--fg)" stroke-width="0.75" stroke-dasharray="3 2" />
-          <line x1="-18" y1="18" x2="0"  y2="-6" stroke="var(--fg)" stroke-width="0.75" stroke-dasharray="3 2" />
-          <line x1="18"  y1="18" x2="0"  y2="-6" stroke="var(--fg)" stroke-width="0.75" stroke-dasharray="3 2" />
-          <path d="M -18 18 A 24 24 0 0 1 18 18" fill="none" stroke="var(--fg)" stroke-width="0.6" opacity="0.45" />
-          <path d="M 0 -6 A 18 18 0 0 1 18 18" fill="none" stroke="var(--fg)" stroke-width="0.6" opacity="0.45" />
-        </g>
-
-        <!-- M4: Grid intersection / survey benchmark at Team ~x:660,y:235 -->
-        <g class="map-survey" transform="translate(600, 270)" opacity="0.5">
-          <rect x="-20" y="-20" width="40" height="40" fill="none" stroke="var(--fg)" stroke-width="0.75" stroke-dasharray="4 3" />
-          <line x1="-26" y1="0" x2="26" y2="0" stroke="var(--fg)" stroke-width="0.85" />
-          <line x1="0" y1="-26" x2="0" y2="26" stroke="var(--fg)" stroke-width="0.85" />
-          <rect x="-4" y="-4" width="8" height="8" fill="none" stroke="var(--fg)" stroke-width="1.1" />
-          <rect x="-1.5" y="-1.5" width="3" height="3" fill="var(--fg)" />
-          <line x1="-20" y1="-20" x2="-14" y2="-14" stroke="var(--fg)" stroke-width="0.55" opacity="0.45" />
-          <line x1="20" y1="-20" x2="14" y2="-14" stroke="var(--fg)" stroke-width="0.55" opacity="0.45" />
-          <line x1="-20" y1="20" x2="-14" y2="14" stroke="var(--fg)" stroke-width="0.55" opacity="0.45" />
-          <line x1="20" y1="20" x2="14" y2="14" stroke="var(--fg)" stroke-width="0.55" opacity="0.45" />
-        </g>
-      `;
-      svg.appendChild(surveyG);
-
-
-      // ── The Continuous Undulating Route Path ──
-      // Starting from origin, arching through all 4 milestones, reaching the waypoint,
-      // and continuing smoothly into the soft clouds!
+      // ── Route Path: origin → 4 milestones → X marker → into fog ──
+      // X marker is at x=800, fog starts at x=820 so marker sits right at fog edge.
       const pathD = `
         M 65 220
         C 115 220, 160 155, 235 155
         C 290 155, 315 225, 360 225
         C 410 225, 450 145, 505 145
         C 560 145, 610 235, 660 235
-        C 705 235, 735 180, 775 180
-        C 815 180, 845 205, 880 195
-        C 920 185, 960 210, 1000 195
-        C 1040 180, 1075 185, 1110 180
+        C 705 235, 740 195, 780 195
+        C 820 195, 860 210, 900 200
+        C 940 190, 980 205, 1020 195
+        C 1060 185, 1090 190, 1120 185
       `;
 
       const routePath = mkSVG('path');
@@ -601,30 +544,26 @@ document.addEventListener('DOMContentLoaded', () => {
       startG.appendChild(startCircle);
       svg.appendChild(startG);
 
-      // Milestone Configurations matching user image
+      // Milestone Configurations
       const DESKTOP_NODES = [
         {
           x: 235, y: 155,
           textX: 110, textY: 95,
-          isAbove: true,
           item: milestones[0],
         },
         {
           x: 360, y: 225,
-          textX: 360, textY: 260,
-          isAbove: false,
+          textX: 360, textY: 263,
           item: milestones[1],
         },
         {
           x: 505, y: 145,
           textX: 505, textY: 50,
-          isAbove: true,
           item: milestones[2],
         },
         {
           x: 660, y: 235,
           textX: 660, textY: 270,
-          isAbove: false,
           item: milestones[3],
         },
       ];
@@ -653,14 +592,13 @@ document.addEventListener('DOMContentLoaded', () => {
         g.appendChild(core);
 
         // Typography labels
-        const anchor = nd.isAbove && nd.textX !== nd.x ? 'middle' : 'middle';
         const tx = nd.textX;
         const ty = nd.textY;
 
-        g.appendChild(mkSVGText(nd.item.badge, tx, ty, 'map-label-tag', anchor));
-        g.appendChild(mkSVGText(nd.item.year, tx, ty + 16, 'map-label-year', anchor));
-        g.appendChild(mkSVGText(nd.item.title, tx, ty + 34, 'map-label-title', anchor));
-        g.appendChild(mkSVGText(`"${nd.item.reflection}"`, tx, ty + 50, 'map-label-reflection', anchor));
+        g.appendChild(mkSVGText(nd.item.badge, tx, ty, 'map-label-tag', 'middle'));
+        g.appendChild(mkSVGText(nd.item.year, tx, ty + 16, 'map-label-year', 'middle'));
+        g.appendChild(mkSVGText(nd.item.title, tx, ty + 34, 'map-label-title', 'middle'));
+        g.appendChild(mkSVGText(`"${nd.item.reflection}"`, tx, ty + 50, 'map-label-reflection', 'middle'));
 
         // Sneak Peek Hover & Focus Events
         g.addEventListener('mouseenter', () => showMapSneakPeek(g, stage, nd.item));
@@ -684,84 +622,91 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.appendChild(g);
       });
 
-      // ── Waypoint / Treasure Marker (Rock with Carved X & Pill Tooltip) ──
+      // ── Waypoint / X Marker — sits RIGHT AT the fog edge ──
+      // x=780 puts it at the boundary between clear path and fog start.
       const waypointAnchor = mkSVG('a');
       waypointAnchor.setAttribute('href', 'experience.html');
       waypointAnchor.setAttribute('class', 'map-waypoint-anchor');
       waypointAnchor.setAttribute('aria-label', 'Explore the full journey on Experience page');
 
-      const wpX = 745, wpY = 145;
+      const wpX = 764, wpY = 175;
       waypointAnchor.innerHTML = `
         <g class="map-waypoint-group" transform="translate(${wpX}, ${wpY})">
-          <!-- Radar pulse -->
-          <circle cx="28" cy="22" r="14" class="waypoint-radar" />
+          <!-- Radar pulse — last-known-checkpoint feel -->
+          <circle cx="16" cy="16" r="14" class="waypoint-radar" />
 
-          <!-- Little hand-drawn rock mound -->
-          <path d="M 6 48 Q 18 34 28 33 Q 40 34 50 48 Z" stroke="var(--fg)" stroke-width="1.3" fill="var(--bg)" />
-          <path d="M 20 40 L 24 44 M 34 38 L 36 45" stroke="var(--fg)" stroke-width="0.75" opacity="0.45" />
-          <path d="M 0 48 L 56 48" stroke="var(--fg)" stroke-width="0.8" stroke-dasharray="3 2" opacity="0.4" />
-
-          <!-- Carved X mark -->
-          <path d="M 28 33 L 28 22" stroke="var(--fg)" stroke-width="1.1" stroke-dasharray="2 2" />
-          <path d="M 22 16 L 34 28 M 34 16 L 22 28" stroke="var(--fg)" stroke-width="2.2" stroke-linecap="round" class="waypoint-x" />
-          <path d="M 18 11 L 15 8 M 38 11 L 41 8 M 28 9 L 28 5" stroke="var(--fg)" stroke-width="0.85" opacity="0.5" />
+          <!-- Clean minimal X crosshair — no rock mound -->
+          <path d="M 7 7 L 25 25 M 25 7 L 7 25" stroke="var(--fg)" stroke-width="2.4" stroke-linecap="round" class="waypoint-x" />
+          <!-- Outer square frame (cartographic benchmark) -->
+          <rect x="1" y="1" width="30" height="30" fill="none" stroke="var(--fg)" stroke-width="1" opacity="0.35" />
 
           <!-- Floating Pill Tooltip -->
-          <g class="waypoint-pill-tooltip" transform="translate(28, -6)">
-            <rect x="-85" y="-14" width="170" height="27" rx="13.5" class="wp-pill-bg" />
-            <text x="0" y="4" text-anchor="middle" class="wp-pill-text">Explore the full journey →</text>
+          <g class="waypoint-pill-tooltip" transform="translate(16, 0)">
+            <rect x="-78" y="-22" width="156" height="26" rx="13" class="wp-pill-bg" />
+            <text x="0" y="-5" text-anchor="middle" class="wp-pill-text">Explore the full journey →</text>
           </g>
         </g>
       `;
       svg.appendChild(waypointAnchor);
 
-      // ── Soft Organic Light-Gray Clouds / Mist (68% - 100%) ──
-      // Pure organic blobs with radial blur and neutral light gray color.
-      // Absolutely no hard rectangular borders!
+      // ── Soft Organic Light-Gray Clouds / Mist ──
+      // Clouds start at x≈820 — X marker at x=780 sits just at the fog's leading edge.
+      // Multiple layers: ambient mist (very blurred) + defined cloud puffs (gentle blur)
+      // + fine organic contour lines — all using CSS variables for light/dark adaptation.
       const cloudsG = mkSVG('g');
       cloudsG.setAttribute('class', 'map-soft-clouds');
       cloudsG.innerHTML = `
-        <!-- Deep Ambient Mist (Very blurred) -->
-        <g filter="url(#mistBlur)" opacity="0.55">
-          <ellipse cx="940" cy="170" rx="110" ry="85" fill="var(--fog-color)" />
-          <ellipse cx="1020" cy="110" rx="120" ry="80" fill="var(--fog-color)" />
-          <ellipse cx="1010" cy="230" rx="110" ry="85" fill="var(--fog-color)" />
-          <ellipse cx="1080" cy="170" rx="100" ry="80" fill="var(--fog-color)" />
+        <!-- Layer 1: Wide ambient base mist (most blurred, lowest opacity) -->
+        <g filter="url(#mistBlur)" opacity="0.52">
+          <ellipse cx="900"  cy="170" rx="80"  ry="60"  fill="var(--fog-color-3)" />
+          <ellipse cx="960"  cy="130" rx="100" ry="75"  fill="var(--fog-color-2)" />
+          <ellipse cx="955"  cy="220" rx="95"  ry="72"  fill="var(--fog-color-2)" />
+          <ellipse cx="1030" cy="100" rx="115" ry="82"  fill="var(--fog-color)"  />
+          <ellipse cx="1035" cy="245" rx="110" ry="78"  fill="var(--fog-color)"  />
+          <ellipse cx="1090" cy="170" rx="105" ry="85"  fill="var(--fog-color)"  />
         </g>
 
-        <!-- Billowing Cloud Puffs (Gentle blur) -->
-        <g filter="url(#cloudBlur)" opacity="0.65">
-          <circle cx="890" cy="190" r="42" fill="var(--fog-color)" />
-          <circle cx="940" cy="95" r="55" fill="var(--fog-color)" />
-          <circle cx="955" cy="175" r="68" fill="var(--fog-color)" />
-          <circle cx="940" cy="255" r="58" fill="var(--fog-color)" />
-          <circle cx="1020" cy="80" r="65" fill="var(--fog-color)" />
-          <circle cx="1030" cy="165" r="80" fill="var(--fog-color)" />
-          <circle cx="1015" cy="255" r="70" fill="var(--fog-color)" />
-          <circle cx="1090" cy="120" r="75" fill="var(--fog-color)" />
-          <circle cx="1090" cy="220" r="75" fill="var(--fog-color)" />
+        <!-- Layer 2: Defined cloud puff shapes (gentle blur) -->
+        <g filter="url(#cloudBlur)" opacity="0.7">
+          <!-- Leading wisps that overlap the X marker slightly -->
+          <circle cx="842" cy="175" r="28"  fill="var(--fog-color-3)" />
+          <circle cx="865" cy="145" r="35"  fill="var(--fog-color-3)" />
+          <circle cx="870" cy="205" r="30"  fill="var(--fog-color-3)" />
+
+          <!-- Main cloud body -->
+          <circle cx="910" cy="100" r="52"  fill="var(--fog-color-2)" />
+          <circle cx="920" cy="170" r="65"  fill="var(--fog-color)"  />
+          <circle cx="910" cy="245" r="55"  fill="var(--fog-color-2)" />
+
+          <circle cx="980" cy="80"  r="60"  fill="var(--fog-color)"  />
+          <circle cx="990" cy="160" r="78"  fill="var(--fog-color)"  />
+          <circle cx="975" cy="255" r="68"  fill="var(--fog-color)"  />
+
+          <circle cx="1055" cy="110" r="70"  fill="var(--fog-color)"  />
+          <circle cx="1060" cy="200" r="72"  fill="var(--fog-color)"  />
+          <circle cx="1105" cy="155" r="80"  fill="var(--fog-color)"  />
         </g>
 
-        <!-- Delicate Organic Cloud Contours -->
-        <path d="M 870 195 C 880 170, 905 155, 930 160 C 945 145, 975 140, 995 150 C 1015 130, 1045 130, 1070 145" stroke="var(--fog-color)" stroke-width="1.2" fill="none" opacity="0.5" />
-        <path d="M 900 115 C 920 95, 950 90, 975 100 C 995 80, 1030 80, 1055 95" stroke="var(--fog-color)" stroke-width="1" fill="none" opacity="0.45" />
-        <path d="M 895 235 C 915 215, 945 215, 965 230 C 985 220, 1020 225, 1040 245" stroke="var(--fog-color)" stroke-width="1" fill="none" opacity="0.4" />
-
-        <!-- Subtle Flying Birds in the Sky -->
-        <path d="M 925 65 Q 930 60 935 65 Q 940 60 945 65" stroke="var(--fg)" stroke-width="0.9" fill="none" opacity="0.35" />
-        <path d="M 948 78 Q 951 74 955 78 Q 959 74 963 78" stroke="var(--fg)" stroke-width="0.8" fill="none" opacity="0.25" />
+        <!-- Layer 3: Organic cloud edge silhouettes (hairline strokes, no fill) -->
+        <path d="M 840 185 C 858 160, 895 148, 925 155 C 948 138, 980 132, 1010 140"
+              stroke="var(--fog-color-2)" stroke-width="1.4" fill="none" opacity="0.6" />
+        <path d="M 850 210 C 870 230, 908 235, 935 225 C 960 240, 998 242, 1025 232"
+              stroke="var(--fog-color-2)" stroke-width="1.2" fill="none" opacity="0.5" />
+        <path d="M 890 108 C 912  88, 952  84, 978  96 C 1000  74, 1040  78, 1068  92"
+              stroke="var(--fog-color)"   stroke-width="1"   fill="none" opacity="0.45" />
+        <path d="M 920 265 C 945 250, 978 252, 1005 265 C 1028 255, 1060 260, 1085 270"
+              stroke="var(--fog-color)"   stroke-width="1"   fill="none" opacity="0.4" />
       `;
       svg.appendChild(cloudsG);
 
-      // ── Mystery Glyph '?' & 'TERRA INCOGNITA' ──
-      // Floating in the heart of the soft clouds, also clickable to experience.html
+      // ── Mystery Glyph '?' & 'TERRA INCOGNITA' — deep inside fog ──
       const mysteryAnchor = mkSVG('a');
       mysteryAnchor.setAttribute('href', 'experience.html');
       mysteryAnchor.setAttribute('class', 'map-mystery-anchor');
       mysteryAnchor.setAttribute('aria-label', 'Explore the unknown journey on Experience page');
 
       const mysteryG = mkSVG('g');
-      mysteryG.setAttribute('transform', 'translate(1005, 155)');
+      mysteryG.setAttribute('transform', 'translate(1025, 155)');
 
       const qText = mkSVG('text');
       qText.setAttribute('x', '0');
@@ -773,7 +718,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const subText = mkSVG('text');
       subText.setAttribute('x', '0');
-      subText.setAttribute('y', '20');
+      subText.setAttribute('y', '22');
       subText.setAttribute('text-anchor', 'middle');
       subText.setAttribute('class', 'map-mystery-sub');
       subText.textContent = 'TERRA INCOGNITA';
@@ -784,6 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       wrap.innerHTML = '';
       wrap.appendChild(svg);
+
     } else {
       // ══════════════════════════════════════════════
       // MOBILE: ADAPTIVE VERTICAL TREASURE TRAIL
