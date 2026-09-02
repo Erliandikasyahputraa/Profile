@@ -20,11 +20,10 @@
     document.documentElement.setAttribute('data-theme', t);
   }
 
-  /* ── Read initial theme before paint ──────── */
+  /* ── Read initial theme before paint (Default: light) ── */
   const stored  = localStorage.getItem(KEY);
-  const initial = stored === 'dark' || stored === 'light'
-    ? stored
-    : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  // Default is strictly 'light' unless user has explicitly saved a preference
+  const initial = (stored === 'dark' || stored === 'light') ? stored : 'light';
   applyTheme(initial);
 
   /* ── Runtime ─────────────────────────────── */
@@ -48,11 +47,11 @@
     const ox   = rect.left + rect.width  / 2;
     const oy   = rect.top  + rect.height / 2;
 
-    /* Diagonal from origin = max radius needed */
+    /* Diagonal from origin = max radius needed + safety padding */
     const R = Math.ceil(Math.hypot(
       Math.max(ox, window.innerWidth  - ox),
       Math.max(oy, window.innerHeight - oy)
-    )) + 50;
+    )) * 1.18 + 80;
 
     const inkFill = next === 'dark' ? '#000000' : '#ffffff';
 
@@ -77,7 +76,7 @@
     /* Step 1: fractal noise as displacement source */
     const turb = document.createElementNS(NS, 'feTurbulence');
     turb.setAttribute('type', 'fractalNoise');
-    turb.setAttribute('baseFrequency', '0.019 0.021');
+    turb.setAttribute('baseFrequency', '0.016 0.018');
     turb.setAttribute('numOctaves', '2');
     turb.setAttribute('seed', '42');
     turb.setAttribute('result', 'noise');
@@ -86,7 +85,7 @@
     const disp = document.createElementNS(NS, 'feDisplacementMap');
     disp.setAttribute('in', 'SourceGraphic');
     disp.setAttribute('in2', 'noise');
-    disp.setAttribute('scale', '32');
+    disp.setAttribute('scale', '30');
     disp.setAttribute('xChannelSelector', 'R');
     disp.setAttribute('yChannelSelector', 'G');
     disp.setAttribute('result', 'displaced');
@@ -94,7 +93,7 @@
     /* Step 3: blur heavily to create goo merging zones between blobs */
     const blur = document.createElementNS(NS, 'feGaussianBlur');
     blur.setAttribute('in', 'displaced');
-    blur.setAttribute('stdDeviation', '16');
+    blur.setAttribute('stdDeviation', '18');
     blur.setAttribute('result', 'blur');
 
     /* Step 4: threshold alpha back to solid — creates merged organic mass */
@@ -121,13 +120,13 @@
        mR    = final radius (fraction of R)
        sp    = speed multiplier (>1 = faster, creates "leading" tendrils)   */
     const TENDRILS = [
-      { dx:   0,  dy:   0, mR: 1.00, sp: 1.00 }, // main blob (covers all)
-      { dx: 130,  dy: -90, mR: 0.60, sp: 1.50 }, // right-up tendril
-      { dx:-110,  dy:  80, mR: 0.50, sp: 1.30 }, // left-down
-      { dx: 110,  dy: 100, mR: 0.48, sp: 1.55 }, // right-down
-      { dx:-100,  dy: -70, mR: 0.44, sp: 1.25 }, // left-up
-      { dx:  50,  dy:-140, mR: 0.42, sp: 1.70 }, // straight up
-      { dx: -60,  dy: 130, mR: 0.38, sp: 1.40 }, // down-left
+      { dx:   0,  dy:   0, mR: 1.04, sp: 1.00 }, // main expanding liquid mass
+      { dx: 140,  dy:-100, mR: 0.65, sp: 1.35 }, // organic leading tendril top-right
+      { dx:-120,  dy:  90, mR: 0.58, sp: 1.25 }, // bottom-left
+      { dx: 120,  dy: 110, mR: 0.52, sp: 1.40 }, // bottom-right
+      { dx:-110,  dy: -80, mR: 0.48, sp: 1.20 }, // top-left
+      { dx:  60,  dy:-150, mR: 0.45, sp: 1.50 }, // upper reach
+      { dx: -70,  dy: 140, mR: 0.42, sp: 1.30 }, // lower reach
     ];
 
     const circles = TENDRILS.map(t => {
@@ -140,10 +139,9 @@
       return { el: c, ...t };
     });
 
-    /* ── Easing ────────────────────────────── */
+    /* ── Silky smooth cubic ease-out ─────────────────── */
     function easeOut(t) {
-      // Exponential ease-out: fast start, slows at edges
-      return 1 - Math.pow(1 - t, 2.5);
+      return 1 - Math.pow(1 - t, 2.8);
     }
 
     /* ── rAF animation loop ─────────────────── */
@@ -163,8 +161,8 @@
         c.el.setAttribute('r',  c.mR * R * et);
       });
 
-      /* Switch theme when main blob is ~45% through viewport */
-      if (t >= 0.45 && !switched) {
+      /* Switch theme when screen is fully covered by liquid ink mass */
+      if (t >= 0.64 && !switched) {
         switched = true;
         current  = next;
         applyTheme(current);
@@ -174,10 +172,13 @@
       if (t < 1) {
         requestAnimationFrame(frame);
       } else {
-        /* Fade overlay out */
-        svg.style.transition = 'opacity 140ms linear';
+        /* Smooth, velvety fade overlay out */
+        svg.style.transition = 'opacity 260ms cubic-bezier(0.16, 1, 0.3, 1)';
         svg.style.opacity    = '0';
-        setTimeout(() => { svg.remove(); animating = false; }, 150);
+        setTimeout(() => {
+          svg.remove();
+          animating = false;
+        }, 280);
       }
     }
 

@@ -190,9 +190,9 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 
 .hero__photo {
   position:relative;
-  width:clamp(80px,7vw,100px);
+  width:clamp(116px, 10vw, 148px);
   aspect-ratio:1;
-  margin:0 auto 1.75rem;
+  margin:0 auto 2rem;
   flex-shrink:0;
   /* 8-bit stepped pixelated frame */
   clip-path: polygon(
