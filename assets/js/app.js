@@ -622,15 +622,28 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.appendChild(g);
       });
 
-      // ── Waypoint / X Marker — sits RIGHT AT the fog edge ──
-      // x=780 puts it at the boundary between clear path and fog start.
-      const waypointAnchor = mkSVG('a');
-      waypointAnchor.setAttribute('href', 'experience.html');
-      waypointAnchor.setAttribute('class', 'map-waypoint-anchor');
-      waypointAnchor.setAttribute('aria-label', 'Explore the full journey on Experience page');
+      // ── Clickable Fog & Waypoint Zone ──
+      // The ENTIRE fog area and the X marker are one large <a> linking to experience.html.
+      const destinationAnchor = mkSVG('a');
+      destinationAnchor.setAttribute('href', 'experience.html');
+      // Adding both classes so hovering anywhere in the zone triggers both waypoint and mystery hover effects
+      destinationAnchor.setAttribute('class', 'map-mystery-anchor map-waypoint-anchor');
+      destinationAnchor.setAttribute('aria-label', 'Explore the full journey on Experience page');
+      destinationAnchor.style.cursor = 'pointer';
 
+      // Invisible hit-rect spanning the fog zone and X marker
+      const fogHitRect = mkSVG('rect');
+      fogHitRect.setAttribute('x', '770');
+      fogHitRect.setAttribute('y', '0');
+      fogHitRect.setAttribute('width', '390');
+      fogHitRect.setAttribute('height', '340');
+      fogHitRect.setAttribute('fill', 'transparent');
+      destinationAnchor.appendChild(fogHitRect);
+
+      // ── Waypoint / X Marker ──
       const wpX = 790, wpY = 179;
-      waypointAnchor.innerHTML = `
+      const waypointG = mkSVG('g');
+      waypointG.innerHTML = `
         <g class="map-waypoint-group" transform="translate(${wpX}, ${wpY})">
           <!-- Radar pulse -->
           <circle cx="16" cy="16" r="14" class="waypoint-radar" />
@@ -644,32 +657,13 @@ document.addEventListener('DOMContentLoaded', () => {
           </g>
         </g>
       `;
-      svg.appendChild(waypointAnchor);
-
-      // ── Clickable Fog Zone ──
-      // The ENTIRE fog area is one large <a> linking to experience.html.
-      // It covers from the leading wisps (~x=820) to right edge of viewBox.
-      // Mystery glyph '?' and TERRA INCOGNITA live inside this anchor too.
-      const fogAnchor = mkSVG('a');
-      fogAnchor.setAttribute('href', 'experience.html');
-      fogAnchor.setAttribute('class', 'map-mystery-anchor');
-      fogAnchor.setAttribute('aria-label', 'Explore the full journey — experience.html');
-      fogAnchor.style.cursor = 'pointer';
-
-      // Invisible hit-rect spanning the fog zone — makes all clouds clickable
-      const fogHitRect = mkSVG('rect');
-      fogHitRect.setAttribute('x', '820');
-      fogHitRect.setAttribute('y', '0');
-      fogHitRect.setAttribute('width', '340');
-      fogHitRect.setAttribute('height', '340');
-      fogHitRect.setAttribute('fill', 'transparent');
-      fogAnchor.appendChild(fogHitRect);
+      destinationAnchor.appendChild(waypointG);
 
       // ── Soft Organic Light-Gray Clouds / Mist ──
       const cloudsG = mkSVG('g');
       cloudsG.setAttribute('class', 'map-soft-clouds');
       cloudsG.innerHTML = `
-        <!-- Layer 1: Wide ambient base mist (very blurred, lowest opacity) -->
+        <!-- Layer 1: Wide ambient base mist -->
         <g filter="url(#mistBlur)" opacity="0.52">
           <ellipse cx="900"  cy="170" rx="80"  ry="60"  fill="var(--fog-color-3)" />
           <ellipse cx="960"  cy="130" rx="100" ry="75"  fill="var(--fog-color-2)" />
@@ -679,7 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <ellipse cx="1090" cy="170" rx="105" ry="85"  fill="var(--fog-color)"  />
         </g>
 
-        <!-- Layer 2: Defined cloud puffs (gentle blur) — leading wisps overlap X marker -->
+        <!-- Layer 2: Defined cloud puffs -->
         <g filter="url(#cloudBlur)" opacity="0.7">
           <circle cx="845" cy="180" r="30"  fill="var(--fog-color-3)" />
           <circle cx="862" cy="150" r="36"  fill="var(--fog-color-3)" />
@@ -708,9 +702,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <path d="M 920 265 C 945 250, 978 252, 1005 265 C 1028 255, 1060 260, 1085 270"
               stroke="var(--fog-color)"   stroke-width="1"   fill="none" opacity="0.4" />
       `;
-      fogAnchor.appendChild(cloudsG);
+      destinationAnchor.appendChild(cloudsG);
 
-      // ── Mystery Glyph '?' & 'TERRA INCOGNITA' ── inside clickable fogAnchor
+      // ── Mystery Glyph '?' & 'TERRA INCOGNITA' ──
       const mysteryG = mkSVG('g');
       mysteryG.setAttribute('transform', 'translate(1025, 152)');
 
@@ -730,8 +724,8 @@ document.addEventListener('DOMContentLoaded', () => {
       subText.textContent = 'TERRA INCOGNITA';
       mysteryG.appendChild(subText);
 
-      fogAnchor.appendChild(mysteryG);
-      svg.appendChild(fogAnchor);
+      destinationAnchor.appendChild(mysteryG);
+      svg.appendChild(destinationAnchor);
 
       wrap.innerHTML = '';
       wrap.appendChild(svg);
