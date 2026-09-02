@@ -385,83 +385,388 @@ document.addEventListener('DOMContentLoaded', () => {
   if (IS.home) {
     buildExpPreviewMap();
     buildHomeTrailer();
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(buildExpPreviewMap, 180);
+    }, { passive: true });
   }
 
-  /* ── Experience preview SVG map (Home) ──── */
+  /* ── Experience preview SVG map: Treasure Map / Unfinished Journey (Home) ──── */
   function buildExpPreviewMap() {
     const wrap = document.getElementById('expPreviewMap');
-    if (!wrap || !D.experience) return;
+    if (!wrap) return;
 
-    const items = D.experience.slice(0, 4);
-    const VW = Math.min(wrap.clientWidth || 800, 900);
-    const VH = 210;
-
-    const NODES = [
-      { x: 40,        y: VH / 2,    item: null },
-      { x: VW * 0.22, y: VH * 0.28, item: items[0], index: 0 },
-      { x: VW * 0.44, y: VH * 0.72, item: items[1], index: 1 },
-      { x: VW * 0.66, y: VH * 0.28, item: items[2], index: 2 },
-      { x: VW * 0.88, y: VH * 0.72, item: items[3], index: 3 },
+    const milestones = D.journeyMilestones || [
+      { year: '2022', badge: '01 · ORIGIN', title: 'Learning the Foundations', reflection: 'Started by learning how systems work from the ground up.', expIndex: 0 },
+      { year: '2023 — 2024', badge: '02 · HARDWARE & OPS', title: 'Keeping Real Systems Running', reflection: 'Troubleshooting 83 real machines changed how I think about reliability.', expIndex: 1 },
+      { year: '2024', badge: '03 · SCALE & CODE', title: 'Software Meets Infrastructure', reflection: 'From structured cabling to production apps—code meets hardware.', expIndex: 2 },
+      { year: '2024 — 2025', badge: '04 · TEAM & SYSTEMS', title: 'Engineering With Others', reflection: 'Writing code was only one part of the craft. Designing systems with people.', expIndex: 3 },
     ];
 
-    const svg = mkSVG('svg');
-    svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
-    svg.setAttribute('width', '100%');
-    svg.setAttribute('height', VH);
-    svg.setAttribute('aria-hidden', 'true');
-    svg.classList.add('exp-map-svg');
-    svg.style.overflow = 'visible';
+    const isMobile = window.innerWidth < 768;
 
-    let d = `M ${NODES[0].x} ${NODES[0].y}`;
-    for (let i = 1; i < NODES.length; i++) {
-      const a = NODES[i - 1], b = NODES[i];
-      const cpx = a.x + (b.x - a.x) * 0.5;
-      d += ` C ${cpx} ${a.y} ${cpx} ${b.y} ${b.x} ${b.y}`;
-    }
-    const path = mkSVG('path');
-    path.setAttribute('d', d);
-    path.setAttribute('class', 'map-path');
-    svg.appendChild(path);
+    if (!isMobile) {
+      // ══════════════════════════════════════════════
+      // DESKTOP: HORIZONTAL TREASURE MAP
+      // ══════════════════════════════════════════════
+      const VW = Math.max(1040, wrap.clientWidth || 1040);
+      const VH = 330;
 
-    NODES.forEach((nd, i) => {
-      const g = mkSVG('g');
-      g.setAttribute('class', 'map-node-group');
+      const NODES = [
+        { x: 50,  y: 165, type: 'start' },
+        { x: 200, y: 110, type: 'milestone', isAbove: true,  item: milestones[0] },
+        { x: 385, y: 220, type: 'milestone', isAbove: false, item: milestones[1] },
+        { x: 570, y: 110, type: 'milestone', isAbove: true,  item: milestones[2] },
+        { x: 755, y: 220, type: 'milestone', isAbove: false, item: milestones[3] },
+        { x: 900, y: 165, type: 'waypoint' },
+        { x: 1070, y: 145, type: 'mystery' },
+      ];
 
-      const circle = mkSVG('circle');
-      circle.setAttribute('cx', nd.x);
-      circle.setAttribute('cy', nd.y);
-      circle.setAttribute('r', i === 0 ? '5' : '7');
-      circle.setAttribute('class', i === 0 ? 'map-node start' : 'map-node');
-      g.appendChild(circle);
+      const svg = mkSVG('svg');
+      svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', VH);
+      svg.setAttribute('aria-label', 'Treasure map of engineering journey');
+      svg.classList.add('exp-map-svg');
 
-      if (nd.item) {
-        g.setAttribute('tabindex', '0');
-        g.setAttribute('role', 'button');
-        g.setAttribute('aria-label', `View experience story for ${nd.item.org}`);
+      // SVG Defs: Linear mask for route fadeout into fog
+      const defs = mkSVG('defs');
+      const mask = mkSVG('mask');
+      mask.setAttribute('id', 'routeFogMask');
 
-        const isAbove = i % 2 === 1;
-        const xPos    = nd.x;
-        const yBase   = isAbove ? nd.y - 18 : nd.y + 24;
-        const anchor  = i === NODES.length - 1 ? 'end' : (i === 1 ? 'start' : 'middle');
+      const grad = mkSVG('linearGradient');
+      grad.setAttribute('id', 'routeFogGrad');
+      grad.setAttribute('x1', '0%');
+      grad.setAttribute('y1', '0%');
+      grad.setAttribute('x2', '100%');
+      grad.setAttribute('y2', '0%');
 
-        g.appendChild(mkSVGText(nd.item.year, xPos, isAbove ? yBase - 22 : yBase, 'map-label-year', anchor));
-        g.appendChild(mkSVGText(nd.item.org,  xPos, isAbove ? yBase - 10 : yBase + 12, 'map-label-org',  anchor));
-        g.appendChild(mkSVGText(nd.item.role, xPos, isAbove ? yBase : yBase + 24, 'map-label-role', anchor));
+      const stops = [
+        { offset: '0%',   color: '#fff', opacity: '1' },
+        { offset: '70%',  color: '#fff', opacity: '1' },
+        { offset: '80%',  color: '#fff', opacity: '0.85' },
+        { offset: '87%',  color: '#fff', opacity: '0.35' },
+        { offset: '95%',  color: '#fff', opacity: '0.06' },
+        { offset: '100%', color: '#000', opacity: '0' },
+      ];
+      stops.forEach(s => {
+        const stop = mkSVG('stop');
+        stop.setAttribute('offset', s.offset);
+        stop.setAttribute('stop-color', s.color);
+        stop.setAttribute('stop-opacity', s.opacity);
+        grad.appendChild(stop);
+      });
+      defs.appendChild(grad);
 
-        g.addEventListener('click', () => openModal('experience', nd.index));
-        g.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openModal('experience', nd.index);
-          }
-        });
+      const maskRect = mkSVG('rect');
+      maskRect.setAttribute('x', '0');
+      maskRect.setAttribute('y', '0');
+      maskRect.setAttribute('width', '100%');
+      maskRect.setAttribute('height', '100%');
+      maskRect.setAttribute('fill', 'url(#routeFogGrad)');
+      mask.appendChild(maskRect);
+      defs.appendChild(mask);
+      svg.appendChild(defs);
+
+      // Build smooth cubic Bézier curve
+      let d = `M ${NODES[0].x} ${NODES[0].y}`;
+      let contourD = `M ${NODES[0].x} ${NODES[0].y + 10}`;
+      for (let i = 1; i < NODES.length; i++) {
+        const a = NODES[i - 1], b = NODES[i];
+        const cpx = a.x + (b.x - a.x) * 0.5;
+        d += ` C ${cpx} ${a.y} ${cpx} ${b.y} ${b.x} ${b.y}`;
+        contourD += ` C ${cpx} ${a.y + 10} ${cpx} ${b.y + 10} ${b.x} ${b.y + 10}`;
       }
 
-      svg.appendChild(g);
-    });
+      // Secondary terrain contour (masked)
+      const contourPath = mkSVG('path');
+      contourPath.setAttribute('d', contourD);
+      contourPath.setAttribute('class', 'map-path-contour');
+      contourPath.setAttribute('mask', 'url(#routeFogMask)');
+      svg.appendChild(contourPath);
 
-    wrap.innerHTML = '';
-    wrap.appendChild(svg);
+      // Main dashed treasure route (masked into fog)
+      const path = mkSVG('path');
+      path.setAttribute('d', d);
+      path.setAttribute('class', 'map-path');
+      path.setAttribute('mask', 'url(#routeFogMask)');
+      svg.appendChild(path);
+
+      // Render Nodes
+      NODES.forEach((nd) => {
+        if (nd.type === 'start') {
+          const g = mkSVG('g');
+          g.setAttribute('class', 'map-node-start-group');
+          const ring = mkSVG('circle');
+          ring.setAttribute('cx', nd.x);
+          ring.setAttribute('cy', nd.y);
+          ring.setAttribute('r', '8');
+          ring.setAttribute('class', 'map-node-ring');
+          g.appendChild(ring);
+
+          const dot = mkSVG('circle');
+          dot.setAttribute('cx', nd.x);
+          dot.setAttribute('cy', nd.y);
+          dot.setAttribute('r', '4');
+          dot.setAttribute('class', 'map-node-start');
+          g.appendChild(dot);
+
+          g.appendChild(mkSVGText('ORIGIN · 00°N', nd.x, nd.y - 18, 'map-label-tag', 'start'));
+          svg.appendChild(g);
+        } else if (nd.type === 'milestone') {
+          const g = mkSVG('g');
+          g.setAttribute('class', 'map-node-group');
+          g.setAttribute('tabindex', '0');
+          g.setAttribute('role', 'button');
+          g.setAttribute('aria-label', `${nd.item.title} — ${nd.item.year}. Click to read experience story.`);
+
+          // Outer halo
+          const halo = mkSVG('circle');
+          halo.setAttribute('cx', nd.x);
+          halo.setAttribute('cy', nd.y);
+          halo.setAttribute('r', '10');
+          halo.setAttribute('class', 'map-node-ring');
+          g.appendChild(halo);
+
+          // Node core
+          const core = mkSVG('circle');
+          core.setAttribute('cx', nd.x);
+          core.setAttribute('cy', nd.y);
+          core.setAttribute('r', '5.5');
+          core.setAttribute('class', 'map-node-core');
+          g.appendChild(core);
+
+          // Staggered labels (Above vs Below)
+          const isAbove = nd.isAbove;
+          const xPos = nd.x;
+
+          if (isAbove) {
+            g.appendChild(mkSVGText(nd.item.badge, xPos, nd.y - 56, 'map-label-tag', 'middle'));
+            g.appendChild(mkSVGText(nd.item.year,  xPos, nd.y - 42, 'map-label-year', 'middle'));
+            g.appendChild(mkSVGText(nd.item.title, xPos, nd.y - 25, 'map-label-title', 'middle'));
+            g.appendChild(mkSVGText(`"${nd.item.reflection}"`, xPos, nd.y - 10, 'map-label-reflection', 'middle'));
+          } else {
+            g.appendChild(mkSVGText(nd.item.badge, xPos, nd.y + 24, 'map-label-tag', 'middle'));
+            g.appendChild(mkSVGText(nd.item.year,  xPos, nd.y + 38, 'map-label-year', 'middle'));
+            g.appendChild(mkSVGText(nd.item.title, xPos, nd.y + 55, 'map-label-title', 'middle'));
+            g.appendChild(mkSVGText(`"${nd.item.reflection}"`, xPos, nd.y + 70, 'map-label-reflection', 'middle'));
+          }
+
+          g.addEventListener('click', () => openModal('experience', nd.item.expIndex));
+          g.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openModal('experience', nd.item.expIndex);
+            }
+          });
+
+          svg.appendChild(g);
+        } else if (nd.type === 'waypoint') {
+          // Treasure Marker / Waypoint Anchor Button to experience.html
+          const a = mkSVG('a');
+          a.setAttribute('href', 'experience.html');
+          a.setAttribute('class', 'map-waypoint-anchor');
+          a.setAttribute('aria-label', 'Explore the full journey on the Experience page');
+
+          // Expanding radar pulse circles
+          const radar = mkSVG('circle');
+          radar.setAttribute('cx', nd.x);
+          radar.setAttribute('cy', nd.y);
+          radar.setAttribute('r', '14');
+          radar.setAttribute('class', 'waypoint-radar');
+          a.appendChild(radar);
+
+          // Cartographic Waypoint Diamond
+          const diamond = mkSVG('polygon');
+          diamond.setAttribute('points', `${nd.x},${nd.y - 14} ${nd.x + 14},${nd.y} ${nd.x},${nd.y + 14} ${nd.x - 14},${nd.y}`);
+          diamond.setAttribute('class', 'waypoint-diamond');
+          a.appendChild(diamond);
+
+          // Engraved inner cross (X / Compass mark)
+          const cross1 = mkSVG('line');
+          cross1.setAttribute('x1', nd.x - 5);
+          cross1.setAttribute('y1', nd.y - 5);
+          cross1.setAttribute('x2', nd.x + 5);
+          cross1.setAttribute('y2', nd.y + 5);
+          cross1.setAttribute('class', 'waypoint-cross');
+          a.appendChild(cross1);
+
+          const cross2 = mkSVG('line');
+          cross2.setAttribute('x1', nd.x + 5);
+          cross2.setAttribute('y1', nd.y - 5);
+          cross2.setAttribute('x2', nd.x - 5);
+          cross2.setAttribute('y2', nd.y + 5);
+          cross2.setAttribute('class', 'waypoint-cross');
+          a.appendChild(cross2);
+
+          // Waypoint coordinate label
+          a.appendChild(mkSVGText('WAYPOINT · 04°N', nd.x, nd.y + 32, 'waypoint-tag', 'middle'));
+
+          // Floating Tooltip (reveals on hover/focus)
+          const tooltipG = mkSVG('g');
+          tooltipG.setAttribute('class', 'waypoint-tooltip');
+
+          const tooltipBg = mkSVG('rect');
+          tooltipBg.setAttribute('x', nd.x - 95);
+          tooltipBg.setAttribute('y', nd.y - 58);
+          tooltipBg.setAttribute('width', '190');
+          tooltipBg.setAttribute('height', '30');
+          tooltipBg.setAttribute('rx', '15');
+          tooltipBg.setAttribute('class', 'waypoint-tooltip-bg');
+          tooltipG.appendChild(tooltipBg);
+
+          const tooltipTxt = mkSVGText('Explore the full journey →', nd.x, nd.y - 39, 'waypoint-tooltip-text', 'middle');
+          tooltipG.appendChild(tooltipTxt);
+          a.appendChild(tooltipG);
+
+          svg.appendChild(a);
+        }
+      });
+
+      wrap.innerHTML = '';
+      wrap.appendChild(svg);
+    } else {
+      // ══════════════════════════════════════════════
+      // MOBILE: VERTICAL SNEAK PEEK EXPEDITION TRAIL
+      // ══════════════════════════════════════════════
+      const VW = Math.max(320, wrap.clientWidth || 320);
+      const VH = 720;
+
+      const NODES = [
+        { x: VW * 0.5,  y: 35,  type: 'start' },
+        { x: VW * 0.35, y: 130, type: 'milestone', isLeft: true,  item: milestones[0] },
+        { x: VW * 0.65, y: 260, type: 'milestone', isLeft: false, item: milestones[1] },
+        { x: VW * 0.35, y: 390, type: 'milestone', isLeft: true,  item: milestones[2] },
+        { x: VW * 0.65, y: 520, type: 'milestone', isLeft: false, item: milestones[3] },
+        { x: VW * 0.5,  y: 630, type: 'waypoint' },
+        { x: VW * 0.5,  y: 710, type: 'mystery' },
+      ];
+
+      const svg = mkSVG('svg');
+      svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', VH);
+      svg.setAttribute('aria-label', 'Treasure map of engineering journey');
+      svg.classList.add('exp-map-svg');
+
+      // Vertical mask
+      const defs = mkSVG('defs');
+      const mask = mkSVG('mask');
+      mask.setAttribute('id', 'routeFogMaskMobile');
+
+      const grad = mkSVG('linearGradient');
+      grad.setAttribute('id', 'routeFogGradMobile');
+      grad.setAttribute('x1', '0%');
+      grad.setAttribute('y1', '0%');
+      grad.setAttribute('x2', '0%');
+      grad.setAttribute('y2', '100%');
+
+      const stops = [
+        { offset: '0%',   color: '#fff', opacity: '1' },
+        { offset: '72%',  color: '#fff', opacity: '1' },
+        { offset: '84%',  color: '#fff', opacity: '0.4' },
+        { offset: '94%',  color: '#fff', opacity: '0.08' },
+        { offset: '100%', color: '#000', opacity: '0' },
+      ];
+      stops.forEach(s => {
+        const stop = mkSVG('stop');
+        stop.setAttribute('offset', s.offset);
+        stop.setAttribute('stop-color', s.color);
+        stop.setAttribute('stop-opacity', s.opacity);
+        grad.appendChild(stop);
+      });
+      defs.appendChild(grad);
+
+      const maskRect = mkSVG('rect');
+      maskRect.setAttribute('x', '0');
+      maskRect.setAttribute('y', '0');
+      maskRect.setAttribute('width', '100%');
+      maskRect.setAttribute('height', '100%');
+      maskRect.setAttribute('fill', 'url(#routeFogGradMobile)');
+      mask.appendChild(maskRect);
+      defs.appendChild(mask);
+      svg.appendChild(defs);
+
+      let d = `M ${NODES[0].x} ${NODES[0].y}`;
+      for (let i = 1; i < NODES.length; i++) {
+        const a = NODES[i - 1], b = NODES[i];
+        const cpy = a.y + (b.y - a.y) * 0.5;
+        d += ` C ${a.x} ${cpy} ${b.x} ${cpy} ${b.x} ${b.y}`;
+      }
+
+      const path = mkSVG('path');
+      path.setAttribute('d', d);
+      path.setAttribute('class', 'map-path');
+      path.setAttribute('mask', 'url(#routeFogMaskMobile)');
+      svg.appendChild(path);
+
+      NODES.forEach((nd) => {
+        if (nd.type === 'start') {
+          const dot = mkSVG('circle');
+          dot.setAttribute('cx', nd.x);
+          dot.setAttribute('cy', nd.y);
+          dot.setAttribute('r', '4');
+          dot.setAttribute('class', 'map-node-start');
+          svg.appendChild(dot);
+          svg.appendChild(mkSVGText('ORIGIN · 00°N', nd.x, nd.y - 12, 'map-label-tag', 'middle'));
+        } else if (nd.type === 'milestone') {
+          const g = mkSVG('g');
+          g.setAttribute('class', 'map-node-group');
+          g.setAttribute('tabindex', '0');
+          g.setAttribute('role', 'button');
+          g.setAttribute('aria-label', `${nd.item.title} — ${nd.item.year}. Click to read experience story.`);
+
+          const halo = mkSVG('circle');
+          halo.setAttribute('cx', nd.x);
+          halo.setAttribute('cy', nd.y);
+          halo.setAttribute('r', '9');
+          halo.setAttribute('class', 'map-node-ring');
+          g.appendChild(halo);
+
+          const core = mkSVG('circle');
+          core.setAttribute('cx', nd.x);
+          core.setAttribute('cy', nd.y);
+          core.setAttribute('r', '5');
+          core.setAttribute('class', 'map-node-core');
+          g.appendChild(core);
+
+          const textAnchor = nd.isLeft ? 'start' : 'end';
+          const textX = nd.isLeft ? nd.x + 16 : nd.x - 16;
+
+          g.appendChild(mkSVGText(nd.item.year, textX, nd.y - 10, 'map-label-year', textAnchor));
+          g.appendChild(mkSVGText(nd.item.title, textX, nd.y + 6, 'map-label-title', textAnchor));
+          g.appendChild(mkSVGText(`"${nd.item.reflection.slice(0, 38)}..."`, textX, nd.y + 20, 'map-label-reflection', textAnchor));
+
+          g.addEventListener('click', () => openModal('experience', nd.item.expIndex));
+          g.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openModal('experience', nd.item.expIndex);
+            }
+          });
+
+          svg.appendChild(g);
+        } else if (nd.type === 'waypoint') {
+          const a = mkSVG('a');
+          a.setAttribute('href', 'experience.html');
+          a.setAttribute('class', 'map-waypoint-anchor');
+          a.setAttribute('aria-label', 'Explore the full journey on the Experience page');
+
+          const diamond = mkSVG('polygon');
+          diamond.setAttribute('points', `${nd.x},${nd.y - 12} ${nd.x + 12},${nd.y} ${nd.x},${nd.y + 12} ${nd.x - 12},${nd.y}`);
+          diamond.setAttribute('class', 'waypoint-diamond');
+          a.appendChild(diamond);
+
+          a.appendChild(mkSVGText('WAYPOINT', nd.x, nd.y + 28, 'waypoint-tag', 'middle'));
+          svg.appendChild(a);
+        }
+      });
+
+      wrap.innerHTML = '';
+      wrap.appendChild(svg);
+    }
   }
 
   /* ── Selected projects horizontal trailer ─ */

@@ -24,6 +24,54 @@ window.PORTFOLIO_DATA = {
     cv:       null,
   },
 
+  /* ── SNEAK PEEK JOURNEY MAP (Landing Page Treasure Map) ── */
+  journeyMilestones: [
+    {
+      id: 'step-1',
+      year: '2022',
+      badge: '01 · ORIGIN',
+      title: 'Learning the Foundations',
+      location: 'UIN Suska Riau',
+      reflection: 'Started by learning how systems work from the ground up.',
+      role: 'S1 Sistem Informasi',
+      context: 'Algorithms, structured relational databases, and building core mental models.',
+      expIndex: 0,
+    },
+    {
+      id: 'step-2',
+      year: '2023 — 2024',
+      badge: '02 · HARDWARE & OPS',
+      title: 'Keeping Real Systems Running',
+      location: 'Faculty Computer Labs',
+      reflection: 'Troubleshooting 83 real machines changed how I think about reliability.',
+      role: 'IT Support & Lab Assistant',
+      context: 'Workstation readiness, structured LAN cabling, OS mass imaging, and zero-downtime triage.',
+      expIndex: 1,
+    },
+    {
+      id: 'step-3',
+      year: '2024',
+      badge: '03 · SCALE & CODE',
+      title: 'From Software to Infrastructure',
+      location: 'Campus Deployment & Production Apps',
+      reflection: 'Learning what happens when software meets physical architecture.',
+      role: 'Network Technician & Software Dev',
+      context: 'Deploying 256 wireless APs across 14 buildings in a 13-person team while building production apps.',
+      expIndex: 2,
+    },
+    {
+      id: 'step-4',
+      year: '2024 — 2025',
+      badge: '04 · TEAM & SYSTEMS',
+      title: 'Engineering With Others',
+      location: 'Puzzle Research Data Tech (Predatech)',
+      reflection: 'Writing code was only one part of the craft. Designing systems with people.',
+      role: 'Head of Software Engineering',
+      context: 'Leading software division, Git workflows, code reviews, and structured system architecture.',
+      expIndex: 3,
+    },
+  ],
+
   /* ── EXPERIENCE (chronological, oldest first) ── */
   experience: [
     {

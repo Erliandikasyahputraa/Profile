@@ -8,6 +8,8 @@
 /* ── 1. TOKENS ──────────────────────────────── */
 :root {
   --bg:          #ffffff;
+  --bg-rgb:      255, 255, 255;
+  --bg-card:     #fafafa;
   --fg:          #000000;
   --bg-glass:    rgba(255,255,255,0.62);
   --border:      rgba(0,0,0,0.09);
@@ -28,6 +30,8 @@
 
 [data-theme="dark"] {
   --bg:          #000000;
+  --bg-rgb:      0, 0, 0;
+  --bg-card:     #080808;
   --fg:          #ffffff;
   --bg-glass:    rgba(10,10,10,0.62);
   --border:      rgba(255,255,255,0.09);
@@ -287,30 +291,333 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 }
 .section-label::after { content:''; height:1px; width:40px; background:var(--border-mid); flex-shrink:0; }
 
-/* ── 10. HOME EXPERIENCE PREVIEW MAP ────────── */
+/* ── 10. HOME EXPERIENCE PREVIEW MAP (TREASURE MAP) ────────── */
 .exp-preview {
-  padding-block:4.5rem;
-  border-top:1px solid var(--border);
+  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+  border-top: 1px solid var(--border);
+  position: relative;
 }
 .exp-preview__header {
-  display:flex; justify-content:space-between; align-items:flex-end;
-  margin-bottom:2rem; flex-wrap:wrap; gap:1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
-.exp-preview__link {
-  font-family:var(--font-mono); font-size:.625rem;
-  letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
-  display:inline-flex; align-items:center; gap:.4rem;
-  transition:color 150ms, gap 150ms;
+.exp-preview__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-glass);
 }
-.exp-preview__link:hover { color:var(--fg); gap:.65rem; }
-.exp-map-wrap { width:100%; overflow:visible; }
-.exp-map-svg { width:100%; overflow:visible; }
-.map-path { stroke:var(--fg); stroke-width:1.5; stroke-dasharray:6 5; fill:none; opacity:.28; }
-.map-node { fill:var(--bg); stroke:var(--fg); stroke-width:2; }
-.map-node.start { fill:var(--fg); }
-.map-label-year { font-family:var(--font-mono); font-size:10px; fill:var(--muted); }
-.map-label-org  { font-family:var(--font-display); font-size:12.5px; font-weight:700; fill:var(--fg); }
-.map-label-role { font-family:var(--font-body); font-size:10.5px; fill:var(--muted); }
+.exp-preview__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg);
+  animation: radar-dot-pulse 2.2s infinite ease-in-out;
+}
+@keyframes radar-dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: .45; }
+}
+.exp-preview__status {
+  font-family: var(--font-mono);
+  font-size: .625rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Stage Container */
+.exp-map-stage {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--bg-card);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+/* Scrollable wrap for wide SVG track on smaller viewports */
+.exp-map-wrap {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 1.25rem 0.5rem;
+}
+.exp-map-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.exp-map-svg {
+  display: block;
+  width: 100%;
+  min-width: 960px;
+  overflow: visible;
+  user-select: none;
+}
+
+/* Route path */
+.map-path {
+  stroke: var(--fg);
+  stroke-width: 1.75;
+  stroke-dasharray: 6 6;
+  fill: none;
+  opacity: .38;
+  transition: opacity 250ms ease;
+}
+.map-path-contour {
+  stroke: var(--fg);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+  fill: none;
+  opacity: .12;
+}
+
+/* Milestone nodes */
+.map-node-group {
+  cursor: pointer;
+  outline: none;
+  transition: transform 200ms var(--ease);
+}
+.map-node-group:hover {
+  transform: translateY(-2px);
+}
+.map-node-ring {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1;
+  opacity: .2;
+  transition: opacity 200ms, r 200ms;
+}
+.map-node-group:hover .map-node-ring,
+.map-node-group:focus-visible .map-node-ring {
+  opacity: .6;
+  r: 12;
+}
+.map-node-core {
+  fill: var(--bg);
+  stroke: var(--fg);
+  stroke-width: 2;
+  transition: fill 200ms, transform 200ms;
+}
+.map-node-group:hover .map-node-core,
+.map-node-group:focus-visible .map-node-core {
+  fill: var(--fg);
+}
+.map-node-start {
+  fill: var(--fg);
+}
+
+/* Typography on map */
+.map-label-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  fill: var(--muted);
+  text-transform: uppercase;
+}
+.map-label-year {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: var(--fg);
+}
+.map-label-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  fill: var(--fg);
+}
+.map-label-reflection {
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  fill: var(--muted);
+  font-style: italic;
+}
+
+/* Waypoint Treasure Marker */
+.map-waypoint-anchor {
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+}
+.waypoint-radar {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1;
+  opacity: .35;
+  animation: waypoint-radar-expand 3s infinite ease-out;
+}
+@keyframes waypoint-radar-expand {
+  0%   { r: 10; opacity: .5; }
+  70%  { r: 24; opacity: .05; }
+  100% { r: 28; opacity: 0; }
+}
+.waypoint-diamond {
+  fill: var(--fg);
+  stroke: var(--bg);
+  stroke-width: 2;
+  transition: transform 220ms var(--ease), fill 220ms;
+  transform-origin: center;
+}
+.waypoint-cross {
+  stroke: var(--bg);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.map-waypoint-anchor:hover .waypoint-diamond,
+.map-waypoint-anchor:focus-visible .waypoint-diamond {
+  transform: scale(1.15) rotate(45deg);
+}
+.waypoint-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  fill: var(--muted);
+  text-transform: uppercase;
+  transition: fill 150ms;
+}
+.map-waypoint-anchor:hover .waypoint-tag {
+  fill: var(--fg);
+}
+
+/* Waypoint Tooltip */
+.waypoint-tooltip {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.map-waypoint-anchor:hover .waypoint-tooltip,
+.map-waypoint-anchor:focus-visible .waypoint-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+.waypoint-tooltip-bg {
+  fill: var(--fg);
+  rx: 14px;
+}
+.waypoint-tooltip-text {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: var(--bg);
+  letter-spacing: .02em;
+}
+
+/* Organic Monochrome Fog Overlay */
+.exp-map-fog {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(250px, 30%, 380px);
+  pointer-events: none;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 2.25rem;
+}
+.fog-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(var(--bg-rgb), 0) 0%,
+    rgba(var(--bg-rgb), 0.25) 25%,
+    rgba(var(--bg-rgb), 0.7) 60%,
+    rgba(var(--bg-rgb), 0.95) 88%,
+    var(--bg) 100%
+  );
+}
+.fog-veil {
+  position: absolute;
+  inset: 0;
+  opacity: .5;
+  background-image: radial-gradient(circle at 75% 50%, rgba(var(--bg-rgb), 0.9) 0%, transparent 70%);
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+}
+.fog-mystery-hint {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: .28;
+  transition: opacity 300ms ease;
+  user-select: none;
+}
+.fog-q-glyph {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.04em;
+  color: var(--fg);
+}
+.fog-q-sub {
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: .25rem;
+}
+
+/* Mobile Exploration Anchor Bar */
+.exp-map-mobile-bar {
+  display: none;
+  margin-top: 1.25rem;
+  text-align: center;
+}
+.exp-map-mobile-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .625rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-mid);
+  background: var(--bg);
+  font-family: var(--font-display);
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--fg);
+  text-decoration: none;
+  transition: background 150ms, color 150ms, border-color 150ms;
+}
+.exp-map-mobile-cta:hover {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+@media (max-width: 768px) {
+  .exp-map-mobile-bar {
+    display: block;
+  }
+  .exp-map-fog {
+    width: 180px;
+    padding-right: 1.25rem;
+  }
+  .fog-q-glyph {
+    font-size: 2rem;
+  }
+}
 
 /* ── 11. HOME PROJECT TRAILER (horizontal scroll) ── */
 .projects-trailer { border-top:1px solid var(--border); }

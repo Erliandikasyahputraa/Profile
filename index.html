@@ -93,16 +93,39 @@
 
   </section>
 
-  <!-- ═══ EXPERIENCE PREVIEW ══════════════════════════════════ -->
-  <section class="exp-preview container" id="exp-preview" aria-label="Experience preview">
+  <!-- ═══ EXPERIENCE PREVIEW / TREASURE MAP ════════════════════ -->
+  <section class="exp-preview container" id="exp-preview" aria-label="Engineering journey sneak peek">
     <div class="exp-preview__header">
-      <div class="section-label"><span>02 &nbsp; Experience &amp; Education</span></div>
-      <a href="experience.html" class="exp-preview__link" aria-label="View full experience page">
-        View full experience
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <div class="section-label" style="margin-bottom:0"><span>02 &nbsp; The Unfinished Journey</span></div>
+      <div class="exp-preview__meta">
+        <span class="exp-preview__dot" aria-hidden="true"></span>
+        <span class="exp-preview__status">Uncharted Trajectory</span>
+      </div>
+    </div>
+
+    <!-- Interactive Treasure Map Stage -->
+    <div class="exp-map-stage" id="expMapStage">
+      <div class="exp-map-wrap" id="expPreviewMap" aria-label="Interactive career journey map"></div>
+
+      <!-- Monochrome Organic Fog / Unknown Veil -->
+      <div class="exp-map-fog" aria-hidden="true">
+        <div class="fog-gradient"></div>
+        <div class="fog-veil fog-veil--a"></div>
+        <div class="fog-veil fog-veil--b"></div>
+        <div class="fog-mystery-hint">
+          <span class="fog-q-glyph">?</span>
+          <span class="fog-q-sub">Terra Incognita</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Exploration Anchor -->
+    <div class="exp-map-mobile-bar">
+      <a href="experience.html" class="exp-map-mobile-cta">
+        <span>Explore the full journey</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
     </div>
-    <div class="exp-map-wrap" id="expPreviewMap" aria-label="Journey map preview"></div>
   </section>
 
   <!-- ═══ PROJECT TRAILER ═════════════════════════════════════ -->
