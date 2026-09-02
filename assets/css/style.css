@@ -17,6 +17,7 @@
   --border-str:  #000000;
   --muted:       rgba(0,0,0,0.44);
   --muted-soft:  rgba(0,0,0,0.22);
+  --fog-color:   #D2D2D2;
 
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-body:    'Inter',         system-ui, sans-serif;
@@ -39,6 +40,7 @@
   --border-str:  #ffffff;
   --muted:       rgba(255,255,255,0.44);
   --muted-soft:  rgba(255,255,255,0.22);
+  --fog-color:   rgba(255, 255, 255, 0.14);
 }
 
 /* ── 2. RESET ───────────────────────────────── */
@@ -460,195 +462,106 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   opacity: .35;
   animation: waypoint-radar-expand 3s infinite ease-out;
 }
+/* Waypoint / Treasure Marker Elements */
+.map-waypoint-anchor {
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+  transition: transform 200ms var(--ease);
+}
+.waypoint-radar {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1;
+  opacity: .35;
+  animation: waypoint-radar-expand 2.8s infinite ease-out;
+}
 @keyframes waypoint-radar-expand {
-  0%   { r: 10; opacity: .5; }
-  70%  { r: 24; opacity: .05; }
-  100% { r: 28; opacity: 0; }
+  0%   { r: 12; opacity: .45; }
+  70%  { r: 26; opacity: .05; }
+  100% { r: 30; opacity: 0; }
 }
-.waypoint-diamond {
-  fill: var(--fg);
-  stroke: var(--bg);
-  stroke-width: 2;
-  transition: transform 220ms var(--ease), fill 220ms;
-  transform-origin: center;
-}
-.waypoint-cross {
-  stroke: var(--bg);
-  stroke-width: 1.5;
+.waypoint-x {
+  stroke: var(--fg);
+  stroke-width: 2.2;
   stroke-linecap: round;
+  transition: transform 200ms var(--ease);
+  transform-origin: 28px 22px;
 }
-.map-waypoint-anchor:hover .waypoint-diamond,
-.map-waypoint-anchor:focus-visible .waypoint-diamond {
-  transform: scale(1.15) rotate(45deg);
-}
-.waypoint-tag {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  fill: var(--muted);
-  text-transform: uppercase;
-  transition: fill 150ms;
-}
-.map-waypoint-anchor:hover .waypoint-tag {
-  fill: var(--fg);
+.map-waypoint-anchor:hover .waypoint-x,
+.map-waypoint-anchor:focus-visible .waypoint-x {
+  transform: scale(1.18) rotate(45deg);
 }
 
-/* Waypoint Tooltip */
-.waypoint-tooltip {
-  opacity: 0;
+/* Floating Pill Tooltip above Waypoint Marker */
+.waypoint-pill-tooltip {
   pointer-events: none;
-  transform: translateY(6px);
-  transition: opacity 200ms ease, transform 200ms ease;
+  transition: transform 200ms var(--ease), opacity 200ms;
+  opacity: 0;
 }
-.map-waypoint-anchor:hover .waypoint-tooltip,
-.map-waypoint-anchor:focus-visible .waypoint-tooltip {
+.map-waypoint-anchor:hover .waypoint-pill-tooltip,
+.map-waypoint-anchor:focus-visible .waypoint-pill-tooltip {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(-6px);
 }
-.waypoint-tooltip-bg {
-  fill: var(--fg);
-  rx: 14px;
+.wp-pill-bg {
+  fill: var(--bg);
+  stroke: var(--border-mid);
+  stroke-width: 1;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.06));
 }
-.waypoint-tooltip-text {
+.wp-pill-text {
   font-family: var(--font-display);
   font-size: 10.5px;
   font-weight: 600;
-  fill: var(--bg);
+  fill: var(--fg);
   letter-spacing: .02em;
 }
 
-/* ── Clickable Dark Storm Clouds (Awan Gelap) Overlay ── */
-.exp-map-fog {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: clamp(260px, 30%, 380px);
-  pointer-events: auto;
+/* Abstract Cartographic Survey Markers */
+.map-sketch,
+.map-survey {
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+
+/* Soft Organic Mist & Clouds (No hard boundaries, neutral light gray) */
+.map-soft-clouds {
+  pointer-events: none;
+}
+.map-mystery-anchor {
   cursor: pointer;
-  z-index: 8;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 2.25rem;
   text-decoration: none;
-  overflow: hidden;
-  transition: transform 260ms var(--ease);
+  outline: none;
 }
-.exp-map-fog:hover {
-  transform: translateX(-4px);
+.map-mystery-glyph {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 700;
+  fill: var(--muted);
+  letter-spacing: -.02em;
+  opacity: .55;
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease), fill 200ms;
 }
-.fog-dark-clouds {
-  position: absolute;
-  inset: -10px;
-  pointer-events: none;
-  z-index: 1;
-  color: #12161f;
-  transition: transform 300ms var(--ease);
-}
-[data-theme="dark"] .fog-dark-clouds {
-  color: #080a0e;
-}
-.dark-clouds-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  filter: drop-shadow(-8px 0 20px rgba(0,0,0,0.25));
-}
-.cloud-layer-back {
-  fill: currentColor;
-  opacity: .88;
-}
-.cloud-layer-front {
-  fill: #090b0f;
-  opacity: .97;
-}
-[data-theme="dark"] .cloud-layer-front {
-  fill: #030406;
-  opacity: .98;
-}
-.fog-dark-gradient {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(18, 22, 31, 0.45) 30%,
-    rgba(13, 16, 22, 0.85) 70%,
-    #090b0f 100%
-  );
-  pointer-events: none;
-}
-[data-theme="dark"] .fog-dark-gradient {
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(8, 10, 14, 0.45) 30%,
-    rgba(5, 7, 10, 0.85) 70%,
-    #030406 100%
-  );
-}
-.fog-veil-dark {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  pointer-events: none;
-}
-.fog-mystery-hint {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  user-select: none;
-  transition: transform 220ms var(--ease);
-}
-.exp-map-fog:hover .fog-mystery-hint {
+.map-mystery-anchor:hover .map-mystery-glyph,
+.map-mystery-anchor:focus-visible .map-mystery-glyph {
+  opacity: 1;
+  fill: var(--fg);
   transform: translateY(-2px);
 }
-.fog-q-glyph {
-  font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -.04em;
-  color: #ffffff;
-  text-shadow: 0 0 24px rgba(255,255,255,0.4);
-}
-.fog-q-sub {
+.map-mystery-sub {
   font-family: var(--font-mono);
-  font-size: .625rem;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.65);
-  margin-top: .35rem;
-  margin-bottom: .875rem;
-}
-.fog-q-action {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  padding: 5px 14px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.14);
-  border: 1px solid rgba(255,255,255,0.32);
-  color: #ffffff;
-  font-family: var(--font-display);
-  font-size: .6875rem;
+  font-size: 7.5px;
   font-weight: 600;
-  letter-spacing: .02em;
-  transition: background 180ms, border-color 180ms, transform 180ms;
+  letter-spacing: .16em;
+  fill: var(--muted);
+  opacity: .6;
+  text-transform: uppercase;
+  transition: opacity 200ms, fill 200ms;
 }
-.exp-map-fog:hover .fog-q-action {
-  background: #ffffff;
-  color: #000000;
-  border-color: #ffffff;
-  transform: translateY(-1px);
+.map-mystery-anchor:hover .map-mystery-sub {
+  opacity: .95;
+  fill: var(--fg);
 }
 
 /* ── Interactive Milestone Sneak Peek Floating Card ── */

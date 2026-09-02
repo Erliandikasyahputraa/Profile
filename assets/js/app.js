@@ -465,30 +465,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const stage = document.getElementById('expMapStage') || wrap;
 
     const milestones = D.journeyMilestones || [
-      { year: '2022', badge: '01 · ORIGIN', title: 'Learning the Foundations', reflection: 'Started by learning how systems work from the ground up.', expIndex: 0 },
-      { year: '2023 — 2024', badge: '02 · HARDWARE & OPS', title: 'Keeping Real Systems Running', reflection: 'Troubleshooting 83 real machines changed how I think about reliability.', expIndex: 1 },
-      { year: '2024', badge: '03 · SCALE & CODE', title: 'Software Meets Infrastructure', reflection: 'From structured cabling to production apps—code meets hardware.', expIndex: 2 },
-      { year: '2024 — 2025', badge: '04 · TEAM & SYSTEMS', title: 'Engineering With Others', reflection: 'Writing code was only one part of the craft. Designing systems with people.', expIndex: 3 },
+      { year: '2022', badge: '01 · ORIGIN', title: 'Learning the Foundations', reflection: 'Started my journey by learning how systems work from the ground up.', expIndex: 0 },
+      { year: '2023 — 2024', badge: '02 · HARDWARE & OPS', title: 'Keeping Real Systems Running', reflection: 'Maintained 83 workstations across 3 labs. Troubleshooting hardware, software, LAN, and everything in between.', expIndex: 1 },
+      { year: '2024', badge: '03 · SCALE & CODE', title: 'From Software to Infrastructure', reflection: 'Deployed 256 access points across 14 buildings with a 13-person team. Learned where code meets physical systems.', expIndex: 2 },
+      { year: '2024 — 2025', badge: '04 · TEAM & SYSTEMS', title: 'Engineering With Others', reflection: 'Leading a team, solving problems together, documenting, reviewing, and building better systems.', expIndex: 3 },
     ];
 
     const isMobile = window.innerWidth < 768;
 
     if (!isMobile) {
       // ══════════════════════════════════════════════
-      // DESKTOP: HORIZONTAL TREASURE MAP
+      // DESKTOP: CLEAN HORIZONTAL TREASURE MAP
       // ══════════════════════════════════════════════
-      const VW = Math.max(1040, wrap.clientWidth || 1040);
-      const VH = 330;
-
-      const NODES = [
-        { x: 50,  y: 165, type: 'start' },
-        { x: 195, y: 110, type: 'milestone', isAbove: true,  item: milestones[0] },
-        { x: 375, y: 220, type: 'milestone', isAbove: false, item: milestones[1] },
-        { x: 555, y: 110, type: 'milestone', isAbove: true,  item: milestones[2] },
-        { x: 730, y: 220, type: 'milestone', isAbove: false, item: milestones[3] },
-        { x: 875, y: 165, type: 'waypoint' },
-        { x: 1080, y: 145, type: 'mystery' },
-      ];
+      const VW = 1120;
+      const VH = 340;
 
       const svg = mkSVG('svg');
       svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
@@ -497,229 +487,309 @@ document.addEventListener('DOMContentLoaded', () => {
       svg.setAttribute('aria-label', 'Treasure map of engineering journey');
       svg.classList.add('exp-map-svg');
 
-      // SVG Defs: Linear mask for route fadeout into fog
+      // ── Defs: Blur filters and gradual mist mask ──
       const defs = mkSVG('defs');
-      const mask = mkSVG('mask');
-      mask.setAttribute('id', 'routeFogMask');
 
-      const grad = mkSVG('linearGradient');
-      grad.setAttribute('id', 'routeFogGrad');
-      grad.setAttribute('x1', '0%');
-      grad.setAttribute('y1', '0%');
-      grad.setAttribute('x2', '100%');
-      grad.setAttribute('y2', '0%');
-
-      const stops = [
-        { offset: '0%',   color: '#fff', opacity: '1' },
-        { offset: '70%',  color: '#fff', opacity: '1' },
-        { offset: '80%',  color: '#fff', opacity: '0.85' },
-        { offset: '87%',  color: '#fff', opacity: '0.35' },
-        { offset: '95%',  color: '#fff', opacity: '0.06' },
-        { offset: '100%', color: '#000', opacity: '0' },
-      ];
-      stops.forEach(s => {
-        const stop = mkSVG('stop');
-        stop.setAttribute('offset', s.offset);
-        stop.setAttribute('stop-color', s.color);
-        stop.setAttribute('stop-opacity', s.opacity);
-        grad.appendChild(stop);
-      });
-      defs.appendChild(grad);
-
-      const maskRect = mkSVG('rect');
-      maskRect.setAttribute('x', '0');
-      maskRect.setAttribute('y', '0');
-      maskRect.setAttribute('width', '100%');
-      maskRect.setAttribute('height', '100%');
-      maskRect.setAttribute('fill', 'url(#routeFogGrad)');
-      mask.appendChild(maskRect);
-      defs.appendChild(mask);
+      // Blur filters for organic soft clouds
+      defs.innerHTML = `
+        <filter id="cloudBlur" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="11" />
+        </filter>
+        <filter id="mistBlur" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="17" />
+        </filter>
+        <mask id="trailMistMask">
+          <linearGradient id="trailMistGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#fff" stop-opacity="1" />
+            <stop offset="68%"  stop-color="#fff" stop-opacity="1" />
+            <stop offset="78%"  stop-color="#fff" stop-opacity="0.8" />
+            <stop offset="88%"  stop-color="#fff" stop-opacity="0.35" />
+            <stop offset="98%"  stop-color="#fff" stop-opacity="0.08" />
+            <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+          </linearGradient>
+          <rect x="0" y="0" width="100%" height="100%" fill="url(#trailMistGrad)" />
+        </mask>
+      `;
       svg.appendChild(defs);
 
-      // Build smooth cubic Bézier curve
-      let d = `M ${NODES[0].x} ${NODES[0].y}`;
-      let contourD = `M ${NODES[0].x} ${NODES[0].y + 10}`;
-      for (let i = 1; i < NODES.length; i++) {
-        const a = NODES[i - 1], b = NODES[i];
-        const cpx = a.x + (b.x - a.x) * 0.5;
-        d += ` C ${cpx} ${a.y} ${cpx} ${b.y} ${b.x} ${b.y}`;
-        contourD += ` C ${cpx} ${a.y + 10} ${cpx} ${b.y + 10} ${b.x} ${b.y + 10}`;
-      }
+      // ── Abstract Cartographic Survey Markers (no figurative icons) ──
+      // Each milestone gets a unique minimal geometric glyph:
+      // M1 → elevation contour rings  M2 → compass crosshair
+      // M3 → signal triangulation     M4 → grid intersection mark
+      const surveyG = mkSVG('g');
+      surveyG.setAttribute('class', 'map-sketches');
+      surveyG.innerHTML = `
+        <!-- M1: Elevation contour rings (topographic circle ripples) at Origin ~x:235,y:155 -->
+        <g class="map-survey" transform="translate(105, 185)" opacity="0.55">
+          <ellipse cx="0" cy="0" rx="36" ry="16" fill="none" stroke="var(--fg)" stroke-width="0.85" />
+          <ellipse cx="0" cy="0" rx="26" ry="10" fill="none" stroke="var(--fg)" stroke-width="0.8" />
+          <ellipse cx="0" cy="0" rx="15" ry="6" fill="none" stroke="var(--fg)" stroke-width="0.75" />
+          <line x1="0" y1="-18" x2="0" y2="-28" stroke="var(--fg)" stroke-width="0.8" stroke-dasharray="2 2" />
+          <circle cx="0" cy="0" r="2" fill="var(--fg)" />
+        </g>
 
-      // Secondary terrain contour (masked)
-      const contourPath = mkSVG('path');
-      contourPath.setAttribute('d', contourD);
-      contourPath.setAttribute('class', 'map-path-contour');
-      contourPath.setAttribute('mask', 'url(#routeFogMask)');
-      svg.appendChild(contourPath);
+        <!-- M2: Compass rose / crosshair (precision instrument) at HW&Ops ~x:360,y:225 -->
+        <g class="map-survey" transform="translate(310, 262)" opacity="0.5">
+          <circle cx="0" cy="0" r="18" fill="none" stroke="var(--fg)" stroke-width="0.85" stroke-dasharray="4 3" />
+          <line x1="-22" y1="0" x2="22" y2="0" stroke="var(--fg)" stroke-width="0.9" />
+          <line x1="0" y1="-22" x2="0" y2="22" stroke="var(--fg)" stroke-width="0.9" />
+          <line x1="-14" y1="-14" x2="14" y2="14" stroke="var(--fg)" stroke-width="0.55" opacity="0.5" />
+          <line x1="14" y1="-14" x2="-14" y2="14" stroke="var(--fg)" stroke-width="0.55" opacity="0.5" />
+          <circle cx="0" cy="-22" r="2" fill="var(--fg)" />
+          <circle cx="0" cy="0" r="3.5" fill="none" stroke="var(--fg)" stroke-width="1" />
+          <circle cx="0" cy="0" r="1.5" fill="var(--fg)" />
+        </g>
 
-      // Main dashed treasure route (masked into fog)
-      const path = mkSVG('path');
-      path.setAttribute('d', d);
-      path.setAttribute('class', 'map-path');
-      path.setAttribute('mask', 'url(#routeFogMask)');
-      svg.appendChild(path);
+        <!-- M3: Signal triangulation / trilateration (3 nodes + dashed arcs) at Scale ~x:505,y:145 -->
+        <g class="map-survey" transform="translate(460, 56)" opacity="0.5">
+          <circle cx="-18" cy="18" r="3" fill="none" stroke="var(--fg)" stroke-width="0.85" />
+          <circle cx="18"  cy="18" r="3" fill="none" stroke="var(--fg)" stroke-width="0.85" />
+          <circle cx="0"   cy="-6" r="3" fill="none" stroke="var(--fg)" stroke-width="0.85" />
+          <line x1="-18" y1="18" x2="18" y2="18" stroke="var(--fg)" stroke-width="0.75" stroke-dasharray="3 2" />
+          <line x1="-18" y1="18" x2="0"  y2="-6" stroke="var(--fg)" stroke-width="0.75" stroke-dasharray="3 2" />
+          <line x1="18"  y1="18" x2="0"  y2="-6" stroke="var(--fg)" stroke-width="0.75" stroke-dasharray="3 2" />
+          <path d="M -18 18 A 24 24 0 0 1 18 18" fill="none" stroke="var(--fg)" stroke-width="0.6" opacity="0.45" />
+          <path d="M 0 -6 A 18 18 0 0 1 18 18" fill="none" stroke="var(--fg)" stroke-width="0.6" opacity="0.45" />
+        </g>
 
-      // Render Nodes
-      NODES.forEach((nd) => {
-        if (nd.type === 'start') {
-          const g = mkSVG('g');
-          g.setAttribute('class', 'map-node-start-group');
-          const ring = mkSVG('circle');
-          ring.setAttribute('cx', nd.x);
-          ring.setAttribute('cy', nd.y);
-          ring.setAttribute('r', '8');
-          ring.setAttribute('class', 'map-node-ring');
-          g.appendChild(ring);
+        <!-- M4: Grid intersection / survey benchmark at Team ~x:660,y:235 -->
+        <g class="map-survey" transform="translate(600, 270)" opacity="0.5">
+          <rect x="-20" y="-20" width="40" height="40" fill="none" stroke="var(--fg)" stroke-width="0.75" stroke-dasharray="4 3" />
+          <line x1="-26" y1="0" x2="26" y2="0" stroke="var(--fg)" stroke-width="0.85" />
+          <line x1="0" y1="-26" x2="0" y2="26" stroke="var(--fg)" stroke-width="0.85" />
+          <rect x="-4" y="-4" width="8" height="8" fill="none" stroke="var(--fg)" stroke-width="1.1" />
+          <rect x="-1.5" y="-1.5" width="3" height="3" fill="var(--fg)" />
+          <line x1="-20" y1="-20" x2="-14" y2="-14" stroke="var(--fg)" stroke-width="0.55" opacity="0.45" />
+          <line x1="20" y1="-20" x2="14" y2="-14" stroke="var(--fg)" stroke-width="0.55" opacity="0.45" />
+          <line x1="-20" y1="20" x2="-14" y2="14" stroke="var(--fg)" stroke-width="0.55" opacity="0.45" />
+          <line x1="20" y1="20" x2="14" y2="14" stroke="var(--fg)" stroke-width="0.55" opacity="0.45" />
+        </g>
+      `;
+      svg.appendChild(surveyG);
 
-          const dot = mkSVG('circle');
-          dot.setAttribute('cx', nd.x);
-          dot.setAttribute('cy', nd.y);
-          dot.setAttribute('r', '4');
-          dot.setAttribute('class', 'map-node-start');
-          g.appendChild(dot);
 
-          g.appendChild(mkSVGText('ORIGIN · 00°N', nd.x, nd.y - 18, 'map-label-tag', 'start'));
-          svg.appendChild(g);
-        } else if (nd.type === 'milestone') {
-          const g = mkSVG('g');
-          g.setAttribute('class', 'map-node-group');
-          g.setAttribute('tabindex', '0');
-          g.setAttribute('role', 'button');
-          g.setAttribute('aria-label', `${nd.item.title} — ${nd.item.year}. Click to read experience story.`);
+      // ── The Continuous Undulating Route Path ──
+      // Starting from origin, arching through all 4 milestones, reaching the waypoint,
+      // and continuing smoothly into the soft clouds!
+      const pathD = `
+        M 65 220
+        C 115 220, 160 155, 235 155
+        C 290 155, 315 225, 360 225
+        C 410 225, 450 145, 505 145
+        C 560 145, 610 235, 660 235
+        C 705 235, 735 180, 775 180
+        C 815 180, 845 205, 880 195
+        C 920 185, 960 210, 1000 195
+        C 1040 180, 1075 185, 1110 180
+      `;
 
-          // Outer halo
-          const halo = mkSVG('circle');
-          halo.setAttribute('cx', nd.x);
-          halo.setAttribute('cy', nd.y);
-          halo.setAttribute('r', '10');
-          halo.setAttribute('class', 'map-node-ring');
-          g.appendChild(halo);
+      const routePath = mkSVG('path');
+      routePath.setAttribute('d', pathD);
+      routePath.setAttribute('class', 'map-path');
+      routePath.setAttribute('mask', 'url(#trailMistMask)');
+      svg.appendChild(routePath);
 
-          // Node core
-          const core = mkSVG('circle');
-          core.setAttribute('cx', nd.x);
-          core.setAttribute('cy', nd.y);
-          core.setAttribute('r', '5.5');
-          core.setAttribute('class', 'map-node-core');
-          g.appendChild(core);
+      // ── Nodes & Interactive Milestones ──
+      // Start Node
+      const startG = mkSVG('g');
+      startG.setAttribute('class', 'map-node-start-group');
+      const startCircle = mkSVG('circle');
+      startCircle.setAttribute('cx', '65');
+      startCircle.setAttribute('cy', '220');
+      startCircle.setAttribute('r', '5.5');
+      startCircle.setAttribute('class', 'map-node-start');
+      startG.appendChild(startCircle);
+      svg.appendChild(startG);
 
-          // Staggered labels (Above vs Below)
-          const isAbove = nd.isAbove;
-          const xPos = nd.x;
+      // Milestone Configurations matching user image
+      const DESKTOP_NODES = [
+        {
+          x: 235, y: 155,
+          textX: 110, textY: 95,
+          isAbove: true,
+          item: milestones[0],
+        },
+        {
+          x: 360, y: 225,
+          textX: 360, textY: 260,
+          isAbove: false,
+          item: milestones[1],
+        },
+        {
+          x: 505, y: 145,
+          textX: 505, textY: 50,
+          isAbove: true,
+          item: milestones[2],
+        },
+        {
+          x: 660, y: 235,
+          textX: 660, textY: 270,
+          isAbove: false,
+          item: milestones[3],
+        },
+      ];
 
-          if (isAbove) {
-            g.appendChild(mkSVGText(nd.item.badge, xPos, nd.y - 56, 'map-label-tag', 'middle'));
-            g.appendChild(mkSVGText(nd.item.year,  xPos, nd.y - 42, 'map-label-year', 'middle'));
-            g.appendChild(mkSVGText(nd.item.title, xPos, nd.y - 25, 'map-label-title', 'middle'));
-            g.appendChild(mkSVGText(`"${nd.item.reflection}"`, xPos, nd.y - 10, 'map-label-reflection', 'middle'));
-          } else {
-            g.appendChild(mkSVGText(nd.item.badge, xPos, nd.y + 24, 'map-label-tag', 'middle'));
-            g.appendChild(mkSVGText(nd.item.year,  xPos, nd.y + 38, 'map-label-year', 'middle'));
-            g.appendChild(mkSVGText(nd.item.title, xPos, nd.y + 55, 'map-label-title', 'middle'));
-            g.appendChild(mkSVGText(`"${nd.item.reflection}"`, xPos, nd.y + 70, 'map-label-reflection', 'middle'));
-          }
+      DESKTOP_NODES.forEach((nd) => {
+        const g = mkSVG('g');
+        g.setAttribute('class', 'map-node-group');
+        g.setAttribute('tabindex', '0');
+        g.setAttribute('role', 'button');
+        g.setAttribute('aria-label', `${nd.item.title} — ${nd.item.year}. Click to read case study.`);
 
-          // Interactive Sneak Peek on Hover & Focus
-          g.addEventListener('mouseenter', () => showMapSneakPeek(g, stage, nd.item));
-          g.addEventListener('mouseleave', hideMapSneakPeek);
-          g.addEventListener('focus', () => showMapSneakPeek(g, stage, nd.item));
-          g.addEventListener('blur', hideMapSneakPeek);
+        // Outer halo
+        const halo = mkSVG('circle');
+        halo.setAttribute('cx', nd.x);
+        halo.setAttribute('cy', nd.y);
+        halo.setAttribute('r', '10');
+        halo.setAttribute('class', 'map-node-ring');
+        g.appendChild(halo);
 
-          // Click / Keydown opens modal
-          g.addEventListener('click', () => {
+        // Core dot
+        const core = mkSVG('circle');
+        core.setAttribute('cx', nd.x);
+        core.setAttribute('cy', nd.y);
+        core.setAttribute('r', '5');
+        core.setAttribute('class', 'map-node-core');
+        g.appendChild(core);
+
+        // Typography labels
+        const anchor = nd.isAbove && nd.textX !== nd.x ? 'middle' : 'middle';
+        const tx = nd.textX;
+        const ty = nd.textY;
+
+        g.appendChild(mkSVGText(nd.item.badge, tx, ty, 'map-label-tag', anchor));
+        g.appendChild(mkSVGText(nd.item.year, tx, ty + 16, 'map-label-year', anchor));
+        g.appendChild(mkSVGText(nd.item.title, tx, ty + 34, 'map-label-title', anchor));
+        g.appendChild(mkSVGText(`"${nd.item.reflection}"`, tx, ty + 50, 'map-label-reflection', anchor));
+
+        // Sneak Peek Hover & Focus Events
+        g.addEventListener('mouseenter', () => showMapSneakPeek(g, stage, nd.item));
+        g.addEventListener('mouseleave', hideMapSneakPeek);
+        g.addEventListener('focus', () => showMapSneakPeek(g, stage, nd.item));
+        g.addEventListener('blur', hideMapSneakPeek);
+
+        // Click opens modal
+        g.addEventListener('click', () => {
+          hideMapSneakPeek();
+          openModal('experience', nd.item.expIndex);
+        });
+        g.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
             hideMapSneakPeek();
             openModal('experience', nd.item.expIndex);
-          });
-          g.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              hideMapSneakPeek();
-              openModal('experience', nd.item.expIndex);
-            }
-          });
+          }
+        });
 
-          svg.appendChild(g);
-        } else if (nd.type === 'waypoint') {
-          // Treasure Marker / Waypoint Anchor Button to experience.html
-          const a = mkSVG('a');
-          a.setAttribute('href', 'experience.html');
-          a.setAttribute('class', 'map-waypoint-anchor');
-          a.setAttribute('aria-label', 'Explore the full journey on the Experience page');
-
-          // Expanding radar pulse circles
-          const radar = mkSVG('circle');
-          radar.setAttribute('cx', nd.x);
-          radar.setAttribute('cy', nd.y);
-          radar.setAttribute('r', '14');
-          radar.setAttribute('class', 'waypoint-radar');
-          a.appendChild(radar);
-
-          // Cartographic Waypoint Diamond
-          const diamond = mkSVG('polygon');
-          diamond.setAttribute('points', `${nd.x},${nd.y - 14} ${nd.x + 14},${nd.y} ${nd.x},${nd.y + 14} ${nd.x - 14},${nd.y}`);
-          diamond.setAttribute('class', 'waypoint-diamond');
-          a.appendChild(diamond);
-
-          // Engraved inner cross (X / Compass mark)
-          const cross1 = mkSVG('line');
-          cross1.setAttribute('x1', nd.x - 5);
-          cross1.setAttribute('y1', nd.y - 5);
-          cross1.setAttribute('x2', nd.x + 5);
-          cross1.setAttribute('y2', nd.y + 5);
-          cross1.setAttribute('class', 'waypoint-cross');
-          a.appendChild(cross1);
-
-          const cross2 = mkSVG('line');
-          cross2.setAttribute('x1', nd.x + 5);
-          cross2.setAttribute('y1', nd.y - 5);
-          cross2.setAttribute('x2', nd.x - 5);
-          cross2.setAttribute('y2', nd.y + 5);
-          cross2.setAttribute('class', 'waypoint-cross');
-          a.appendChild(cross2);
-
-          // Waypoint coordinate label
-          a.appendChild(mkSVGText('WAYPOINT · 04°N', nd.x, nd.y + 32, 'waypoint-tag', 'middle'));
-
-          // Floating Tooltip (reveals on hover/focus)
-          const tooltipG = mkSVG('g');
-          tooltipG.setAttribute('class', 'waypoint-tooltip');
-
-          const tooltipBg = mkSVG('rect');
-          tooltipBg.setAttribute('x', nd.x - 95);
-          tooltipBg.setAttribute('y', nd.y - 58);
-          tooltipBg.setAttribute('width', '190');
-          tooltipBg.setAttribute('height', '30');
-          tooltipBg.setAttribute('rx', '15');
-          tooltipBg.setAttribute('class', 'waypoint-tooltip-bg');
-          tooltipG.appendChild(tooltipBg);
-
-          const tooltipTxt = mkSVGText('Explore the full journey →', nd.x, nd.y - 39, 'waypoint-tooltip-text', 'middle');
-          tooltipG.appendChild(tooltipTxt);
-          a.appendChild(tooltipG);
-
-          svg.appendChild(a);
-        }
+        svg.appendChild(g);
       });
+
+      // ── Waypoint / Treasure Marker (Rock with Carved X & Pill Tooltip) ──
+      const waypointAnchor = mkSVG('a');
+      waypointAnchor.setAttribute('href', 'experience.html');
+      waypointAnchor.setAttribute('class', 'map-waypoint-anchor');
+      waypointAnchor.setAttribute('aria-label', 'Explore the full journey on Experience page');
+
+      const wpX = 745, wpY = 145;
+      waypointAnchor.innerHTML = `
+        <g class="map-waypoint-group" transform="translate(${wpX}, ${wpY})">
+          <!-- Radar pulse -->
+          <circle cx="28" cy="22" r="14" class="waypoint-radar" />
+
+          <!-- Little hand-drawn rock mound -->
+          <path d="M 6 48 Q 18 34 28 33 Q 40 34 50 48 Z" stroke="var(--fg)" stroke-width="1.3" fill="var(--bg)" />
+          <path d="M 20 40 L 24 44 M 34 38 L 36 45" stroke="var(--fg)" stroke-width="0.75" opacity="0.45" />
+          <path d="M 0 48 L 56 48" stroke="var(--fg)" stroke-width="0.8" stroke-dasharray="3 2" opacity="0.4" />
+
+          <!-- Carved X mark -->
+          <path d="M 28 33 L 28 22" stroke="var(--fg)" stroke-width="1.1" stroke-dasharray="2 2" />
+          <path d="M 22 16 L 34 28 M 34 16 L 22 28" stroke="var(--fg)" stroke-width="2.2" stroke-linecap="round" class="waypoint-x" />
+          <path d="M 18 11 L 15 8 M 38 11 L 41 8 M 28 9 L 28 5" stroke="var(--fg)" stroke-width="0.85" opacity="0.5" />
+
+          <!-- Floating Pill Tooltip -->
+          <g class="waypoint-pill-tooltip" transform="translate(28, -6)">
+            <rect x="-85" y="-14" width="170" height="27" rx="13.5" class="wp-pill-bg" />
+            <text x="0" y="4" text-anchor="middle" class="wp-pill-text">Explore the full journey →</text>
+          </g>
+        </g>
+      `;
+      svg.appendChild(waypointAnchor);
+
+      // ── Soft Organic Light-Gray Clouds / Mist (68% - 100%) ──
+      // Pure organic blobs with radial blur and neutral light gray color.
+      // Absolutely no hard rectangular borders!
+      const cloudsG = mkSVG('g');
+      cloudsG.setAttribute('class', 'map-soft-clouds');
+      cloudsG.innerHTML = `
+        <!-- Deep Ambient Mist (Very blurred) -->
+        <g filter="url(#mistBlur)" opacity="0.55">
+          <ellipse cx="940" cy="170" rx="110" ry="85" fill="var(--fog-color)" />
+          <ellipse cx="1020" cy="110" rx="120" ry="80" fill="var(--fog-color)" />
+          <ellipse cx="1010" cy="230" rx="110" ry="85" fill="var(--fog-color)" />
+          <ellipse cx="1080" cy="170" rx="100" ry="80" fill="var(--fog-color)" />
+        </g>
+
+        <!-- Billowing Cloud Puffs (Gentle blur) -->
+        <g filter="url(#cloudBlur)" opacity="0.65">
+          <circle cx="890" cy="190" r="42" fill="var(--fog-color)" />
+          <circle cx="940" cy="95" r="55" fill="var(--fog-color)" />
+          <circle cx="955" cy="175" r="68" fill="var(--fog-color)" />
+          <circle cx="940" cy="255" r="58" fill="var(--fog-color)" />
+          <circle cx="1020" cy="80" r="65" fill="var(--fog-color)" />
+          <circle cx="1030" cy="165" r="80" fill="var(--fog-color)" />
+          <circle cx="1015" cy="255" r="70" fill="var(--fog-color)" />
+          <circle cx="1090" cy="120" r="75" fill="var(--fog-color)" />
+          <circle cx="1090" cy="220" r="75" fill="var(--fog-color)" />
+        </g>
+
+        <!-- Delicate Organic Cloud Contours -->
+        <path d="M 870 195 C 880 170, 905 155, 930 160 C 945 145, 975 140, 995 150 C 1015 130, 1045 130, 1070 145" stroke="var(--fog-color)" stroke-width="1.2" fill="none" opacity="0.5" />
+        <path d="M 900 115 C 920 95, 950 90, 975 100 C 995 80, 1030 80, 1055 95" stroke="var(--fog-color)" stroke-width="1" fill="none" opacity="0.45" />
+        <path d="M 895 235 C 915 215, 945 215, 965 230 C 985 220, 1020 225, 1040 245" stroke="var(--fog-color)" stroke-width="1" fill="none" opacity="0.4" />
+
+        <!-- Subtle Flying Birds in the Sky -->
+        <path d="M 925 65 Q 930 60 935 65 Q 940 60 945 65" stroke="var(--fg)" stroke-width="0.9" fill="none" opacity="0.35" />
+        <path d="M 948 78 Q 951 74 955 78 Q 959 74 963 78" stroke="var(--fg)" stroke-width="0.8" fill="none" opacity="0.25" />
+      `;
+      svg.appendChild(cloudsG);
+
+      // ── Mystery Glyph '?' & 'TERRA INCOGNITA' ──
+      // Floating in the heart of the soft clouds, also clickable to experience.html
+      const mysteryAnchor = mkSVG('a');
+      mysteryAnchor.setAttribute('href', 'experience.html');
+      mysteryAnchor.setAttribute('class', 'map-mystery-anchor');
+      mysteryAnchor.setAttribute('aria-label', 'Explore the unknown journey on Experience page');
+
+      const mysteryG = mkSVG('g');
+      mysteryG.setAttribute('transform', 'translate(1005, 155)');
+
+      const qText = mkSVG('text');
+      qText.setAttribute('x', '0');
+      qText.setAttribute('y', '0');
+      qText.setAttribute('text-anchor', 'middle');
+      qText.setAttribute('class', 'map-mystery-glyph');
+      qText.textContent = '?';
+      mysteryG.appendChild(qText);
+
+      const subText = mkSVG('text');
+      subText.setAttribute('x', '0');
+      subText.setAttribute('y', '20');
+      subText.setAttribute('text-anchor', 'middle');
+      subText.setAttribute('class', 'map-mystery-sub');
+      subText.textContent = 'TERRA INCOGNITA';
+      mysteryG.appendChild(subText);
+
+      mysteryAnchor.appendChild(mysteryG);
+      svg.appendChild(mysteryAnchor);
 
       wrap.innerHTML = '';
       wrap.appendChild(svg);
     } else {
       // ══════════════════════════════════════════════
-      // MOBILE: VERTICAL SNEAK PEEK EXPEDITION TRAIL
+      // MOBILE: ADAPTIVE VERTICAL TREASURE TRAIL
       // ══════════════════════════════════════════════
       const VW = Math.max(320, wrap.clientWidth || 320);
       const VH = 720;
-
-      const NODES = [
-        { x: VW * 0.5,  y: 35,  type: 'start' },
-        { x: VW * 0.35, y: 130, type: 'milestone', isLeft: true,  item: milestones[0] },
-        { x: VW * 0.65, y: 260, type: 'milestone', isLeft: false, item: milestones[1] },
-        { x: VW * 0.35, y: 390, type: 'milestone', isLeft: true,  item: milestones[2] },
-        { x: VW * 0.65, y: 520, type: 'milestone', isLeft: false, item: milestones[3] },
-        { x: VW * 0.5,  y: 630, type: 'waypoint' },
-        { x: VW * 0.5,  y: 710, type: 'mystery' },
-      ];
 
       const svg = mkSVG('svg');
       svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
@@ -728,47 +798,37 @@ document.addEventListener('DOMContentLoaded', () => {
       svg.setAttribute('aria-label', 'Treasure map of engineering journey');
       svg.classList.add('exp-map-svg');
 
-      // Vertical mask
       const defs = mkSVG('defs');
-      const mask = mkSVG('mask');
-      mask.setAttribute('id', 'routeFogMaskMobile');
-
-      const grad = mkSVG('linearGradient');
-      grad.setAttribute('id', 'routeFogGradMobile');
-      grad.setAttribute('x1', '0%');
-      grad.setAttribute('y1', '0%');
-      grad.setAttribute('x2', '0%');
-      grad.setAttribute('y2', '100%');
-
-      const stops = [
-        { offset: '0%',   color: '#fff', opacity: '1' },
-        { offset: '72%',  color: '#fff', opacity: '1' },
-        { offset: '84%',  color: '#fff', opacity: '0.4' },
-        { offset: '94%',  color: '#fff', opacity: '0.08' },
-        { offset: '100%', color: '#000', opacity: '0' },
-      ];
-      stops.forEach(s => {
-        const stop = mkSVG('stop');
-        stop.setAttribute('offset', s.offset);
-        stop.setAttribute('stop-color', s.color);
-        stop.setAttribute('stop-opacity', s.opacity);
-        grad.appendChild(stop);
-      });
-      defs.appendChild(grad);
-
-      const maskRect = mkSVG('rect');
-      maskRect.setAttribute('x', '0');
-      maskRect.setAttribute('y', '0');
-      maskRect.setAttribute('width', '100%');
-      maskRect.setAttribute('height', '100%');
-      maskRect.setAttribute('fill', 'url(#routeFogGradMobile)');
-      mask.appendChild(maskRect);
-      defs.appendChild(mask);
+      defs.innerHTML = `
+        <filter id="cloudBlurM" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="9" />
+        </filter>
+        <mask id="trailMistMaskM">
+          <linearGradient id="trailMistGradM" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#fff" stop-opacity="1" />
+            <stop offset="70%"  stop-color="#fff" stop-opacity="1" />
+            <stop offset="85%"  stop-color="#fff" stop-opacity="0.4" />
+            <stop offset="98%"  stop-color="#fff" stop-opacity="0.08" />
+            <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+          </linearGradient>
+          <rect x="0" y="0" width="100%" height="100%" fill="url(#trailMistGradM)" />
+        </mask>
+      `;
       svg.appendChild(defs);
 
-      let d = `M ${NODES[0].x} ${NODES[0].y}`;
-      for (let i = 1; i < NODES.length; i++) {
-        const a = NODES[i - 1], b = NODES[i];
+      const MOBILE_NODES = [
+        { x: VW * 0.5,  y: 35,  type: 'start' },
+        { x: VW * 0.35, y: 130, type: 'milestone', isLeft: true,  item: milestones[0] },
+        { x: VW * 0.65, y: 260, type: 'milestone', isLeft: false, item: milestones[1] },
+        { x: VW * 0.35, y: 390, type: 'milestone', isLeft: true,  item: milestones[2] },
+        { x: VW * 0.65, y: 520, type: 'milestone', isLeft: false, item: milestones[3] },
+        { x: VW * 0.5,  y: 625, type: 'waypoint' },
+        { x: VW * 0.5,  y: 695, type: 'mystery' },
+      ];
+
+      let d = `M ${MOBILE_NODES[0].x} ${MOBILE_NODES[0].y}`;
+      for (let i = 1; i < MOBILE_NODES.length; i++) {
+        const a = MOBILE_NODES[i - 1], b = MOBILE_NODES[i];
         const cpy = a.y + (b.y - a.y) * 0.5;
         d += ` C ${a.x} ${cpy} ${b.x} ${cpy} ${b.x} ${b.y}`;
       }
@@ -776,10 +836,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const path = mkSVG('path');
       path.setAttribute('d', d);
       path.setAttribute('class', 'map-path');
-      path.setAttribute('mask', 'url(#routeFogMaskMobile)');
+      path.setAttribute('mask', 'url(#trailMistMaskM)');
       svg.appendChild(path);
 
-      NODES.forEach((nd) => {
+      MOBILE_NODES.forEach((nd) => {
         if (nd.type === 'start') {
           const dot = mkSVG('circle');
           dot.setAttribute('cx', nd.x);
@@ -793,7 +853,7 @@ document.addEventListener('DOMContentLoaded', () => {
           g.setAttribute('class', 'map-node-group');
           g.setAttribute('tabindex', '0');
           g.setAttribute('role', 'button');
-          g.setAttribute('aria-label', `${nd.item.title} — ${nd.item.year}. Click to read experience story.`);
+          g.setAttribute('aria-label', `${nd.item.title} — ${nd.item.year}. Click to read case study.`);
 
           const halo = mkSVG('circle');
           halo.setAttribute('cx', nd.x);
@@ -814,9 +874,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
           g.appendChild(mkSVGText(nd.item.year, textX, nd.y - 10, 'map-label-year', textAnchor));
           g.appendChild(mkSVGText(nd.item.title, textX, nd.y + 6, 'map-label-title', textAnchor));
-          g.appendChild(mkSVGText(`"${nd.item.reflection.slice(0, 38)}..."`, textX, nd.y + 20, 'map-label-reflection', textAnchor));
+          g.appendChild(mkSVGText(`"${nd.item.reflection.slice(0, 36)}..."`, textX, nd.y + 20, 'map-label-reflection', textAnchor));
 
-          // Sneak peek on hover
           g.addEventListener('mouseenter', () => showMapSneakPeek(g, stage, nd.item));
           g.addEventListener('mouseleave', hideMapSneakPeek);
 
@@ -837,14 +896,28 @@ document.addEventListener('DOMContentLoaded', () => {
           const a = mkSVG('a');
           a.setAttribute('href', 'experience.html');
           a.setAttribute('class', 'map-waypoint-anchor');
-          a.setAttribute('aria-label', 'Explore the full journey on the Experience page');
+          a.setAttribute('aria-label', 'Explore the full journey on Experience page');
 
-          const diamond = mkSVG('polygon');
-          diamond.setAttribute('points', `${nd.x},${nd.y - 12} ${nd.x + 12},${nd.y} ${nd.x},${nd.y + 12} ${nd.x - 12},${nd.y}`);
-          diamond.setAttribute('class', 'waypoint-diamond');
-          a.appendChild(diamond);
+          a.innerHTML = `
+            <g transform="translate(${nd.x - 24}, ${nd.y - 18})">
+              <path d="M 6 36 Q 16 26 24 25 Q 34 26 42 36 Z" stroke="var(--fg)" stroke-width="1.2" fill="var(--bg)" />
+              <path d="M 24 25 L 24 16" stroke="var(--fg)" stroke-width="1" stroke-dasharray="2 2" />
+              <path d="M 19 12 L 29 22 M 29 12 L 19 22" stroke="var(--fg)" stroke-width="1.8" stroke-linecap="round" />
+            </g>
+          `;
+          svg.appendChild(a);
+        } else if (nd.type === 'mystery') {
+          const a = mkSVG('a');
+          a.setAttribute('href', 'experience.html');
+          a.setAttribute('class', 'map-mystery-anchor');
+          a.setAttribute('aria-label', 'Explore the unknown journey on Experience page');
 
-          a.appendChild(mkSVGText('WAYPOINT', nd.x, nd.y + 28, 'waypoint-tag', 'middle'));
+          a.innerHTML = `
+            <g transform="translate(${nd.x}, ${nd.y})">
+              <text x="0" y="0" text-anchor="middle" class="map-mystery-glyph" style="font-size: 1.75rem;">?</text>
+              <text x="0" y="16" text-anchor="middle" class="map-mystery-sub">TERRA INCOGNITA</text>
+            </g>
+          `;
           svg.appendChild(a);
         }
       });
