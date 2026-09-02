@@ -393,10 +393,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
+  /* ── Interactive Sneak Peek Floating Card ─────────── */
+  let activeSneakPeekCard = null;
+
+  function getOrCreateSneakPeekCard(container) {
+    let card = container.querySelector('.map-sneak-peek');
+    if (!card) {
+      card = el('div', { class: 'map-sneak-peek' });
+      container.appendChild(card);
+    }
+    return card;
+  }
+
+  function showMapSneakPeek(nodeGroup, container, item) {
+    if (!item) return;
+    const card = getOrCreateSneakPeekCard(container);
+    activeSneakPeekCard = card;
+
+    const badge = item.badge || item.typeLabel || 'MILESTONE';
+    const year = item.year || item.period || '';
+    const title = item.title || item.role || '';
+    const subtitle = item.subtitle || (item.org ? item.org.split(',')[0] : '');
+    const desc = item.context || item.beginning || item.reflection || item.headline || (item.bullets ? item.bullets[0] : '');
+
+    card.innerHTML = `
+      <div class="msp-header">
+        <span class="msp-badge">${badge}</span>
+        <span class="msp-year">${year}</span>
+      </div>
+      <div class="msp-title">${title}</div>
+      ${subtitle ? `<div class="msp-sub">${subtitle}</div>` : ''}
+      <div class="msp-desc">${desc}</div>
+      <div class="msp-footer">
+        <span>Click to open case study</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    `;
+
+    // Position relative to container
+    const cRect = container.getBoundingClientRect();
+    const nRect = nodeGroup.getBoundingClientRect();
+
+    const nodeCenterX = (nRect.left + nRect.width / 2) - cRect.left;
+    const nodeCenterY = (nRect.top + nRect.height / 2) - cRect.top;
+
+    const cardW = Math.min(310, cRect.width - 24);
+    let left = nodeCenterX - cardW / 2;
+    left = Math.max(12, Math.min(cRect.width - cardW - 12, left));
+
+    let top = nodeCenterY - 170; // Position above node
+    if (top < 10) {
+      top = nodeCenterY + 30; // Flip below if near ceiling
+    }
+
+    card.style.left = `${Math.round(left)}px`;
+    card.style.top  = `${Math.round(top)}px`;
+    card.classList.add('active');
+  }
+
+  function hideMapSneakPeek() {
+    if (activeSneakPeekCard) {
+      activeSneakPeekCard.classList.remove('active');
+    }
+  }
+
   /* ── Experience preview SVG map: Treasure Map / Unfinished Journey (Home) ──── */
   function buildExpPreviewMap() {
     const wrap = document.getElementById('expPreviewMap');
     if (!wrap) return;
+
+    const stage = document.getElementById('expMapStage') || wrap;
 
     const milestones = D.journeyMilestones || [
       { year: '2022', badge: '01 · ORIGIN', title: 'Learning the Foundations', reflection: 'Started by learning how systems work from the ground up.', expIndex: 0 },
@@ -416,12 +482,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const NODES = [
         { x: 50,  y: 165, type: 'start' },
-        { x: 200, y: 110, type: 'milestone', isAbove: true,  item: milestones[0] },
-        { x: 385, y: 220, type: 'milestone', isAbove: false, item: milestones[1] },
-        { x: 570, y: 110, type: 'milestone', isAbove: true,  item: milestones[2] },
-        { x: 755, y: 220, type: 'milestone', isAbove: false, item: milestones[3] },
-        { x: 900, y: 165, type: 'waypoint' },
-        { x: 1070, y: 145, type: 'mystery' },
+        { x: 195, y: 110, type: 'milestone', isAbove: true,  item: milestones[0] },
+        { x: 375, y: 220, type: 'milestone', isAbove: false, item: milestones[1] },
+        { x: 555, y: 110, type: 'milestone', isAbove: true,  item: milestones[2] },
+        { x: 730, y: 220, type: 'milestone', isAbove: false, item: milestones[3] },
+        { x: 875, y: 165, type: 'waypoint' },
+        { x: 1080, y: 145, type: 'mystery' },
       ];
 
       const svg = mkSVG('svg');
@@ -554,10 +620,21 @@ document.addEventListener('DOMContentLoaded', () => {
             g.appendChild(mkSVGText(`"${nd.item.reflection}"`, xPos, nd.y + 70, 'map-label-reflection', 'middle'));
           }
 
-          g.addEventListener('click', () => openModal('experience', nd.item.expIndex));
+          // Interactive Sneak Peek on Hover & Focus
+          g.addEventListener('mouseenter', () => showMapSneakPeek(g, stage, nd.item));
+          g.addEventListener('mouseleave', hideMapSneakPeek);
+          g.addEventListener('focus', () => showMapSneakPeek(g, stage, nd.item));
+          g.addEventListener('blur', hideMapSneakPeek);
+
+          // Click / Keydown opens modal
+          g.addEventListener('click', () => {
+            hideMapSneakPeek();
+            openModal('experience', nd.item.expIndex);
+          });
           g.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
+              hideMapSneakPeek();
               openModal('experience', nd.item.expIndex);
             }
           });
@@ -739,10 +816,18 @@ document.addEventListener('DOMContentLoaded', () => {
           g.appendChild(mkSVGText(nd.item.title, textX, nd.y + 6, 'map-label-title', textAnchor));
           g.appendChild(mkSVGText(`"${nd.item.reflection.slice(0, 38)}..."`, textX, nd.y + 20, 'map-label-reflection', textAnchor));
 
-          g.addEventListener('click', () => openModal('experience', nd.item.expIndex));
+          // Sneak peek on hover
+          g.addEventListener('mouseenter', () => showMapSneakPeek(g, stage, nd.item));
+          g.addEventListener('mouseleave', hideMapSneakPeek);
+
+          g.addEventListener('click', () => {
+            hideMapSneakPeek();
+            openModal('experience', nd.item.expIndex);
+          });
           g.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
+              hideMapSneakPeek();
               openModal('experience', nd.item.expIndex);
             }
           });
@@ -1031,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     wrap.appendChild(hintBar);
 
-    const svgWrap = el('div', { class: 'exp-map-svg-container' });
+    const svgWrap = el('div', { class: 'exp-map-svg-container', style: 'position: relative;' });
     const svg = mkSVG('svg');
     svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
     svg.setAttribute('width', '100%');
@@ -1080,7 +1165,14 @@ document.addEventListener('DOMContentLoaded', () => {
         g.appendChild(mkSVGText(nd.item.org,  xPos, isAbove ? yBase - 14 : yBase + 14, 'map-label-org',  anchor));
         g.appendChild(mkSVGText(nd.item.role, xPos, isAbove ? yBase : yBase + 28, 'map-label-role', anchor));
 
+        // Interactive Sneak Peek on Hover & Focus
+        g.addEventListener('mouseenter', () => showMapSneakPeek(g, svgWrap, nd.item));
+        g.addEventListener('mouseleave', hideMapSneakPeek);
+        g.addEventListener('focus', () => showMapSneakPeek(g, svgWrap, nd.item));
+        g.addEventListener('blur', hideMapSneakPeek);
+
         const selectNode = () => {
+          hideMapSneakPeek();
           openModal('experience', nd.index);
         };
 

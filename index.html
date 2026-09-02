@@ -107,16 +107,25 @@
     <div class="exp-map-stage" id="expMapStage">
       <div class="exp-map-wrap" id="expPreviewMap" aria-label="Interactive career journey map"></div>
 
-      <!-- Monochrome Organic Fog / Unknown Veil -->
-      <div class="exp-map-fog" aria-hidden="true">
-        <div class="fog-gradient"></div>
-        <div class="fog-veil fog-veil--a"></div>
-        <div class="fog-veil fog-veil--b"></div>
+      <!-- Dark Storm Clouds Veil (Clickable to experience.html) -->
+      <a href="experience.html" class="exp-map-fog" aria-label="Enter uncharted dark clouds — Explore full experience">
+        <div class="fog-dark-clouds">
+          <svg class="dark-clouds-svg" viewBox="0 0 360 340" preserveAspectRatio="none" aria-hidden="true">
+            <path class="cloud-layer-back" d="M 50 0 C 15 45, 5 95, 45 145 C 10 190, 20 245, 65 285 C 35 315, 60 340, 105 340 L 360 340 L 360 0 Z" />
+            <path class="cloud-layer-front" d="M 95 0 C 70 50, 50 100, 85 155 C 60 205, 80 260, 120 295 C 95 325, 125 340, 165 340 L 360 340 L 360 0 Z" />
+          </svg>
+        </div>
+        <div class="fog-dark-gradient"></div>
+        <div class="fog-veil-dark"></div>
         <div class="fog-mystery-hint">
           <span class="fog-q-glyph">?</span>
           <span class="fog-q-sub">Terra Incognita</span>
+          <span class="fog-q-action">
+            <span>Explore full journey</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
         </div>
-      </div>
+      </a>
     </div>
 
     <!-- Mobile Exploration Anchor -->
