@@ -42,9 +42,12 @@
   const SATISFIED_PAUSE  = 500;
 
   // Dino starts this many pixels away from the cursor horizontally
-  // Large enough that clicking cursor doesn't trigger dino hitbox
   const INIT_OFFSET_X    = 160;
   const INIT_OFFSET_Y    = 50;
+
+  // Dead zone: if cursor center is within this many px of dino center,
+  // stop all dino movement and lock facing direction — prevents rapid flip jitter.
+  const DEAD_ZONE_RADIUS = 55;
 
   const MAX_DUST         = 24;
   const DUST_SPAWN_RATE  = 2;
@@ -404,75 +407,140 @@
     }
   }
 
-  /* ── Roar Shockwave (B&W expanding rings + debris) ── */
+  /* ── Roar Shockwave — Godzilla-grade ── */
   const roarRings = [];
   const roarDebris = [];
+  let shakeIntensity = 0; // Canvas shake state
 
   function spawnRoarShockwave(x, y) {
-    // 3 expanding concentric rings, B&W
-    for (let i = 0; i < 3; i++) {
+    const now = performance.now();
+
+    // 6 staggered concentric rings — each larger and slower than the last
+    const ringConfig = [
+      { delay:  0, initR:  3, maxR: 40,  decay: 0.022, lw: 2.2 },
+      { delay: 70, initR:  5, maxR: 68,  decay: 0.018, lw: 1.8 },
+      { delay:140, initR:  8, maxR: 96,  decay: 0.015, lw: 1.4 },
+      { delay:220, initR: 10, maxR:125,  decay: 0.012, lw: 1.1 },
+      { delay:310, initR: 12, maxR:155,  decay: 0.010, lw: 0.8 },
+      { delay:420, initR: 15, maxR:185,  decay: 0.008, lw: 0.5 },
+    ];
+    for (const cfg of ringConfig) {
       roarRings.push({
         x, y,
-        r: 4 + i * 8,
-        maxR: 45 + i * 18,
+        r: cfg.initR,
+        maxR: cfg.maxR,
         life: 1.0,
-        decay: 0.028 + i * 0.01,
-        delay: i * 80, // ms
-        born: performance.now() + i * 80,
+        decay: cfg.decay,
+        lw: cfg.lw,
+        born: now + cfg.delay,
       });
     }
-    // Debris — small B&W squares
-    for (let i = 0; i < 10; i++) {
+
+    // Cardinal pixel bursts — 8 directions, sharp pixel lines erupting outward
+    const directions = [
+      [0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]
+    ];
+    for (const [dx, dy] of directions) {
+      const burstCount = Math.floor(Math.random() * 3) + 4;
+      for (let j = 0; j < burstCount; j++) {
+        const speed = 2.5 + j * 1.4 + Math.random() * 1.2;
+        roarDebris.push({
+          x: x + dx * (4 + j * 3),
+          y: y + dy * (4 + j * 3),
+          vx: dx * speed + (Math.random() - 0.5) * 0.8,
+          vy: dy * speed - 0.4 + (Math.random() - 0.5) * 0.8,
+          size: j === 0 ? PX * 2.5 : (j === 1 ? PX * 1.8 : PX),
+          life: 1.0,
+          decay: 0.018 + Math.random() * 0.015,
+        });
+      }
+    }
+
+    // Additional random scatter debris
+    for (let i = 0; i < 18; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 3.5 + 1.0;
+      const speed = Math.random() * 5.5 + 1.5;
       roarDebris.push({
-        x: x + (Math.random() - 0.5) * 12,
-        y: y + (Math.random() - 0.5) * 12,
+        x: x + (Math.random() - 0.5) * 16,
+        y: y + (Math.random() - 0.5) * 16,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 1.5,
-        size: Math.random() > 0.5 ? PX * 1.5 : PX,
+        vy: Math.sin(angle) * speed - 2.0,
+        size: Math.random() > 0.6 ? PX * 2 : PX,
         life: 1.0,
-        decay: 0.025 + Math.random() * 0.02,
+        decay: 0.020 + Math.random() * 0.018,
       });
     }
+
+    // Trigger canvas shake
+    shakeIntensity = 7;
   }
 
-  /* ── Roar Sound: Deep low growl pulse ── */
+  /* ── Roar Sound: 4-oscillator Godzilla growl ── */
   function playRoarSound() {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
       const actx = new AudioCtx();
-      const now = actx.currentTime;
+      const master = actx.createGain();
+      master.gain.setValueAtTime(1.0, actx.currentTime);
+      master.connect(actx.destination);
+      const t = actx.currentTime;
 
-      // Low rumble oscillator
-      const osc1 = actx.createOscillator();
-      const gain1 = actx.createGain();
-      osc1.type = 'sawtooth';
-      osc1.frequency.setValueAtTime(60, now);
-      osc1.frequency.exponentialRampToValueAtTime(28, now + 0.5);
-      gain1.gain.setValueAtTime(0, now);
-      gain1.gain.linearRampToValueAtTime(0.07, now + 0.06);
-      gain1.gain.linearRampToValueAtTime(0.04, now + 0.35);
-      gain1.gain.linearRampToValueAtTime(0, now + 0.55);
-      osc1.connect(gain1);
-      gain1.connect(actx.destination);
-      osc1.start(now);
-      osc1.stop(now + 0.6);
+      // 1. Sub-bass body rumble (sawtooth, very low, long)
+      const sub = actx.createOscillator();
+      const subG = actx.createGain();
+      sub.type = 'sawtooth';
+      sub.frequency.setValueAtTime(48, t);
+      sub.frequency.exponentialRampToValueAtTime(22, t + 0.9);
+      subG.gain.setValueAtTime(0, t);
+      subG.gain.linearRampToValueAtTime(0.12, t + 0.04);
+      subG.gain.setValueAtTime(0.10, t + 0.5);
+      subG.gain.linearRampToValueAtTime(0, t + 1.0);
+      sub.connect(subG); subG.connect(master);
+      sub.start(t); sub.stop(t + 1.05);
 
-      // Mid growl harmonic
-      const osc2 = actx.createOscillator();
-      const gain2 = actx.createGain();
-      osc2.type = 'square';
-      osc2.frequency.setValueAtTime(90, now);
-      osc2.frequency.exponentialRampToValueAtTime(40, now + 0.4);
-      gain2.gain.setValueAtTime(0, now);
-      gain2.gain.linearRampToValueAtTime(0.04, now + 0.08);
-      gain2.gain.linearRampToValueAtTime(0, now + 0.45);
-      osc2.connect(gain2);
-      gain2.connect(actx.destination);
-      osc2.start(now);
-      osc2.stop(now + 0.5);
+      // 2. Mid growl (square wave, 2nd harmonic, drops fast)
+      const mid = actx.createOscillator();
+      const midG = actx.createGain();
+      mid.type = 'square';
+      mid.frequency.setValueAtTime(120, t);
+      mid.frequency.exponentialRampToValueAtTime(52, t + 0.6);
+      midG.gain.setValueAtTime(0, t);
+      midG.gain.linearRampToValueAtTime(0.07, t + 0.05);
+      midG.gain.linearRampToValueAtTime(0.03, t + 0.4);
+      midG.gain.linearRampToValueAtTime(0, t + 0.7);
+      mid.connect(midG); midG.connect(master);
+      mid.start(t); mid.stop(t + 0.75);
+
+      // 3. High roar attack (triangle, sharp transient punch)
+      const hi = actx.createOscillator();
+      const hiG = actx.createGain();
+      hi.type = 'triangle';
+      hi.frequency.setValueAtTime(340, t);
+      hi.frequency.exponentialRampToValueAtTime(80, t + 0.25);
+      hiG.gain.setValueAtTime(0, t);
+      hiG.gain.linearRampToValueAtTime(0.09, t + 0.025);
+      hiG.gain.linearRampToValueAtTime(0, t + 0.30);
+      hi.connect(hiG); hiG.connect(master);
+      hi.start(t); hi.stop(t + 0.35);
+
+      // 4. Tremolo growl texture (LFO-modulated noise feel)
+      const tremOsc = actx.createOscillator();
+      const tremG   = actx.createGain();
+      const lfo     = actx.createOscillator();
+      const lfoG    = actx.createGain();
+      tremOsc.type = 'sawtooth';
+      tremOsc.frequency.setValueAtTime(75, t);
+      tremOsc.frequency.exponentialRampToValueAtTime(35, t + 0.8);
+      lfo.type = 'sine';
+      lfo.frequency.setValueAtTime(18, t);
+      lfoG.gain.setValueAtTime(0.04, t);
+      lfo.connect(lfoG); lfoG.connect(tremG.gain);
+      tremG.gain.setValueAtTime(0.055, t);
+      tremG.gain.linearRampToValueAtTime(0, t + 0.85);
+      tremOsc.connect(tremG); tremG.connect(master);
+      lfo.start(t); lfo.stop(t + 0.9);
+      tremOsc.start(t); tremOsc.stop(t + 0.9);
     } catch (e) {}
   }
 
@@ -513,15 +581,32 @@
     const deltaY = foodY - snoutWorldY;
     const distToFood = Math.hypot(deltaX, deltaY);
 
-    /* ── C. Hover Detection ── */
-    // Cursor is far from dino (by INIT_OFFSET_X offset), so this rarely triggers accidentally.
-    // Keep a tighter hitbox to avoid false triggers.
-    const isHoveringDino = (
-      foodX >= dinoX + 4 &&
-      foodX <= dinoX + spriteW - 4 &&
-      foodY >= dinoY + 4 &&
-      foodY <= dinoY + spriteH - 4
-    );
+    /* ── C. Dead Zone — Jitter Prevention ──────────────────────────────
+       When the cursor is within DEAD_ZONE_RADIUS of the dino's center,
+       we treat it as "dino caught up / cursor is on top of dino".
+
+       Actions:
+         1. Hard-brake: multiply velocity by near-zero factor
+         2. Lock facing direction (no more left-right flip)
+         3. Keep FSM in LAZY_FOLLOW (interrupt CHASING/WAITING)
+
+       This eliminates the positive/negative deltaX oscillation that
+       causes the dino to jitter when it reaches or overlaps the cursor.
+    ── */
+    const dinoCenterX = dinoX + spriteW * 0.5;
+    const dinoCenterY = dinoY + spriteH * 0.5;
+    const distToCenter = Math.hypot(mouseX - dinoCenterX, mouseY - dinoCenterY);
+    const inDeadZone   = distToCenter < DEAD_ZONE_RADIUS;
+
+    if (inDeadZone) {
+      // Hard brake — stop oscillation immediately
+      velX *= 0.05;
+      velY *= 0.05;
+      // Interrupt any active chase/hunt to stop the dino
+      if (currentState === STATES.CHASING || currentState === STATES.WAITING || currentState === STATES.ANTICIPATING) {
+        currentState = STATES.LAZY_FOLLOW;
+      }
+    }
 
     /* ── C2. FSM ── */
     switch (currentState) {
@@ -625,11 +710,21 @@
 
     const currentSpeed = Math.hypot(velX, velY);
 
-    if (Math.abs(velX) > 0.3) {
-      isFacingLeft = velX < 0;
-    } else if (currentState === STATES.CHASING || currentState === STATES.ANTICIPATING) {
-      isFacingLeft = deltaX < 0;
+    // Only update facing direction when:
+    //  - NOT in dead zone (cursor on top of dino) — prevents rapid flip
+    //  - Speed is meaningful (> 0.5) OR dino is actively chasing
+    if (!inDeadZone) {
+      if (Math.abs(velX) > 0.5) {
+        isFacingLeft = velX < 0;
+      } else if (
+        (currentState === STATES.CHASING || currentState === STATES.ANTICIPATING) &&
+        Math.abs(deltaX) > 12
+      ) {
+        // Only flip toward food if clearly not ambiguous (deltaX > 12px)
+        isFacingLeft = deltaX < 0;
+      }
     }
+    // If in dead zone: isFacingLeft is frozen — no update
 
     /* ── E. Footprint Trail (slow walk only) ── */
     if (currentSpeed > 0.3 && currentSpeed < 2.2 && currentState === STATES.LAZY_FOLLOW) {
@@ -682,34 +777,61 @@
       ctx.fillRect(Math.round(p.x), Math.round(p.y), Math.ceil(p.size), Math.ceil(p.size));
     }
 
-    /* ── E4. Roar Shockwave Rings & Debris ── */
+    /* ── E4. Roar Shockwave Rings ── */
     for (let i = roarRings.length - 1; i >= 0; i--) {
       const rr = roarRings[i];
-      if (now < rr.born) continue;
+      if (now < rr.born) continue; // Staggered delay
       const elapsed = now - rr.born;
-      const t = Math.min(1, elapsed / 400);
-      rr.r = 4 + t * (rr.maxR - 4);
+      const expand  = Math.min(1, elapsed / 500);
+      // Ease-out expansion
+      const easedExpand = 1 - Math.pow(1 - expand, 2.5);
+      rr.r = rr.r + (rr.maxR - rr.r) * 0.045;
       rr.life -= rr.decay;
       if (rr.life <= 0) { roarRings.splice(i, 1); continue; }
+      // Outer ring (full circle)
       ctx.beginPath();
       ctx.arc(rr.x, rr.y, rr.r, 0, Math.PI * 2);
       ctx.strokeStyle = fg;
-      ctx.globalAlpha = rr.life * 0.55;
-      ctx.lineWidth = Math.max(0.5, rr.life * PX * 0.8);
+      ctx.globalAlpha = rr.life * 0.60;
+      ctx.lineWidth = Math.max(0.4, rr.lw * rr.life);
       ctx.stroke();
+      // Inner glow double-ring for the first 3 rings (most intense)
+      if (rr.lw > 1.0) {
+        ctx.beginPath();
+        ctx.arc(rr.x, rr.y, rr.r * 0.88, 0, Math.PI * 2);
+        ctx.globalAlpha = rr.life * 0.20;
+        ctx.lineWidth = rr.lw * 0.5 * rr.life;
+        ctx.stroke();
+      }
     }
+
+    /* ── E5. Roar Debris (cardinal bursts + scatter) ── */
     for (let i = roarDebris.length - 1; i >= 0; i--) {
       const p = roarDebris[i];
-      p.x += p.vx; p.y += p.vy;
-      p.vy += 0.12;
+      p.x  += p.vx; p.y  += p.vy;
+      p.vx *= 0.93;  // Drag
+      p.vy += 0.15;  // Gravity
       p.life -= p.decay;
       if (p.life <= 0) { roarDebris.splice(i, 1); continue; }
       ctx.fillStyle = fg;
-      ctx.globalAlpha = p.life * 0.7;
+      ctx.globalAlpha = p.life * 0.80;
       ctx.fillRect(Math.round(p.x), Math.round(p.y), Math.ceil(p.size), Math.ceil(p.size));
     }
 
+    /* ── E6. Canvas Shake ── */
+    if (shakeIntensity > 0.1) {
+      const sx = (Math.random() - 0.5) * shakeIntensity;
+      const sy = (Math.random() - 0.5) * shakeIntensity;
+      ctx.save();
+      ctx.translate(sx, sy);
+      shakeIntensity *= 0.72; // Dampen rapidly
+    }
+
     ctx.globalAlpha = 1.0;
+
+    if (shakeIntensity > 0.1) {
+      ctx.restore(); // Undo canvas shake transform
+    }
 
     /* ── F. Animation Selection ── */
     walkTick++;
