@@ -212,10 +212,15 @@
   let foodScale       = 1.0;
   let foodVisible     = true;
 
+  // Smoothed velocity for jitter-free direction (Exponential Moving Average)
+  // Prevents rapid left-right flip when dino oscillates around cursor.
+  let smoothVelX = 0;
+  let smoothVelY = 0;
+  const VEL_SMOOTH = 0.15; // EMA weight (lower = more smoothing)
+
   // Roar state
-  let isRoaring      = false;
   let roarStartTime  = 0;
-  const ROAR_DURATION = 700;
+  const ROAR_DURATION = 900; // Extended for more drama — 6 rings + swell
 
   // Walking footstep trail marks
   const footprints = [];
@@ -280,29 +285,18 @@
     document.documentElement.classList.remove('custom-cursor-active');
   });
 
-  /* ── Click: Predator Roar ── */
-  document.addEventListener('click', e => {
+  /* ── Click: Predator Roar — triggers on any click, anywhere on page ── */
+  document.addEventListener('click', () => {
     if (!mouseInside || isTouchActive) return;
-
-    // Only trigger roar if click is within dino hitbox
-    const spriteCols = 26;
-    const spriteRows = 18;
-    const spriteW    = spriteCols * PX;
-    const spriteH    = spriteRows * PX;
-    const clickX = e.clientX, clickY = e.clientY;
-
-    const onDino = (
-      clickX >= dinoX - 8 &&
-      clickX <= dinoX + spriteW + 8 &&
-      clickY >= dinoY - 8 &&
-      clickY <= dinoY + spriteH + 8
-    );
-
-    if (onDino && !isRoaring && currentState !== STATES.EATING) {
-      isRoaring     = true;
-      roarStartTime = performance.now();
-      // Spawn B&W shockwave rings and debris
-      spawnRoarShockwave(dinoX + spriteW * 0.6, dinoY + spriteH * 0.25);
+    // Trigger roar on any click — it's a cool surprise, no hitbox required.
+    // Guard: don't interrupt eating, don't stack.
+    if (currentState !== STATES.EATING && currentState !== STATES.ROARING) {
+      currentState  = STATES.ROARING;
+      stateTimer    = performance.now();
+      roarStartTime = stateTimer;
+      const spriteCols = 26, spriteW = spriteCols * PX;
+      const spriteRows = 18, spriteH = spriteRows * PX;
+      spawnRoarShockwave(dinoX + spriteW * 0.6, dinoY + spriteH * 0.3);
       playRoarSound();
     }
   });
@@ -566,47 +560,24 @@
 
     const timeSinceMouseMove = now - lastMouseMoveTime;
 
-    /* ── B. Spatial math ── */
+    /* ── C. Spatial math ── */
     const spriteCols = 26;
     const spriteRows = 18;
     const spriteW    = spriteCols * PX;
     const spriteH    = spriteRows * PX;
 
-    const snoutRelX = isFacingLeft ? 0 : (spriteCols - 1) * PX;
-    const snoutRelY = 4.5 * PX;
+    const snoutRelX   = isFacingLeft ? 0 : (spriteCols - 1) * PX;
+    const snoutRelY   = 4.5 * PX;
     const snoutWorldX = dinoX + snoutRelX;
     const snoutWorldY = dinoY + snoutRelY;
 
-    const deltaX = foodX - snoutWorldX;
-    const deltaY = foodY - snoutWorldY;
+    const deltaX    = foodX - snoutWorldX;
+    const deltaY    = foodY - snoutWorldY;
     const distToFood = Math.hypot(deltaX, deltaY);
 
-    /* ── C. Dead Zone — Jitter Prevention ──────────────────────────────
-       When the cursor is within DEAD_ZONE_RADIUS of the dino's center,
-       we treat it as "dino caught up / cursor is on top of dino".
-
-       Actions:
-         1. Hard-brake: multiply velocity by near-zero factor
-         2. Lock facing direction (no more left-right flip)
-         3. Keep FSM in LAZY_FOLLOW (interrupt CHASING/WAITING)
-
-       This eliminates the positive/negative deltaX oscillation that
-       causes the dino to jitter when it reaches or overlaps the cursor.
-    ── */
-    const dinoCenterX = dinoX + spriteW * 0.5;
-    const dinoCenterY = dinoY + spriteH * 0.5;
-    const distToCenter = Math.hypot(mouseX - dinoCenterX, mouseY - dinoCenterY);
-    const inDeadZone   = distToCenter < DEAD_ZONE_RADIUS;
-
-    if (inDeadZone) {
-      // Hard brake — stop oscillation immediately
-      velX *= 0.05;
-      velY *= 0.05;
-      // Interrupt any active chase/hunt to stop the dino
-      if (currentState === STATES.CHASING || currentState === STATES.WAITING || currentState === STATES.ANTICIPATING) {
-        currentState = STATES.LAZY_FOLLOW;
-      }
-    }
+    // Update smoothed velocity EMA each frame
+    smoothVelX = smoothVelX * (1 - VEL_SMOOTH) + velX * VEL_SMOOTH;
+    smoothVelY = smoothVelY * (1 - VEL_SMOOTH) + velY * VEL_SMOOTH;
 
     /* ── C2. FSM ── */
     switch (currentState) {
@@ -710,21 +681,19 @@
 
     const currentSpeed = Math.hypot(velX, velY);
 
-    // Only update facing direction when:
-    //  - NOT in dead zone (cursor on top of dino) — prevents rapid flip
-    //  - Speed is meaningful (> 0.5) OR dino is actively chasing
-    if (!inDeadZone) {
-      if (Math.abs(velX) > 0.5) {
-        isFacingLeft = velX < 0;
-      } else if (
-        (currentState === STATES.CHASING || currentState === STATES.ANTICIPATING) &&
-        Math.abs(deltaX) > 12
-      ) {
-        // Only flip toward food if clearly not ambiguous (deltaX > 12px)
-        isFacingLeft = deltaX < 0;
-      }
+    // Direction update using SMOOTHED velocity (EMA) — not raw velX.
+    // This prevents the rapid left-right flip (jitter) when dino overshoots cursor,
+    // because smoothVelX won't flip sign until the movement has been consistent
+    // for several frames. Raw velX can oscillate ±0.3 every frame; smoothed won't.
+    const DIR_THRESHOLD = 0.25; // Minimum smoothed speed to update direction
+    if (Math.abs(smoothVelX) > DIR_THRESHOLD) {
+      isFacingLeft = smoothVelX < 0;
+    } else if (
+      (currentState === STATES.CHASING || currentState === STATES.ANTICIPATING) &&
+      Math.abs(deltaX) > 20  // Only use deltaX for direction if unambiguous (>20px)
+    ) {
+      isFacingLeft = deltaX < 0;
     }
-    // If in dead zone: isFacingLeft is frozen — no update
 
     /* ── E. Footprint Trail (slow walk only) ── */
     if (currentSpeed > 0.3 && currentSpeed < 2.2 && currentState === STATES.LAZY_FOLLOW) {
@@ -883,16 +852,35 @@
 
     const fullDinoMatrix = [...activeHead, ...activeLegs];
 
-    /* ── G. Draw Dino ── */
-    drawMatrix(
-      fullDinoMatrix,
-      Math.round(dinoX),
-      Math.round(dinoY + verticalBob * PX),
-      fg,
-      bg,
-      isFacingLeft,
-      1.0
-    );
+    /* ── G. Draw Dino ──
+       During ROARING: scale the sprite up slightly (Godzilla chest-puff)
+       using a sine envelope so it swells and returns naturally.
+    ── */
+    if (currentState === STATES.ROARING) {
+      const roarProgress = Math.min(1, (now - roarStartTime) / ROAR_DURATION);
+      // Sine envelope: 0 → peak at 40% → 0 again. Max +20% scale.
+      const swell = 1.0 + Math.sin(roarProgress * Math.PI) * 0.20;
+      const cx = Math.round(dinoX + spriteW * 0.5);
+      const cy = Math.round(dinoY + spriteH);      // Anchor at feet
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(swell, swell);
+      ctx.translate(-cx, -cy);
+      drawMatrix(
+        fullDinoMatrix,
+        Math.round(dinoX),
+        Math.round(dinoY + verticalBob * PX),
+        fg, bg, isFacingLeft, 1.0
+      );
+      ctx.restore();
+    } else {
+      drawMatrix(
+        fullDinoMatrix,
+        Math.round(dinoX),
+        Math.round(dinoY + verticalBob * PX),
+        fg, bg, isFacingLeft, 1.0
+      );
+    }
 
     /* ── H. Draw Meat Cursor ── */
     if (foodVisible && mouseInside) {
