@@ -61,11 +61,13 @@
     CHASING:      'CHASING',
     EATING:       'EATING',
     SATISFIED:    'SATISFIED',
+    SURPRISED:    'SURPRISED', // Hidden gem Easter Egg when cursor hovers on T-Rex
   };
 
   /* ═══════════════════════════════════════════════════════════
      3. PIXEL MATRICES (Facing Right)
      0 = transparent, 1 = solid body (FG), 2 = eye/socket, 3 = tooth/bone (BG/white)
+     6 = sparkle/heart eye (#ff2a5f), 7 = cute blushing cheek (#ff6b8b)
   ═══════════════════════════════════════════════════════════ */
 
   /* ── Slanted Cartoon Roast Drumstick (15 Cols × 15 Rows) ─────────
@@ -144,6 +146,35 @@
     [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  /* ── Head State 4: Surprised / Petted Happy Face (Easter Egg) ─
+     - Wide sparkling/heart eye (row 2, col 17 = 6)
+     - Cute pink blushing cheeks (row 3, col 15, 16 = 7)
+     - Happy cheerful smile (row 5, row 6)                        */
+  const HEAD_SURPRISED = [
+    //0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 0], // Sparkle eye (6)
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1], // Pink blush cheeks (7)
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0], // Cheerful open smile
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  /* ── Pixel Heart Bubble (7 Cols × 6 Rows) ──────────────────── */
+  const SPRITE_HEART = [
+    [0, 1, 1, 0, 1, 1, 0],
+    [1, 6, 6, 1, 6, 6, 1],
+    [1, 6, 6, 6, 6, 6, 1],
+    [0, 1, 6, 6, 6, 1, 0],
+    [0, 0, 1, 6, 1, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0],
   ];
 
   /* ── 4-Frame Leg Running Cycle (26 Cols × 7 Rows) ──────────── */
@@ -319,6 +350,14 @@
           // Bone Light-Tone Gray (Pixelated texture / highlight)
           ctx.fillStyle = '#b4b4ba';
           ctx.fillRect(drawX, drawY, Math.ceil(pxSize), Math.ceil(pxSize));
+        } else if (val === 6) {
+          // Heart / Sparkle Eye (Easter Egg)
+          ctx.fillStyle = '#ff2a5f';
+          ctx.fillRect(drawX, drawY, Math.ceil(pxSize), Math.ceil(pxSize));
+        } else if (val === 7) {
+          // Cute Blushing Cheek (Easter Egg)
+          ctx.fillStyle = '#ff6b8b';
+          ctx.fillRect(drawX, drawY, Math.ceil(pxSize), Math.ceil(pxSize));
         }
       }
     }
@@ -357,6 +396,75 @@
       });
     }
   }
+
+  /* ── Easter Egg Surprise Particles & Audio ──── */
+  const surpriseParticles = [];
+  let isBackflipping = false;
+  let backflipStartTime = 0;
+
+  function playRetroChirp() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const actx = new AudioCtx();
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.type = 'triangle';
+      const now = actx.currentTime;
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+      osc.frequency.exponentialRampToValueAtTime(1180, now + 0.16);
+      gain.gain.setValueAtTime(0.06, now);
+      gain.gain.linearRampToValueAtTime(0, now + 0.18);
+      osc.connect(gain);
+      gain.connect(actx.destination);
+      osc.start(now);
+      osc.stop(now + 0.18);
+    } catch (e) {}
+  }
+
+  function spawnSurpriseParticles(x, y) {
+    for (let i = 0; i < 5; i++) {
+      surpriseParticles.push({
+        x: x + (Math.random() - 0.5) * 16,
+        y: y - Math.random() * 8,
+        vx: (Math.random() - 0.5) * 0.9,
+        vy: -(Math.random() * 1.0 + 0.6),
+        size: Math.random() > 0.4 ? PX * 1.3 : PX,
+        color: Math.random() > 0.4 ? '#ff2a5f' : '#ffd700',
+        life: 1.0,
+        decay: 0.022 + Math.random() * 0.015,
+      });
+    }
+  }
+
+  function spawnConfetti(x, y) {
+    const colors = ['#ff2a5f', '#ff9900', '#ffd700', '#33cc66', '#3399ff', '#cc33ff'];
+    for (let i = 0; i < 24; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const spd = Math.random() * 4.2 + 1.8;
+      surpriseParticles.push({
+        x, y,
+        vx: Math.cos(angle) * spd,
+        vy: Math.sin(angle) * spd - 2.2,
+        size: Math.random() > 0.5 ? PX * 1.4 : PX * 0.9,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        life: 1.0,
+        decay: 0.02 + Math.random() * 0.02,
+      });
+    }
+  }
+
+  document.addEventListener('click', () => {
+    if (mouseInside && currentState === STATES.SURPRISED && !isBackflipping) {
+      isBackflipping = true;
+      backflipStartTime = performance.now();
+      const spriteW = 26 * PX;
+      const spriteH = 18 * PX;
+      spawnConfetti(dinoX + spriteW / 2, dinoY + spriteH / 2);
+      playRetroChirp();
+    }
+  });
 
   /* ═══════════════════════════════════════════════════════════
      5. MAIN ENGINE TICK LOOP (60 FPS)
@@ -399,7 +507,32 @@
     const deltaY = foodY - snoutWorldY;
     const distToFood = Math.hypot(deltaX, deltaY);
 
-    /* ── C. Deterministic FSM State Updates ─── */
+    /* ── C. Easter Egg: Cursor-on-Dino Detection (Fixes Jitter & Triggers Surprise) ── */
+    const isHoveringDino = (
+      foodX >= dinoX - 12 &&
+      foodX <= dinoX + spriteW + 12 &&
+      foodY >= dinoY - 12 &&
+      foodY <= dinoY + spriteH + 12
+    );
+
+    if (isHoveringDino && currentState !== STATES.EATING) {
+      // Direct hover / petting interaction — freeze rapid orientation flipping
+      velX *= 0.3;
+      velY *= 0.3;
+
+      if (currentState !== STATES.SURPRISED) {
+        currentState = STATES.SURPRISED;
+        stateTimer   = now;
+        spawnSurpriseParticles(dinoX + (isFacingLeft ? 8 * PX : 18 * PX), dinoY - 4 * PX);
+        playRetroChirp();
+      }
+    } else if (currentState === STATES.SURPRISED && !isBackflipping) {
+      if (now - stateTimer > 400) {
+        currentState = STATES.LAZY_FOLLOW;
+      }
+    }
+
+    /* ── C2. Deterministic FSM State Updates ─── */
     switch (currentState) {
       case STATES.LAZY_FOLLOW:
         if (timeSinceMouseMove >= IDLE_MS) {
@@ -462,7 +595,11 @@
     }
 
     /* ── D. Physics & Locomotion ────────────── */
-    if (currentState === STATES.CHASING) {
+    if (currentState === STATES.SURPRISED) {
+      // Gentle stop in surprise state
+      velX *= 0.4;
+      velY *= 0.4;
+    } else if (currentState === STATES.CHASING) {
       // Powerful sprint towards food
       velX += deltaX * DINO_CHASE_ACCEL;
       velY += deltaY * DINO_CHASE_ACCEL;
@@ -502,11 +639,13 @@
 
     const currentSpeed = Math.hypot(velX, velY);
 
-    // Dynamic facing direction based on movement vector
-    if (Math.abs(velX) > 0.3) {
-      isFacingLeft = velX < 0;
-    } else if (currentState === STATES.CHASING || currentState === STATES.ANTICIPATING) {
-      isFacingLeft = deltaX < 0;
+    // Dynamic facing direction based on movement vector (frozen during hover to prevent rapid jitter)
+    if (!isHoveringDino && currentState !== STATES.SURPRISED) {
+      if (Math.abs(velX) > 0.4) {
+        isFacingLeft = velX < 0;
+      } else if (currentState === STATES.CHASING || currentState === STATES.ANTICIPATING) {
+        isFacingLeft = deltaX < 0;
+      }
     }
 
     /* ── E. Footstep Dust Trail ─────────────── */
@@ -549,6 +688,21 @@
       ctx.globalAlpha = p.life * 0.85;
       ctx.fillRect(Math.round(p.x), Math.round(p.y), Math.ceil(p.size), Math.ceil(p.size));
     }
+
+    // Render & simulate surprise particles (floating hearts & confetti)
+    for (let i = surpriseParticles.length - 1; i >= 0; i--) {
+      const p = surpriseParticles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= p.decay;
+      if (p.life <= 0) {
+        surpriseParticles.splice(i, 1);
+        continue;
+      }
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.life;
+      ctx.fillRect(Math.round(p.x), Math.round(p.y), Math.ceil(p.size), Math.ceil(p.size));
+    }
     ctx.globalAlpha = 1.0;
 
     /* ── F. Animation Step Selection ────────── */
@@ -565,7 +719,10 @@
     let activeLegs = LEGS_STAND;
     let verticalBob = 0;
 
-    if (currentState === STATES.ANTICIPATING) {
+    if (currentState === STATES.SURPRISED) {
+      // Cute excited hopping bounce
+      verticalBob = Math.sin((now - stateTimer) * 0.02) > 0.2 ? -2 : 0;
+    } else if (currentState === STATES.ANTICIPATING) {
       activeLegs = LEGS_STAND;
       verticalBob = 1; // Slight crouch
     } else if (currentSpeed > 0.4) {
@@ -577,7 +734,9 @@
 
     // Choose appropriate head frame
     let activeHead = HEAD_NORMAL;
-    if (currentState === STATES.EATING) {
+    if (currentState === STATES.SURPRISED) {
+      activeHead = HEAD_SURPRISED;
+    } else if (currentState === STATES.EATING) {
       const eatElapsed = now - stateTimer;
       const progress = eatElapsed / EAT_DURATION;
       if (progress < 0.35) {
@@ -594,16 +753,58 @@
 
     const fullDinoMatrix = [...activeHead, ...activeLegs];
 
-    /* ── G. Draw T-Rex ──────────────────────── */
-    drawMatrix(
-      fullDinoMatrix,
-      Math.round(dinoX),
-      Math.round(dinoY + verticalBob * PX),
-      fg,
-      bg,
-      isFacingLeft,
-      1.0
-    );
+    /* ── G. Draw T-Rex (Normal or 360° Backflip) ── */
+    if (isBackflipping) {
+      const flipElapsed = now - backflipStartTime;
+      const flipProgress = Math.min(1.0, flipElapsed / 460);
+      const flipAngle = flipProgress * Math.PI * 2 * (isFacingLeft ? -1 : 1);
+      const flipJump = -Math.sin(flipProgress * Math.PI) * 32;
+
+      ctx.save();
+      const cx = Math.round(dinoX + spriteW / 2);
+      const cy = Math.round(dinoY + spriteH / 2 + flipJump);
+      ctx.translate(cx, cy);
+      ctx.rotate(flipAngle);
+      drawMatrix(
+        fullDinoMatrix,
+        -Math.round(spriteW / 2),
+        -Math.round(spriteH / 2),
+        fg,
+        bg,
+        isFacingLeft,
+        1.0
+      );
+      ctx.restore();
+
+      if (flipProgress >= 1.0) {
+        isBackflipping = false;
+      }
+    } else {
+      drawMatrix(
+        fullDinoMatrix,
+        Math.round(dinoX),
+        Math.round(dinoY + verticalBob * PX),
+        fg,
+        bg,
+        isFacingLeft,
+        1.0
+      );
+
+      // Floating heart bubble above head when surprised / petted
+      if (currentState === STATES.SURPRISED) {
+        const bubbleX = Math.round(dinoX + (isFacingLeft ? 4 * PX : 15 * PX));
+        const bubbleY = Math.round(dinoY - 10 * PX + Math.sin(now * 0.008) * 3);
+        drawMatrix(
+          SPRITE_HEART,
+          bubbleX,
+          bubbleY,
+          fg,
+          bg,
+          false,
+          0.9
+        );
+      }
+    }
 
     /* ── H. Draw Slanted Cartoon Meat Cursor ────────── */
     if (foodVisible && mouseInside) {
