@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Erliandika Syahputra</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="assets/images/web_logo-removebg-preview (1).png" type="image/png">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div id="inkLayer" class="ink-layer" aria-hidden="true">
+  <svg id="inkSVG" preserveAspectRatio="none">
+    <defs>
+      <filter id="inkBlob">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.014" numOctaves="3" seed="5" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="36" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+    <circle id="inkCircle" cx="0" cy="0" r="0" style="filter:url(#inkBlob)"/>
+  </svg>
+</div>
+<canvas id="cursor-canvas" aria-hidden="true"></canvas>
+
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="navbar__logo" aria-label="Home">ES</a>
+  <div class="navbar__divider" aria-hidden="true"></div>
+  <ul class="navbar__links" role="list">
+    <li><a href="index.html"      class="navbar__link">Home</a></li>
+    <li><a href="projects.html"   class="navbar__link">Projects</a></li>
+    <li><a href="experience.html" class="navbar__link">Experience</a></li>
+  </ul>
+  <button class="navbar__toggle" id="themeToggle" aria-label="Toggle colour theme" type="button">
+    <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+    <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</nav>
+
+<main>
+  <div class="page-404" role="main">
+
+    <!-- Pixel clouds (CSS box-shadow art) -->
+    <div aria-hidden="true" style="position:absolute;top:20%;left:10%;opacity:.13">
+      <div style="display:block;width:4px;height:4px;box-shadow:0 0 0 0 var(--fg),4px 0 0 0 var(--fg),8px 0 0 0 var(--fg),12px 0 0 0 var(--fg),4px -4px 0 0 var(--fg),8px -4px 0 0 var(--fg),0 4px 0 0 var(--fg),4px 4px 0 0 var(--fg),8px 4px 0 0 var(--fg),12px 4px 0 0 var(--fg),16px 4px 0 0 var(--fg)"></div>
+    </div>
+    <div aria-hidden="true" style="position:absolute;top:30%;right:15%;opacity:.09">
+      <div style="display:block;width:4px;height:4px;box-shadow:4px 0 0 0 var(--fg),8px 0 0 0 var(--fg),0 4px 0 0 var(--fg),4px 4px 0 0 var(--fg),8px 4px 0 0 var(--fg),12px 4px 0 0 var(--fg)"></div>
+    </div>
+
+    <p class="page-404__number" aria-label="Error 404">404</p>
+    <p class="page-404__label">Page not found</p>
+
+    <!-- Pixel T-Rex via CSS box-shadow -->
+    <div class="dino-container-404" aria-hidden="true">
+      <div class="dino-px"></div>
+    </div>
+
+    <p class="page-404__msg">
+      This page doesn't exist.<br>Let's get you back on track.
+    </p>
+    <div class="page-404__ground" aria-hidden="true"></div>
+
+    <a href="index.html" class="page-404__home">
+      Go Home
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/cursor.js"></script>
+</body>
+</html>
