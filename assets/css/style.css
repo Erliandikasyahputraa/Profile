@@ -494,7 +494,8 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 }
 .map-waypoint-anchor:hover .waypoint-x,
 .map-waypoint-anchor:focus-visible .waypoint-x {
-  transform: scale(1.18) rotate(45deg);
+  /* No excessive animation, keep it subtle if any. User requested no excessive movement, just relying on the ? hook. */
+  stroke-width: 2.6;
 }
 
 /* Floating Pill Tooltip above Waypoint Marker */
