@@ -641,20 +641,16 @@ document.addEventListener('DOMContentLoaded', () => {
       destinationAnchor.appendChild(fogHitRect);
 
       // ── Waypoint / X Marker ──
-      const wpX = 790, wpY = 179;
+      // Moved deeper into the fog (x=884, y=184 means center is at x=900, y=200)
+      const wpX = 884, wpY = 184;
       const waypointG = mkSVG('g');
       waypointG.innerHTML = `
         <g class="map-waypoint-group" transform="translate(${wpX}, ${wpY})">
           <!-- Radar pulse -->
           <circle cx="16" cy="16" r="14" class="waypoint-radar" />
-          <!-- Minimal X — already half-swallowed by fog -->
+          <!-- Minimal X — swallowed by fog -->
           <path d="M 7 7 L 25 25 M 25 7 L 7 25" stroke="var(--fg)" stroke-width="2.4" stroke-linecap="round" class="waypoint-x" />
           <rect x="1" y="1" width="30" height="30" fill="none" stroke="var(--fg)" stroke-width="1" opacity="0.30" />
-          <!-- Floating Pill Tooltip -->
-          <g class="waypoint-pill-tooltip" transform="translate(16, 0)">
-            <rect x="-78" y="-22" width="156" height="26" rx="13" class="wp-pill-bg" />
-            <text x="0" y="-5" text-anchor="middle" class="wp-pill-text">Explore the full journey →</text>
-          </g>
         </g>
       `;
       destinationAnchor.appendChild(waypointG);
@@ -725,6 +721,17 @@ document.addEventListener('DOMContentLoaded', () => {
       mysteryG.appendChild(subText);
 
       destinationAnchor.appendChild(mysteryG);
+
+      // ── Floating Pill Tooltip (Rendered on top of clouds) ──
+      const tooltipG = mkSVG('g');
+      tooltipG.innerHTML = `
+        <g class="waypoint-pill-tooltip" transform="translate(${wpX + 16}, ${wpY})">
+          <rect x="-78" y="-22" width="156" height="26" rx="13" class="wp-pill-bg" />
+          <text x="0" y="-5" text-anchor="middle" class="wp-pill-text">Explore the full journey →</text>
+        </g>
+      `;
+      destinationAnchor.appendChild(tooltipG);
+
       svg.appendChild(destinationAnchor);
 
       wrap.innerHTML = '';
