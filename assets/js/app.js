@@ -641,8 +641,8 @@ document.addEventListener('DOMContentLoaded', () => {
       destinationAnchor.appendChild(fogHitRect);
 
       // ── Waypoint / X Marker ──
-      // Center of X at x=1025, y=193 (on the path line). wpX = 1025 - 16 = 1009, wpY = 193 - 16 = 177
-      const wpX = 1009, wpY = 177;
+      // Center of X at x=965, y=198 (on the path line, middle of the clouds). wpX = 965 - 16 = 949, wpY = 198 - 16 = 182
+      const wpX = 949, wpY = 182;
       const waypointG = mkSVG('g');
       waypointG.innerHTML = `
         <g class="map-waypoint-group" transform="translate(${wpX}, ${wpY})">
@@ -703,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // ── Mystery Glyph '?' & 'TERRA INCOGNITA' ──
       // Positioned directly above the X marker
       const mysteryG = mkSVG('g');
-      mysteryG.setAttribute('transform', 'translate(1025, 138)');
+      mysteryG.setAttribute('transform', 'translate(965, 143)');
 
       const qText = mkSVG('text');
       qText.setAttribute('x', '0');
