@@ -1094,13 +1094,15 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 /* ── Minimalist Next Arrow Button (End of Carousel Track) ── */
 .projects-track__next-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   align-self: center;
   flex: 0 0 auto;
   text-decoration: none;
   color: inherit;
-  padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+  gap: 0.75rem;
+  padding: 1rem 2.25rem 1rem 1rem;
 }
 
 .projects-track__next-circle {
@@ -1133,6 +1135,41 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   transition: transform 240ms var(--ease);
 }
 .projects-track__next-btn:hover .projects-track__next-circle svg {
+  transform: translateX(2px);
+}
+
+.projects-track__next-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  text-align: center;
+}
+
+.projects-track__next-tag {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 200ms ease;
+}
+.projects-track__next-btn:hover .projects-track__next-tag {
+  color: var(--fg);
+}
+
+.projects-track__next-text {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg);
+  white-space: nowrap;
+  transition: transform 200ms ease;
+}
+.projects-track__next-btn:hover .projects-track__next-text {
   transform: translateX(2px);
 }
 

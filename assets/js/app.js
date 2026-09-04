@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
       track.appendChild(card);
     });
 
-    // ── End Hook: Minimalist Next Arrow Button (No Card) ──
+    // ── End Hook: Minimalist Next Arrow Button (with subtle label) ──
     const nextArrowBtn = el('a', {
       href: `${PAGES_REL}projects.html`,
       class: 'projects-track__next-btn',
@@ -516,9 +516,17 @@ document.addEventListener('DOMContentLoaded', () => {
       title: window.t ? window.t('projects_view_all') : 'View all projects',
     });
 
+    const isIndo = window.currentLang === 'id';
+    const tagText = isIndo ? 'ARSIP' : 'ARCHIVE';
+    const labelText = isIndo ? 'LIHAT SEMUA' : 'ALL PROJECTS';
+
     nextArrowBtn.innerHTML = `
       <div class="projects-track__next-circle">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+      <div class="projects-track__next-meta">
+        <span class="projects-track__next-tag" data-i18n="projects_view_all_tag">${tagText}</span>
+        <span class="projects-track__next-text" data-i18n="projects_view_all">${labelText}</span>
       </div>
     `;
 
