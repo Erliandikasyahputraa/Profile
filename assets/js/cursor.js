@@ -358,7 +358,7 @@
   /* ── Footprint Trail (appears when walking slowly) ── */
   function spawnFootprint(x, y, fg) {
     const dist = Math.hypot(x - lastFootstepX, y - lastFootstepY);
-    if (dist < 20) return; // Stamp every 20px of movement
+    if (dist < 14) return; // Stamp every 14px of movement
     lastFootstepX = x;
     lastFootstepY = y;
     footprints.push({
@@ -491,15 +491,19 @@
     }
   }
 
-  // Prime Web Audio on first user interaction so it's ready and unmuted
-  window.addEventListener('pointerdown', () => getAudioContext(), { once: true, passive: true });
-  window.addEventListener('keydown', () => getAudioContext(), { once: true, passive: true });
+  // Prime Web Audio on any user interaction so it is instantly unlocked and ready
+  ['click', 'pointerdown', 'mousedown', 'keydown', 'touchstart', 'mousemove', 'wheel'].forEach(evt => {
+    window.addEventListener(evt, () => {
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === 'suspended') ctx.resume();
+    }, { passive: true });
+  });
 
   /* ── ASMR Crispy Munch & Crunch Audio Synthesizer ── */
   function playAsmrBite(actx, startTime, intensity = 1.0) {
     const t = startTime;
     const master = actx.createGain();
-    master.gain.setValueAtTime(0.30, t);
+    master.gain.setValueAtTime(0.35, t);
     master.connect(actx.destination);
 
     // 1. ASMR Micro-Crackles: 6 staggered filtered noise bursts (crispy skin / chips crunch)
@@ -521,7 +525,7 @@
       gFilter.Q.setValueAtTime(4.2, gOffset);
 
       const gGain = actx.createGain();
-      gGain.gain.setValueAtTime(0.24 * intensity, gOffset);
+      gGain.gain.setValueAtTime(0.32 * intensity, gOffset);
       gGain.gain.exponentialRampToValueAtTime(0.001, gOffset + 0.022);
 
       gSource.connect(gFilter);
@@ -531,13 +535,13 @@
       gSource.stop(gOffset + 0.025);
     }
 
-    // 2. Soft Chewing Squelch (Gentle resonance — NO heavy knocking door thumps)
+    // 2. Soft Chewing Squelch
     const chewOsc = actx.createOscillator();
     const chewGain = actx.createGain();
     chewOsc.type = 'sine';
     chewOsc.frequency.setValueAtTime(380 * intensity, t);
     chewOsc.frequency.exponentialRampToValueAtTime(160 * intensity, t + 0.065);
-    chewGain.gain.setValueAtTime(0.11 * intensity, t);
+    chewGain.gain.setValueAtTime(0.18 * intensity, t);
     chewGain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
     chewOsc.connect(chewGain);
     chewGain.connect(master);
@@ -550,7 +554,7 @@
     snapOsc.type = 'triangle';
     snapOsc.frequency.setValueAtTime(1400 * intensity, t);
     snapOsc.frequency.exponentialRampToValueAtTime(360 * intensity, t + 0.035);
-    snapGain.gain.setValueAtTime(0.08 * intensity, t);
+    snapGain.gain.setValueAtTime(0.14 * intensity, t);
     snapGain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
     snapOsc.connect(snapGain);
     snapGain.connect(master);
@@ -563,6 +567,7 @@
     try {
       const actx = getAudioContext();
       if (!actx) return;
+      if (actx.state === 'suspended') actx.resume();
       const now = actx.currentTime;
 
       // Bite 1: Crispy big bite (t = 0s)
@@ -584,62 +589,65 @@
     try {
       const actx = getAudioContext();
       if (!actx) return;
+      if (actx.state === 'suspended') {
+        actx.resume().catch(() => {});
+      }
       const now = actx.currentTime;
 
-      // Rhythm throttle: walk ~160ms, sprint ~95ms
-      const minInterval = isSprint ? 0.095 : 0.16;
+      // Rhythm throttle: walk ~110ms, sprint ~75ms
+      const minInterval = isSprint ? 0.075 : 0.11;
       if (now - lastStepSoundTime < minInterval) return;
       lastStepSoundTime = now;
       isLeftStep = !isLeftStep;
 
       const t = now;
       const master = actx.createGain();
-      // Gentle, soothing, non-intrusive ASMR volume
-      const vol = isSprint ? 0.048 : 0.034;
+      // Crisp, clearly audible, pleasant ASMR volume
+      const vol = isSprint ? 0.38 : 0.28;
       master.gain.setValueAtTime(vol, t);
       master.connect(actx.destination);
 
       // Alternating melodious pentatonic frequencies: Left = 440Hz (A4), Right = 523Hz (C5)
       const baseFreq = isLeftStep ? 440 : 523.25;
-      const pitchMul = isSprint ? 0.88 : 1.0;
+      const pitchMul = isSprint ? 0.92 : 1.0;
 
-      // 1. Tactile Wood / Marimba Pop (Soft resonant sine envelope)
+      // 1. Tactile Wood / Marimba Pop (Soft resonant sine + triangle overtone)
       const osc = actx.createOscillator();
       const oscGain = actx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime((baseFreq + (Math.random() - 0.5) * 15) * pitchMul, t);
-      osc.frequency.exponentialRampToValueAtTime((baseFreq * 0.42) * pitchMul, t + 0.038);
-      oscGain.gain.setValueAtTime(0.20, t);
-      oscGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime((baseFreq + (Math.random() - 0.5) * 12) * pitchMul, t);
+      osc.frequency.exponentialRampToValueAtTime((baseFreq * 0.38) * pitchMul, t + 0.055);
+      oscGain.gain.setValueAtTime(0.48, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
       osc.connect(oscGain);
       oscGain.connect(master);
       osc.start(t);
-      osc.stop(t + 0.045);
+      osc.stop(t + 0.065);
 
       // 2. Delicate ASMR Ground Rustle / Patter (Soft high-frequency air tap)
-      const bufLen = Math.floor(actx.sampleRate * 0.018);
+      const bufLen = Math.floor(actx.sampleRate * 0.022);
       const noiseBuf = actx.createBuffer(1, bufLen, actx.sampleRate);
       const data = noiseBuf.getChannelData(0);
       for (let i = 0; i < bufLen; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.3));
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.28));
       }
       const noiseSource = actx.createBufferSource();
       noiseSource.buffer = noiseBuf;
 
       const filter = actx.createBiquadFilter();
       filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(isLeftStep ? 3400 : 4100, t);
-      filter.Q.setValueAtTime(4.8, t);
+      filter.frequency.setValueAtTime(isLeftStep ? 3600 : 4300, t);
+      filter.Q.setValueAtTime(4.2, t);
 
       const noiseGain = actx.createGain();
-      noiseGain.gain.setValueAtTime(0.09, t);
-      noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.019);
+      noiseGain.gain.setValueAtTime(0.32, t);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.024);
 
       noiseSource.connect(filter);
       filter.connect(noiseGain);
       noiseGain.connect(master);
       noiseSource.start(t);
-      noiseSource.stop(t + 0.022);
+      noiseSource.stop(t + 0.026);
     } catch (e) {}
   }
 
@@ -879,8 +887,8 @@
       isFacingLeft = deltaX < 0;
     }
 
-    /* ── E. Footprint Trail (slow walk only) ── */
-    if (currentSpeed > 0.3 && currentSpeed < 2.2 && currentState === STATES.LAZY_FOLLOW) {
+    /* ── E. Footprint Trail (appears whenever walking) ── */
+    if (currentSpeed > 0.12 && currentState === STATES.LAZY_FOLLOW) {
       const footX = dinoX + (isFacingLeft ? spriteW * 0.75 : spriteW * 0.25);
       const footY = dinoY + spriteH - PX;
       spawnFootprint(footX, footY, fg);

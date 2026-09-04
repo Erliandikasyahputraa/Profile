@@ -164,14 +164,109 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
+  /* ── Cyber Pixel Glitch Sound Synthesizer ── */
+  let appAudioCtx = null;
+  function getAppAudioCtx() {
+    try {
+      if (!appAudioCtx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) appAudioCtx = new AudioCtx();
+      }
+      if (appAudioCtx && appAudioCtx.state === 'suspended') {
+        appAudioCtx.resume().catch(() => {});
+      }
+      return appAudioCtx;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Prime Web Audio on any user gesture
+  ['click', 'pointerdown', 'mousedown', 'keydown', 'touchstart', 'mousemove', 'wheel'].forEach(evt => {
+    window.addEventListener(evt, () => {
+      const ctx = getAppAudioCtx();
+      if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
+    }, { passive: true });
+  });
+
+  function playPixelGlitchSound() {
+    try {
+      const actx = getAppAudioCtx();
+      if (!actx) return;
+      if (actx.state === 'suspended') actx.resume().catch(() => {});
+      const now = actx.currentTime;
+
+      const master = actx.createGain();
+      master.gain.setValueAtTime(0.42, now);
+      master.connect(actx.destination);
+
+      // 1. Digital Cyber Chirp (High-frequency FM pitch sweep)
+      const osc1 = actx.createOscillator();
+      const osc1Gain = actx.createGain();
+      osc1.type = 'sawtooth';
+      osc1.frequency.setValueAtTime(3200, now);
+      osc1.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+      osc1Gain.gain.setValueAtTime(0.45, now);
+      osc1Gain.gain.exponentialRampToValueAtTime(0.001, now + 0.055);
+      osc1.connect(osc1Gain);
+      osc1Gain.connect(master);
+      osc1.start(now);
+      osc1.stop(now + 0.06);
+
+      // 2. High-pass Digital Static Noise (Glitch burst)
+      const bufLen = Math.floor(actx.sampleRate * 0.045);
+      const noiseBuf = actx.createBuffer(1, bufLen, actx.sampleRate);
+      const data = noiseBuf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.35));
+      }
+      const noiseSource = actx.createBufferSource();
+      noiseSource.buffer = noiseBuf;
+
+      const filter = actx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(4200, now);
+      filter.Q.setValueAtTime(4.0, now);
+
+      const noiseGain = actx.createGain();
+      noiseGain.gain.setValueAtTime(0.42, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+
+      noiseSource.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(master);
+      noiseSource.start(now);
+      noiseSource.stop(now + 0.05);
+
+      // 3. Sub-blip byte click
+      const osc2 = actx.createOscillator();
+      const osc2Gain = actx.createGain();
+      osc2.type = 'square';
+      osc2.frequency.setValueAtTime(720, now + 0.012);
+      osc2.frequency.exponentialRampToValueAtTime(160, now + 0.055);
+      osc2Gain.gain.setValueAtTime(0.32, now + 0.012);
+      osc2Gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      osc2.connect(osc2Gain);
+      osc2Gain.connect(master);
+      osc2.start(now + 0.012);
+      osc2.stop(now + 0.065);
+    } catch (e) {}
+  }
+
   /* ── Profile Image Pixel Glitch Transition ── */
   function initProfileGlitch() {
     const photoContainer = document.querySelector('.hero__photo');
     if (!photoContainer) return;
 
-    photoContainer.addEventListener('mouseenter', () => {
+    const triggerGlitch = () => {
       photoContainer.classList.add('glitching');
-    });
+      playPixelGlitchSound();
+    };
+
+    photoContainer.addEventListener('mouseenter', triggerGlitch);
+    photoContainer.addEventListener('pointerenter', triggerGlitch);
+    photoContainer.addEventListener('touchstart', triggerGlitch, { passive: true });
+    photoContainer.addEventListener('click', triggerGlitch);
 
     photoContainer.addEventListener('mouseleave', () => {
       photoContainer.classList.remove('glitching');
