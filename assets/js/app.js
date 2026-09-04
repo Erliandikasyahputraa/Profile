@@ -1036,19 +1036,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ════════════════════════════════════════════
      5. EXPERIENCE PAGE (experience.html)
-     FULL WINDING JOURNEY MAP & CERTS
+     SNAKING JOURNEY MAP, POPUP DOSSIER & CERTS
   ════════════════════════════════════════════ */
   if (IS.exp) {
     initExperiencePage();
   }
 
   function initExperiencePage() {
-    buildFullWindingMap();
+    buildFullSnakingMap();
     buildExperienceCards();
     buildCertifications();
   }
 
-  function buildFullWindingMap() {
+  /* ── 3-Tier Snaking Road Map (Real Journey Trail) ── */
+  function buildFullSnakingMap() {
     const wrap = document.getElementById('expFullMap');
     if (!wrap || !D.experience || !D.experience.length) return;
 
@@ -1058,130 +1059,143 @@ document.addEventListener('DOMContentLoaded', () => {
     const isMobile = window.innerWidth < 768;
 
     if (!isMobile) {
-      const nodeCount = items.length;
-      const VW = Math.max(1100, nodeCount * 140 + 100);
-      const VH = 310;
-      const startX = 60;
-      const startY = 155;
-      const endX = VW - 60;
-      const stepX = (endX - startX) / (nodeCount + 0.5);
+      const VW = 960;
+      const VH = 520;
 
       const svg = mkSVG('svg', {
         viewBox: `0 0 ${VW} ${VH}`,
         width: '100%',
-        height: String(VH),
-        class: 'exp-full-svg',
-        'aria-label': 'Full professional journey map',
+        height: 'auto',
+        class: 'exp-snaking-svg',
+        'aria-label': 'Interactive career journey map',
       });
 
-      // Build sinusoidal node coordinates
-      const nodes = items.map((item, i) => {
-        const x = Math.round(startX + (i + 0.85) * stepX);
-        const isAbove = i % 2 === 0;
-        const y = isAbove ? 75 : 235;
-        const textY = isAbove ? 40 : 265;
-        return {
-          x,
-          y,
-          textX: x,
-          textY,
-          side: isAbove ? 'above' : 'below',
-          item,
-          id: `exp-card-${i}`,
-        };
-      });
+      // Coordinates for 8 milestones arranged in a 3-tier snaking road:
+      // Row 1: Left to Right (y = 85)
+      // Row 2: Right to Left (y = 255)
+      // Row 3: Left to Right (y = 425)
+      const NODE_POSITIONS = [
+        { x: 140, y: 85,  side: 'above', textY: 45 },  // 0: S1 Sistem Informasi (2022-2026)
+        { x: 480, y: 85,  side: 'above', textY: 45 },  // 1: IT Support 83 Workstations (2022-2024)
+        { x: 800, y: 85,  side: 'above', textY: 45 },  // 2: Network Deployment 256 APs (2024)
+        { x: 800, y: 255, side: 'below', textY: 295 }, // 3: Bangkit Mobile Dev (2024-2025)
+        { x: 480, y: 255, side: 'below', textY: 295 }, // 4: Head of Software Dev (2025-2026)
+        { x: 140, y: 255, side: 'below', textY: 295 }, // 5: Coding Camp Full-Stack (2025)
+        { x: 240, y: 425, side: 'above', textY: 385 }, // 6: Sertifikasi BNSP Web (2025-2028)
+        { x: 620, y: 425, side: 'above', textY: 385 }, // 7: Event & Community Leadership (2023-2025)
+      ];
 
-      // Generate smooth cubic bezier path connecting all nodes
-      let pathD = `M ${startX} ${startY}`;
-      let prevX = startX;
-      let prevY = startY;
+      // Smooth snaking path with U-turns
+      const pathD = `
+        M 50 85
+        L 800 85
+        C 920 85, 920 255, 800 255
+        L 140 255
+        C 20 255, 20 425, 140 425
+        L 850 425
+      `;
 
-      nodes.forEach((nd) => {
-        const cp1x = prevX + (nd.x - prevX) * 0.5;
-        const cp1y = prevY;
-        const cp2x = prevX + (nd.x - prevX) * 0.5;
-        const cp2y = nd.y;
-        pathD += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${nd.x} ${nd.y}`;
-        prevX = nd.x;
-        prevY = nd.y;
-      });
-
-      // Tail segment
-      const tailX = VW - 40;
-      const tailY = 155;
-      const cp1x = prevX + (tailX - prevX) * 0.5;
-      const cp1y = prevY;
-      const cp2x = prevX + (tailX - prevX) * 0.5;
-      const cp2y = tailY;
-      pathD += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${tailX} ${tailY}`;
-
-      const path = mkSVG('path', {
+      // Background road glow
+      const roadGlow = mkSVG('path', {
         d: pathD,
-        class: 'map-path main',
+        class: 'map-road-glow',
       });
-      svg.appendChild(path);
+      svg.appendChild(roadGlow);
 
-      // Origin dot
+      // Main dashed road
+      const roadPath = mkSVG('path', {
+        d: pathD,
+        class: 'map-road-track',
+      });
+      svg.appendChild(roadPath);
+
+      // Start origin pin
       svg.appendChild(mkSVG('circle', {
-        cx: String(startX),
-        cy: String(startY),
+        cx: '50',
+        cy: '85',
         r: '5',
         class: 'map-node-start',
       }));
 
-      nodes.forEach((nd) => {
-        if (!nd.item) return;
+      // Goal flag endpoint
+      const goalG = mkSVG('g', { class: 'map-goal-flag' });
+      goalG.appendChild(mkSVG('circle', { cx: '850', cy: '425', r: '6', class: 'map-goal-core' }));
+      const goalText = mkSVGText('PRESENT ⚡', 850, 405, 'map-goal-label', 'middle');
+      goalG.appendChild(goalText);
+      svg.appendChild(goalG);
+
+      // Render Waypoints
+      items.forEach((item, i) => {
+        const pos = NODE_POSITIONS[i];
+        if (!pos) return;
 
         const g = mkSVG('g', {
-          class: 'map-node-group',
+          class: 'map-node-group map-snaking-node',
           tabindex: '0',
           role: 'button',
-          'aria-label': `${nd.item.role} at ${nd.item.org} (${nd.item.year})`,
+          'aria-label': `${item.role} at ${item.org} (${item.period})`,
         });
 
-        // Outer halo ring
+        // Pulsing halo ring
         const halo = mkSVG('circle', {
-          cx: String(nd.x),
-          cy: String(nd.y),
-          r: '11',
+          cx: String(pos.x),
+          cy: String(pos.y),
+          r: '13',
           class: 'map-node-ring',
         });
         g.appendChild(halo);
 
         // Core dot
         const core = mkSVG('circle', {
-          cx: String(nd.x),
-          cy: String(nd.y),
-          r: '5.5',
+          cx: String(pos.x),
+          cy: String(pos.y),
+          r: '6',
           class: 'map-node-core',
         });
         g.appendChild(core);
 
-        // Typography labels
-        const isAbove = nd.side === 'above';
-        const anchor = nd.x > VW * 0.88 ? 'end' : (nd.x < VW * 0.15 ? 'start' : 'middle');
+        // Step index tag
+        const isAbove = pos.side === 'above';
         const isIndo = window.currentLang === 'id';
-        const tagText = (isIndo && nd.item.typeLabel_id) ? nd.item.typeLabel_id : (nd.item.typeLabel || 'MILESTONE');
+        const tagText = (isIndo && item.typeLabel_id) ? item.typeLabel_id : (item.typeLabel || 'MILESTONE');
+        const roleShort = item.role.length > 28 ? item.role.substring(0, 26) + '…' : item.role;
 
-        g.appendChild(mkSVGText(tagText.toUpperCase(), nd.textX, isAbove ? nd.textY - 14 : nd.textY, 'map-label-tag', anchor));
-        g.appendChild(mkSVGText(nd.item.period || nd.item.year, nd.textX, isAbove ? nd.textY : nd.textY + 14, 'map-label-year', anchor));
-        g.appendChild(mkSVGText(nd.item.role, nd.textX, isAbove ? nd.textY + 16 : nd.textY + 30, 'map-label-title', anchor));
+        // Tag badge
+        g.appendChild(mkSVGText(
+          `${String(i + 1).padStart(2, '0')} · ${tagText.toUpperCase()}`,
+          pos.x,
+          isAbove ? pos.textY - 14 : pos.textY,
+          'map-label-tag',
+          'middle'
+        ));
 
-        // Click / Enter scrolls down smoothly to the corresponding detail card
-        const scrollToCard = () => {
-          const target = document.getElementById(nd.id);
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            target.classList.add('highlighted');
-            setTimeout(() => target.classList.remove('highlighted'), 1500);
-          }
-        };
+        // Year/Period
+        g.appendChild(mkSVGText(
+          item.period || item.year,
+          pos.x,
+          isAbove ? pos.textY : pos.textY + 14,
+          'map-label-year',
+          'middle'
+        ));
 
-        g.addEventListener('click', scrollToCard);
+        // Title
+        g.appendChild(mkSVGText(
+          roleShort,
+          pos.x,
+          isAbove ? pos.textY + 16 : pos.textY + 30,
+          'map-label-title',
+          'middle'
+        ));
+
+        // Click opens Experience Dossier Popup
+        g.addEventListener('click', () => {
+          openExperienceModal(i);
+        });
+
         g.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            scrollToCard();
+            openExperienceModal(i);
           }
         });
 
@@ -1192,22 +1206,160 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  /* ── Dedicated Experience Dossier Modal Popup ── */
+  let currentExpModalIdx = 0;
+
+  function openExperienceModal(idx) {
+    if (!D.experience || !D.experience[idx]) return;
+    currentExpModalIdx = idx;
+
+    let modal = document.getElementById('expModal');
+    if (!modal) {
+      modal = el('div', {
+        id: 'expModal',
+        class: 'exp-modal-backdrop',
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-label': 'Experience Dossier Details',
+      });
+      document.body.appendChild(modal);
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.closest('#expModalClose')) {
+          closeExperienceModal();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (!modal.classList.contains('active')) return;
+        if (e.key === 'Escape') closeExperienceModal();
+        if (e.key === 'ArrowLeft' && currentExpModalIdx > 0) openExperienceModal(currentExpModalIdx - 1);
+        if (e.key === 'ArrowRight' && currentExpModalIdx < D.experience.length - 1) openExperienceModal(currentExpModalIdx + 1);
+      });
+    }
+
+    const item = D.experience[idx];
+    const isIndo = window.currentLang === 'id';
+    const total = D.experience.length;
+    const catText = (isIndo && item.typeLabel_id) ? item.typeLabel_id : (item.typeLabel || 'EXPERIENCE');
+    const headlineText = (isIndo && item.headline_id) ? item.headline_id : item.headline;
+    const bgText = (isIndo && item.beginning_id) ? item.beginning_id : item.beginning;
+    const workText = (isIndo && item.work_id) ? item.work_id : item.work;
+    const probText = (isIndo && item.problem_id) ? item.problem_id : item.problem;
+    const impactText = (isIndo && item.impact_id) ? item.impact_id : item.impact;
+
+    modal.innerHTML = `
+      <div class="exp-modal__dialog" role="document">
+        <button class="exp-modal__close-btn" id="expModalClose" aria-label="Close dossier">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <div class="exp-modal__header">
+          <div class="exp-modal__meta-row">
+            <span class="exp-modal__index">MILESTONE ${String(idx + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}</span>
+            <span class="exp-modal__cat">${catText.toUpperCase()}</span>
+            <span class="exp-modal__period">${item.period}</span>
+          </div>
+          <h2 class="exp-modal__role">${item.role}</h2>
+          <div class="exp-modal__org">${item.org} · <span class="exp-modal__loc">${item.location}</span></div>
+          ${item.gpa ? `<div class="exp-modal__gpa">GPA: ${item.gpa}</div>` : ''}
+        </div>
+
+        <div class="exp-modal__body">
+          ${headlineText ? `<div class="exp-modal__headline">${headlineText}</div>` : ''}
+
+          <div class="exp-modal__dossier-grid">
+            ${bgText ? `
+              <div class="exp-dossier-card">
+                <h3 class="exp-dossier-card__title">${isIndo ? '01 · LATAR BELAKANG & AWAL MULA' : '01 · CONTEXT & ORIGIN'}</h3>
+                <p class="exp-dossier-card__text">${bgText}</p>
+              </div>
+            ` : ''}
+
+            ${workText ? `
+              <div class="exp-dossier-card">
+                <h3 class="exp-dossier-card__title">${isIndo ? '02 · LINGKUP TEKNIS & EKSEKUSI' : '02 · ENGINEERING SCOPE & EXECUTION'}</h3>
+                <p class="exp-dossier-card__text">${workText}</p>
+              </div>
+            ` : ''}
+
+            ${(probText || impactText) ? `
+              <div class="exp-dossier-card">
+                <h3 class="exp-dossier-card__title">${isIndo ? '03 · TANTANGAN & HASIL TERUKUR' : '03 · CHALLENGE & KEY OUTCOME'}</h3>
+                ${probText ? `<p class="exp-dossier-card__text"><strong>${isIndo ? 'Tantangan:' : 'Challenge:'}</strong> ${probText}</p>` : ''}
+                ${impactText ? `<p class="exp-dossier-card__text" style="margin-top:0.5rem"><strong>${isIndo ? 'Dampak:' : 'Outcome:'}</strong> ${impactText}</p>` : ''}
+              </div>
+            ` : ''}
+          </div>
+
+          ${item.bullets && item.bullets.length ? `
+            <div class="exp-modal__section">
+              <h3 class="exp-modal__sec-label">${isIndo ? 'SOROTAN UTAMA' : 'KEY HIGHLIGHTS'}</h3>
+              <ul class="exp-modal__bullets">
+                ${item.bullets.map(b => `<li>${b}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          ${item.technologies && item.technologies.length ? `
+            <div class="exp-modal__section">
+              <h3 class="exp-modal__sec-label">${isIndo ? 'ALAT & TEKNOLOGI' : 'TOOLS & TECHNOLOGIES'}</h3>
+              <div class="exp-modal__tech-chips">
+                ${item.technologies.map(t => `<span class="exp-modal__chip">${t}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="exp-modal__footer">
+          <button class="exp-modal__nav-btn" ${idx === 0 ? 'disabled' : ''} onclick="openExperienceModal(${idx - 1})">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>${isIndo ? 'Milestone Sebelumnya' : 'Previous Milestone'}</span>
+          </button>
+          <button class="exp-modal__nav-btn" ${idx === total - 1 ? 'disabled' : ''} onclick="openExperienceModal(${idx + 1})">
+            <span>${isIndo ? 'Milestone Selanjutnya' : 'Next Milestone'}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  window.openExperienceModal = openExperienceModal;
+
+  function closeExperienceModal() {
+    const modal = document.getElementById('expModal');
+    if (modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  /* ── Interactive Cards List ── */
   function buildExperienceCards() {
     const listWrap = el('div', { class: 'exp-cards-list', id: 'expCardsList' });
     const fullWrap = document.getElementById('expFullMap');
     if (!fullWrap || !D.experience) return;
 
     D.experience.forEach((item, idx) => {
+      const isIndo = window.currentLang === 'id';
+      const catText = (isIndo && item.typeLabel_id) ? item.typeLabel_id : (item.typeLabel || 'EXPERIENCE');
+      const headlineText = (isIndo && item.headline_id) ? item.headline_id : item.headline;
+
       const card = el('article', {
         class: 'exp-detail-card',
         id: `exp-card-${idx}`,
-        role: 'listitem',
+        role: 'button',
+        tabindex: '0',
       });
 
       card.innerHTML = `
         <div class="exp-card__header">
           <div class="exp-card__badge-row">
-            <span class="exp-card__type-badge">${(item.typeLabel || 'EXPERIENCE').toUpperCase()}</span>
+            <span class="exp-card__type-badge">${catText.toUpperCase()}</span>
             <span class="exp-card__period">${item.period}</span>
           </div>
           <h2 class="exp-card__role">${item.role}</h2>
@@ -1216,25 +1368,31 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="exp-card__body">
-          ${item.headline ? `<p class="exp-card__headline">${item.headline}</p>` : ''}
-          ${item.beginning ? `<p class="exp-card__text"><strong>Context:</strong> ${item.beginning}</p>` : ''}
-          ${item.work ? `<p class="exp-card__text"><strong>Execution:</strong> ${item.work}</p>` : ''}
-          ${item.problem ? `<p class="exp-card__text"><strong>Engineering Challenge:</strong> ${item.problem}</p>` : ''}
-          ${item.impact ? `<p class="exp-card__text"><strong>Key Outcome:</strong> ${item.impact}</p>` : ''}
+          ${headlineText ? `<p class="exp-card__headline">${headlineText}</p>` : ''}
           
-          ${item.bullets && item.bullets.length ? `
-            <ul class="exp-card__bullets">
-              ${item.bullets.map(b => `<li>${b}</li>`).join('')}
-            </ul>
-          ` : ''}
-
           ${item.technologies && item.technologies.length ? `
             <div class="exp-card__tech-row">
               ${item.technologies.map(t => `<span class="exp-card__tech-pill">${t}</span>`).join('')}
             </div>
           ` : ''}
         </div>
+
+        <div class="exp-card__footer-cta">
+          <span>${isIndo ? 'Buka Detail Dossier' : 'Open Full Dossier'}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
       `;
+
+      card.addEventListener('click', () => {
+        openExperienceModal(idx);
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openExperienceModal(idx);
+        }
+      });
 
       listWrap.appendChild(card);
     });
@@ -1242,29 +1400,38 @@ document.addEventListener('DOMContentLoaded', () => {
     fullWrap.parentNode.insertBefore(listWrap, fullWrap.nextSibling);
   }
 
+  /* ── Rich Inline Certifications Grid ── */
   function buildCertifications() {
     const grid = document.getElementById('certsGrid');
     if (!grid || !D.certifications) return;
 
     grid.innerHTML = '';
+    const isIndo = window.currentLang === 'id';
 
     D.certifications.forEach(cert => {
       const card = el('div', {
-        class: 'cert-card',
+        class: 'cert-card cert-card--inline',
         role: 'listitem',
       });
 
+      const catText = (isIndo && cert.category_id) ? cert.category_id : (cert.category || 'CERTIFICATE');
+
       card.innerHTML = `
-        <div class="cert-card__cat">${(cert.category || 'CERTIFICATE').toUpperCase()}</div>
+        <div class="cert-card__badge-row">
+          <span class="cert-card__cat">${catText.toUpperCase()}</span>
+          <span class="cert-card__verified-tag">✓ ${isIndo ? 'TERVERIFIKASI' : 'VERIFIED'}</span>
+        </div>
         <h3 class="cert-card__title">${cert.name}</h3>
         <div class="cert-card__issuer">${cert.issuer}</div>
-        <div class="cert-card__year">${cert.year}</div>
-        ${cert.credential ? `
-          <a href="${cert.credential}" target="_blank" rel="noopener noreferrer" class="cert-card__link">
-            <span>Verify Credential</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-          </a>
-        ` : ''}
+        <div class="cert-card__meta-bottom">
+          <span class="cert-card__year">${cert.year}</span>
+          ${cert.credential ? `
+            <a href="${cert.credential}" target="_blank" rel="noopener noreferrer" class="cert-card__pdf-btn">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>PDF PREVIEW</span>
+            </a>
+          ` : ''}
+        </div>
       `;
 
       grid.appendChild(card);

@@ -1981,27 +1981,30 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 .exp-cards-list {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  margin-top: 3rem;
+  gap: 1.5rem;
+  margin-top: 3.5rem;
 }
 .exp-detail-card {
-  padding: 2rem 2.25rem;
+  padding: 1.75rem 2rem;
   border: 1px solid var(--border);
   border-radius: 4px;
   background: var(--bg-card);
-  transition: border-color 200ms, transform 200ms var(--ease);
+  cursor: pointer;
+  transition: all 200ms var(--ease);
 }
-.exp-detail-card:hover,
-.exp-detail-card.highlighted {
+.exp-detail-card:hover {
   border-color: var(--border-str);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 .exp-detail-card.highlighted {
+  border-color: var(--fg);
   outline: 2px solid var(--fg);
   outline-offset: 4px;
 }
 .exp-card__header {
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.875rem;
   border-bottom: 1px solid var(--border);
 }
 .exp-card__badge-row {
@@ -2015,7 +2018,7 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  padding: 2px 8px;
+  padding: 3px 9px;
   background: var(--fg);
   color: var(--bg);
   border-radius: 2px;
@@ -2029,7 +2032,7 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 }
 .exp-card__role {
   font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--fg);
@@ -2057,44 +2060,16 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   gap: 0.75rem;
 }
 .exp-card__headline {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--fg);
-  line-height: 1.5;
-}
-.exp-card__text {
   font-size: 0.875rem;
-  color: var(--muted);
-  line-height: 1.65;
-}
-.exp-card__text strong {
+  font-weight: 500;
   color: var(--fg);
-  font-weight: 600;
-}
-.exp-card__bullets {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-.exp-card__bullets li {
-  font-size: 0.8125rem;
-  color: var(--muted);
   line-height: 1.5;
-  position: relative;
-  padding-left: 1.25rem;
-}
-.exp-card__bullets li::before {
-  content: "—";
-  position: absolute;
-  left: 0;
-  color: var(--fg);
 }
 .exp-card__tech-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 .exp-card__tech-pill {
   font-family: var(--font-mono);
@@ -2106,8 +2081,317 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+.exp-card__footer-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 
-/* Certifications */
+/* ── Snaking Map SVG Styles ── */
+.exp-snaking-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.03));
+}
+.map-road-glow {
+  fill: none;
+  stroke: var(--border-str);
+  stroke-width: 6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.4;
+}
+.map-road-track {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 2.2px;
+  stroke-dasharray: 6 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+.map-snaking-node {
+  cursor: pointer;
+}
+.map-snaking-node .map-node-ring {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.5px;
+  opacity: 0;
+  transition: all 200ms var(--ease);
+}
+.map-snaking-node:hover .map-node-ring,
+.map-snaking-node:focus-visible .map-node-ring {
+  opacity: 0.45;
+  transform: scale(1.2);
+}
+.map-snaking-node:hover .map-node-core {
+  transform: scale(1.3);
+}
+.map-goal-core {
+  fill: var(--fg);
+}
+.map-goal-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  fill: var(--fg);
+}
+
+/* ── Executive Experience Dossier Modal ── */
+.exp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.exp-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.exp-modal__dialog {
+  background: var(--bg);
+  border: 1px solid var(--border-str);
+  border-radius: 6px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+  transform: scale(0.96) translateY(12px);
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+.exp-modal-backdrop.active .exp-modal__dialog {
+  transform: scale(1) translateY(0);
+}
+.exp-modal__close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border-mid);
+  background: var(--bg);
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 150ms;
+}
+.exp-modal__close-btn:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+.exp-modal__header {
+  padding: 2rem 2.25rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.exp-modal__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.625rem;
+}
+.exp-modal__index {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.exp-modal__cat {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 2px;
+}
+.exp-modal__period {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--muted);
+}
+.exp-modal__role {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  margin-bottom: 0.25rem;
+}
+.exp-modal__org {
+  font-size: 0.9375rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+.exp-modal__loc {
+  color: var(--muted);
+}
+.exp-modal__gpa {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border: 1px solid var(--border-str);
+  border-radius: 999px;
+  color: var(--fg);
+  margin-top: 0.5rem;
+}
+.exp-modal__body {
+  padding: 1.75rem 2.25rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.exp-modal__headline {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.5;
+  border-left: 3px solid var(--fg);
+  padding-left: 1rem;
+}
+.exp-modal__dossier-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.exp-dossier-card {
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-card);
+}
+.exp-dossier-card__title {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.exp-dossier-card__text {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.exp-dossier-card__text strong {
+  color: var(--fg);
+}
+.exp-modal__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.exp-modal__sec-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.exp-modal__bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.exp-modal__bullets li {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  line-height: 1.5;
+  position: relative;
+  padding-left: 1.25rem;
+}
+.exp-modal__bullets li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--fg);
+}
+.exp-modal__tech-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.exp-modal__chip {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  padding: 4px 10px;
+  border: 1px solid var(--border-str);
+  border-radius: 999px;
+  color: var(--fg);
+  background: var(--bg);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.exp-modal__footer {
+  padding: 1rem 2.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.exp-modal__nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-str);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--fg);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 150ms;
+}
+.exp-modal__nav-btn:hover:not(:disabled) {
+  background: var(--fg);
+  color: var(--bg);
+}
+.exp-modal__nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Certifications Section ── */
 .certs-section {
   margin-top: 5rem;
   border-top: 1px solid var(--border);
@@ -2132,49 +2416,69 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 }
 .certs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.25rem;
 }
-.cert-card {
-  padding: 1.35rem 1.5rem;
+.cert-card--inline {
+  padding: 1.5rem 1.625rem;
   border: 1px solid var(--border);
   border-radius: 4px;
   background: var(--bg-card);
   display: flex;
   flex-direction: column;
-  transition: border-color 220ms, transform 240ms var(--ease), box-shadow 240ms;
+  transition: all 200ms var(--ease);
 }
-.cert-card:hover {
+.cert-card--inline:hover {
   border-color: var(--border-str);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
-[data-theme="dark"] .cert-card:hover {
-  box-shadow: 0 8px 24px rgba(255,255,255,0.04);
+.cert-card__badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
 }
 .cert-card__cat {
   font-family: var(--font-mono);
   font-size: 0.5625rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 0.5rem;
 }
-.cert-card__title,
-.cert-card__name {
+.cert-card__verified-tag {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 2px;
+}
+.cert-card__title {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  line-height: 1.3;
-  margin-bottom: 0.35rem;
+  line-height: 1.35;
+  margin-bottom: 0.4rem;
   color: var(--fg);
 }
 .cert-card__issuer {
   font-size: 0.8125rem;
   color: var(--muted);
-  margin-bottom: 0.35rem;
+  line-height: 1.45;
+  margin-bottom: 1rem;
+}
+.cert-card__meta-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
 }
 .cert-card__year {
   font-family: var(--font-mono);
@@ -2182,54 +2486,25 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   color: var(--muted-soft);
   letter-spacing: 0.04em;
 }
-.cert-card__link {
+.cert-card__pdf-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  margin-top: 1rem;
+  padding: 3px 8px;
+  border: 1px solid var(--border-mid);
+  border-radius: 3px;
   font-family: var(--font-mono);
-  font-size: 0.625rem;
-  font-weight: 600;
+  font-size: 0.5625rem;
+  font-weight: 700;
   color: var(--fg);
   text-decoration: none;
   letter-spacing: 0.04em;
-  transition: opacity 150ms;
+  transition: all 150ms;
 }
-.cert-card__link:hover {
-  opacity: 0.7;
+.cert-card__pdf-btn:hover {
+  background: var(--fg);
+  color: var(--bg);
 }
-
-/* Highlights */
-.highlights { margin-top:4rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:.75rem; }
-.highlight-card { padding:1.25rem; border:1px solid var(--border); border-radius:2px; }
-.highlight-card__num { font-family:var(--font-display); font-size:2rem; font-weight:700; letter-spacing:-.04em; line-height:1; margin-bottom:.25rem; }
-.highlight-card__label { font-size:.8125rem; color:var(--muted); line-height:1.4; }
-
-.exp-closing-statement {
-  padding-block: 2.5rem;
-  border-top: 1px solid var(--border);
-  font-family: var(--font-display);
-  font-size: 1.125rem;
-  font-style: italic;
-  color: var(--muted);
-}
-.exp-closing-signature {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-style: normal;
-  color: var(--fg);
-  margin-top: 0.5rem;
-  letter-spacing: 0.06em;
-}
-
-.exp-page__back {
-  display:inline-flex; align-items:center; gap:.375rem;
-  font-family:var(--font-mono); font-size:.625rem; letter-spacing:.08em; text-transform:uppercase;
-  color:var(--muted); margin-top:3rem;
-  text-decoration: none;
-  transition:color 150ms, gap 150ms;
-}
-.exp-page__back:hover { color:var(--fg); gap:.6rem; }
 
 /* ── 16. 404 PAGE ───────────────────────────── */
 .page-404 {
