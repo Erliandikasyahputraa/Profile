@@ -473,12 +473,113 @@
     shakeIntensity = 7;
   }
 
+  /* ── Shared Web Audio Synthesizer ── */
+  let sharedAudioCtx = null;
+  function getAudioContext() {
+    try {
+      if (!sharedAudioCtx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) sharedAudioCtx = new AudioCtx();
+      }
+      if (sharedAudioCtx && sharedAudioCtx.state === 'suspended') {
+        sharedAudioCtx.resume();
+      }
+      return sharedAudioCtx;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Prime Web Audio on first user interaction so it's ready and unmuted
+  window.addEventListener('pointerdown', () => getAudioContext(), { once: true, passive: true });
+  window.addEventListener('keydown', () => getAudioContext(), { once: true, passive: true });
+
+  /* ── ASMR Crispy Munch & Crunch Audio Synthesizer ── */
+  function playAsmrBite(actx, startTime, intensity = 1.0) {
+    const t = startTime;
+    const master = actx.createGain();
+    master.gain.setValueAtTime(0.30, t);
+    master.connect(actx.destination);
+
+    // 1. ASMR Micro-Crackles: 6 staggered filtered noise bursts (crispy skin / chips crunch)
+    const grainCount = 6;
+    for (let g = 0; g < grainCount; g++) {
+      const gOffset = t + g * 0.011 + (Math.random() * 0.007);
+      const gLen = Math.floor(actx.sampleRate * 0.024);
+      const gBuf = actx.createBuffer(1, gLen, actx.sampleRate);
+      const gData = gBuf.getChannelData(0);
+      for (let i = 0; i < gLen; i++) {
+        gData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (gLen * 0.24));
+      }
+      const gSource = actx.createBufferSource();
+      gSource.buffer = gBuf;
+
+      const gFilter = actx.createBiquadFilter();
+      gFilter.type = 'bandpass';
+      gFilter.frequency.setValueAtTime(2600 + Math.random() * 2600, gOffset);
+      gFilter.Q.setValueAtTime(4.2, gOffset);
+
+      const gGain = actx.createGain();
+      gGain.gain.setValueAtTime(0.24 * intensity, gOffset);
+      gGain.gain.exponentialRampToValueAtTime(0.001, gOffset + 0.022);
+
+      gSource.connect(gFilter);
+      gFilter.connect(gGain);
+      gGain.connect(master);
+      gSource.start(gOffset);
+      gSource.stop(gOffset + 0.025);
+    }
+
+    // 2. Soft Chewing Squelch (Gentle resonance — NO heavy knocking door thumps)
+    const chewOsc = actx.createOscillator();
+    const chewGain = actx.createGain();
+    chewOsc.type = 'sine';
+    chewOsc.frequency.setValueAtTime(380 * intensity, t);
+    chewOsc.frequency.exponentialRampToValueAtTime(160 * intensity, t + 0.065);
+    chewGain.gain.setValueAtTime(0.11 * intensity, t);
+    chewGain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+    chewOsc.connect(chewGain);
+    chewGain.connect(master);
+    chewOsc.start(t);
+    chewOsc.stop(t + 0.075);
+
+    // 3. Crisp snap transient (High-pass bite click)
+    const snapOsc = actx.createOscillator();
+    const snapGain = actx.createGain();
+    snapOsc.type = 'triangle';
+    snapOsc.frequency.setValueAtTime(1400 * intensity, t);
+    snapOsc.frequency.exponentialRampToValueAtTime(360 * intensity, t + 0.035);
+    snapGain.gain.setValueAtTime(0.08 * intensity, t);
+    snapGain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    snapOsc.connect(snapGain);
+    snapGain.connect(master);
+    snapOsc.start(t);
+    snapOsc.stop(t + 0.045);
+  }
+
+  // Full ASMR Chewing Sequence: 3 rhythmic chomps (Crisp Bite -> Soft Munch -> Final Crunch)
+  function playEatSound() {
+    try {
+      const actx = getAudioContext();
+      if (!actx) return;
+      const now = actx.currentTime;
+
+      // Bite 1: Crispy big bite (t = 0s)
+      playAsmrBite(actx, now, 1.15);
+
+      // Bite 2: Soft juicy munch (t = 150ms)
+      playAsmrBite(actx, now + 0.15, 0.85);
+
+      // Bite 3: ASMR crispy final chew (t = 300ms)
+      playAsmrBite(actx, now + 0.30, 1.0);
+    } catch (e) {}
+  }
+
   /* ── Roar Sound: 4-oscillator Godzilla growl ── */
   function playRoarSound() {
     try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const actx = new AudioCtx();
+      const actx = getAudioContext();
+      if (!actx) return;
       const master = actx.createGain();
       master.gain.setValueAtTime(1.0, actx.currentTime);
       master.connect(actx.destination);
@@ -579,6 +680,10 @@
     const deltaY    = foodY - snoutWorldY;
     const distToFood = Math.hypot(deltaX, deltaY);
 
+    const dinoCenterX = dinoX + spriteW * 0.5;
+    const dinoCenterY = dinoY + spriteH * 0.5;
+    const distFromCenter = Math.hypot(foodX - dinoCenterX, foodY - dinoCenterY);
+
     // Update smoothed velocity EMA each frame
     smoothVelX = smoothVelX * (1 - VEL_SMOOTH) + velX * VEL_SMOOTH;
     smoothVelY = smoothVelY * (1 - VEL_SMOOTH) + velY * VEL_SMOOTH;
@@ -610,6 +715,7 @@
           currentState = STATES.EATING;
           stateTimer   = now;
           spawnBiteCrumbs(foodX, foodY);
+          playEatSound();
         }
         break;
 
@@ -657,12 +763,18 @@
         velY = (velY / spd) * MAX_CHASE_SPEED;
       }
     } else if (currentState === STATES.LAZY_FOLLOW) {
-      velX += deltaX * DINO_LAZY_ACCEL;
-      velY += deltaY * DINO_LAZY_ACCEL;
-      const spd = Math.hypot(velX, velY);
-      if (spd > MAX_LAZY_SPEED) {
-        velX = (velX / spd) * MAX_LAZY_SPEED;
-        velY = (velY / spd) * MAX_LAZY_SPEED;
+      // If cursor is resting directly over/near dino's head or body, stop accelerating to prevent jitter
+      if (distFromCenter < 38 || distToFood < 30) {
+        velX *= 0.7;
+        velY *= 0.7;
+      } else {
+        velX += deltaX * DINO_LAZY_ACCEL;
+        velY += deltaY * DINO_LAZY_ACCEL;
+        const spd = Math.hypot(velX, velY);
+        if (spd > MAX_LAZY_SPEED) {
+          velX = (velX / spd) * MAX_LAZY_SPEED;
+          velY = (velY / spd) * MAX_LAZY_SPEED;
+        }
       }
     } else if (currentState === STATES.ANTICIPATING) {
       velX *= 0.5;
@@ -686,15 +798,15 @@
     const currentSpeed = Math.hypot(velX, velY);
 
     // Direction update using SMOOTHED velocity (EMA) — not raw velX.
-    // This prevents the rapid left-right flip (jitter) when dino overshoots cursor,
-    // because smoothVelX won't flip sign until the movement has been consistent
-    // for several frames. Raw velX can oscillate ±0.3 every frame; smoothed won't.
-    const DIR_THRESHOLD = 0.25; // Minimum smoothed speed to update direction
-    if (Math.abs(smoothVelX) > DIR_THRESHOLD) {
+    // Lock direction if cursor is resting directly on dino to prevent left/right flip jitter.
+    const DIR_THRESHOLD = 0.25;
+    if (currentState === STATES.LAZY_FOLLOW && (distFromCenter < 38 || distToFood < 30)) {
+      // Keep facing locked
+    } else if (Math.abs(smoothVelX) > DIR_THRESHOLD) {
       isFacingLeft = smoothVelX < 0;
     } else if (
       (currentState === STATES.CHASING || currentState === STATES.ANTICIPATING) &&
-      Math.abs(deltaX) > 20  // Only use deltaX for direction if unambiguous (>20px)
+      Math.abs(deltaX) > 20
     ) {
       isFacingLeft = deltaX < 0;
     }

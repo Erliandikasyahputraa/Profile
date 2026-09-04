@@ -28,6 +28,8 @@
 
       section_projects_label: 'Selected Projects',
       projects_view_all: 'View all projects',
+      projects_view_all_card_title: 'EXPLORE THE ARCHIVE',
+      projects_view_all_card_desc: 'Dive into the full collection of software systems, web applications, and experiments.',
 
       projects_page_heading: 'THE PROJECT ARCHIVE',
       projects_page_intro: "A collection of systems, products, experiments, and things I've built.",
@@ -116,6 +118,8 @@
 
       section_projects_label: 'Proyek Pilihan',
       projects_view_all: 'Lihat semua proyek',
+      projects_view_all_card_title: 'JELAJAHI ARSIP LENGKAP',
+      projects_view_all_card_desc: 'Telusuri seluruh katalog sistem, aplikasi web, dan eksperimen rekayasa perangkat lunak.',
 
       projects_page_heading: 'ARSIP PROYEK',
       projects_page_intro: 'Kumpulan sistem, produk, eksperimen, dan karya yang telah saya bangun.',

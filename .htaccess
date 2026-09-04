@@ -3,15 +3,21 @@
   RewriteEngine On
   RewriteBase /
 
-  # Redirect .html to clean url
-  RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.html [NC]
+  # Redirect direct .html requests to clean URLs
+  RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/pages/([^.]+)\.html [NC]
+  RewriteRule ^ %1 [R=301,L]
+  RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/([^.]+)\.html [NC]
   RewriteRule ^ %1 [R=301,L]
 
-  # Resolve clean url to .html file
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME}.html -f
-  RewriteRule ^(.*)$ $1.html [L]
+  # Clean URL rewrites to pages folder
+  RewriteCond %{DOCUMENT_ROOT}/pages/$1.html -f
+  RewriteRule ^([^/]+)/?$ pages/$1.html [L]
+
+  # Fallback to root html
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^([^/]+)/?$ $1.html [L]
 
   # Custom 404 error page
   ErrorDocument 404 /404.html
 </IfModule>
+

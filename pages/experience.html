@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="pdetail-title">Project — Erliandika Syahputra</title>
-  <meta name="description" id="pdetail-desc" content="Project by Erliandika Syahputra — Software Engineer.">
-  <link rel="icon" href="assets/images/web_logo-removebg-preview (1).png" type="image/png">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <title>Experience — Erliandika Syahputra</title>
+  <meta name="description" content="Education, experience, certifications and journey of Erliandika Syahputra — Software Engineer.">
+  <link rel="icon" href="../assets/images/web_logo-removebg-preview (1).png" type="image/png">
+  <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
 
@@ -24,6 +24,7 @@
 </div>
 <canvas id="cursor-canvas" aria-hidden="true"></canvas>
 
+<!-- ═══ NAVBAR ══════════════════════════════════════════════ -->
 <nav class="navbar" role="navigation" aria-label="Main navigation">
   <button class="navbar__lang-pill" id="langToggle" aria-label="Switch language" type="button">
     <span class="navbar__lang-pill__track">
@@ -33,9 +34,9 @@
   </button>
   <div class="navbar__divider" aria-hidden="true"></div>
   <ul class="navbar__links" role="list">
-    <li><a href="index.html"      class="navbar__link" data-i18n="nav_home">Home</a></li>
-    <li><a href="projects.html"   class="navbar__link active" aria-current="page" data-i18n="nav_projects">Projects</a></li>
-    <li><a href="experience.html" class="navbar__link" data-i18n="nav_experience">Experience</a></li>
+    <li><a href="../index.html"   class="navbar__link" data-i18n="nav_home">Home</a></li>
+    <li><a href="projects.html"   class="navbar__link" data-i18n="nav_projects">Projects</a></li>
+    <li><a href="experience.html" class="navbar__link active" aria-current="page" data-i18n="nav_experience">Experience</a></li>
   </ul>
   <div class="navbar__divider" aria-hidden="true"></div>
   <button class="navbar__toggle" id="themeToggle" aria-label="Toggle colour theme" type="button">
@@ -51,7 +52,7 @@
   <button class="mobile-nav__close" id="mobileNavClose" aria-label="Close menu" type="button">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
-  <a href="index.html"      class="mobile-nav__link" data-mnav data-i18n="nav_home">Home</a>
+  <a href="../index.html"   class="mobile-nav__link" data-mnav data-i18n="nav_home">Home</a>
   <a href="projects.html"   class="mobile-nav__link" data-mnav data-i18n="nav_projects">Projects</a>
   <a href="experience.html" class="mobile-nav__link" data-mnav data-i18n="nav_experience">Experience</a>
   <div class="mobile-nav__bottom">
@@ -69,21 +70,38 @@
 </div>
 
 <main>
-  <div class="pdetail container" id="pdetailRoot">
-    <a href="projects.html" class="pdetail__back">
+  <div class="exp-page container">
+    <div class="section-label"><span>02</span></div>
+    <h1 class="exp-page__heading" data-i18n="exp_page_heading">Experience &amp; Education</h1>
+    <p class="exp-page__sub" data-i18n="exp_page_sub">My journey so far.</p>
+
+    <!-- Full winding SVG map rendered by app.js -->
+    <div class="exp-full-map-wrap" id="expFullMap" role="img" aria-label="Career journey map"></div>
+
+    <!-- Certifications section -->
+    <section class="certs-section" aria-labelledby="certsHeading">
+      <h2 id="certsHeading" class="certs-section__heading" data-i18n="certs_heading">Certifications &amp; Trainings</h2>
+      <div class="certs-grid" id="certsGrid" role="list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <div class="exp-closing-statement" style="margin-top: 4rem;">
+      <p data-i18n="exp_closing_quote">"Every system I touched, I tried to make a little better."</p>
+      <p class="exp-closing-signature" data-i18n="exp_closing_sig">— That's the journey.</p>
+    </div>
+
+    <a href="../index.html" class="exp-page__back" style="margin-top: 2rem;">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-      <span data-i18n="pdetail_back">Back to projects</span>
+      <span data-i18n="exp_back">Back to home</span>
     </a>
-    <p id="pdetail-loading" data-i18n="pdetail_loading" style="font-family:var(--font-mono);font-size:.8125rem;color:var(--muted)">Loading project…</p>
   </div>
 </main>
 
-<div class="showcase-popup" id="showcasePopup" aria-hidden="true" role="tooltip"></div>
-
-<script src="assets/js/data.js"></script>
-<script src="assets/js/lang.js"></script>
-<script src="assets/js/theme.js"></script>
-<script src="assets/js/cursor.js"></script>
-<script src="assets/js/app.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/lang.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/cursor.js"></script>
+<script src="../assets/js/app.js"></script>
 </body>
 </html>

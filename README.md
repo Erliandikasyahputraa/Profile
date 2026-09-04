@@ -1,38 +1,84 @@
-# 🚀 Erliandika Syahputra - Official Portfolio Website
+# ⚡ Erliandika Syahputra — Official Portfolio Website
 
-![Erliandika Portfolio](assets/images/pp-removebg-preview.png)
+> *"Not your basic portfolio. Built with pure craft, zero bloated framework drama, and high aesthetic vibes."* 💅✨
 
-Sebuah website portofolio pribadi ultra-modern yang menampilkan keahlian di bidang **Mobile Development (Android/Kotlin)** dan **Web Engineering**. Dirancang dengan estetika *Cyber Glassmorphism*, animasi interaktif, layout Bento Grid responsif, dan performa tinggi.
+Selamat datang di repo portofolio resmi **Erliandika Syahputra**! Website ini dirancang khusus buat *showcase* karya, eksplorasi *software engineering*, *mobile development* (Android/Kotlin), hingga *system architecture* dengan gaya **Minimalist Editorial & Monochromatic Ink Aesthetics**. 
 
----
-
-## ✨ Fitur Utama
-- **🎨 Modern Cyber Glassmorphism UI**: Menggunakan gradien halus, efek blur kaca, dan tema gelap elegan.
-- **⚡ Typing Role Animation**: Animasi pergantian teks peran (Mobile App Developer, Android Specialist, dll.).
-- **🍱 Bento Grid About**: Ringkasan profil berstruktur bento dengan statistik pencapaian, latar belakang Bangkit Academy, dan studi Sistem Informasi UIN Suska Riau.
-- **📊 Interactive Skill Matrix**: Visualisasi progress bar kemampuan teknis beserta tag framework/library.
-- **📱 Featured Projects**: Kartu pameran karya aplikasi mobile Android & web dengan link live preview dan source code.
-- **⏱️ Experience & Education Timeline**: Jalur vertikal neon untuk pengalaman pendidikan dan cohort.
-- **🏆 Verified Certifications**: Galeri sertifikat resmi (Kotlin, Git, Programming Logic, Software Dev).
-- **✉️ Interactive Contact**: Form pesan interaktif terhubung dengan direct WhatsApp, Email, dan LinkedIn.
+Literally no template, pure handcrafted code, and high-performance. 🚀
 
 ---
 
-## 🛠️ Tech Stack
-- **HTML5 & CSS3** (Vanilla CSS dengan CSS Custom Properties / Variables)
-- **JavaScript (ES6+)**
-- **Font Awesome 6** & **Google Fonts (Plus Jakarta Sans, Space Grotesk, Fira Code)**
+## 🕶️ The Vibe & Core Features
+
+Gak cuma sekadar pajang proyek, *user experience* di sini beneran dipikirin sampai ke *micro-interactions*:
+
+- **🖤 Editorial Monochrome & Organic Ink Theme**: Transisi dark/light mode yang *smooth* banget pake efek *organic ink splash* SVG filter (`theme.js`). Bukan cuma toggle biasa, *it’s an experience!*
+- **✨ Interactive Canvas Particle Trail**: Kursor interaktif yang ngikutin gerakan mouse secara dinamis dan responsif (`cursor.js`).
+- **🗺️ The Unfinished Journey (Interactive SVG Map)**: Visualisasi peta perjalanan karir dan edukasi dari 2022 sampai sekarang yang *winding* dan bisa diklik buat baca cerita mendalam di baliknya.
+- **🎞️ Horizontal Project Trailer**: *Sneak peek* 5 proyek unggulan di homepage dengan format *carousel card* horizontal yang *clean*.
+- **📂 Dedicated Project Detail & Case Study**: Setiap proyek punya *dedicated dynamic page* (`project.html?id=slug`) dengan breakdown arsitektur 3-kolom (*Overview*, *Tech Stack*, *Problem & Solution*).
+- **🌐 Bilingual on the Fly (EN / ID)**: Gonta-ganti bahasa instan tanpa reload halaman, preferensi otomatis kesimpan rapi di `localStorage` (`lang.js`).
+- **💎 Single Source of Truth**: Semua data profil, riwayat karir, sertifikasi, dan katalog proyek terpusat rapi di satu file (`data.js`). Mau update konten? Cukup edit 1 file, *done deal!*
 
 ---
 
-## 💻 Cara Menjalankan Secara Lokal
-Cukup buka file `index.html` pada browser favorit Anda atau gunakan ekstensi seperti **Live Server** di Visual Studio Code.
+## 🛠️ Tech Stack & Philosophy
+
+Kita penganut aliran *"vanilla craft with high precision"*:
+
+- **Frontend Core**: Semantic HTML5 & Vanilla CSS3 (Custom Design Tokens, Fluid Typography, Modern CSS Variables)
+- **Logic & Interactions**: Modern JavaScript (ES6+), HTML5 Canvas API, SVG DOM Manipulation
+- **Fonts**: *Plus Jakarta Sans*, *Space Grotesk*, *Fira Code*
+- **Architecture**: Zero bulky npm packages, super lightweight, *blazing fast load time* ⚡
 
 ---
 
-## 📬 Kontak & Sosial Media
+## 🗂️ Project Structure
+
+```text
+├── assets/
+│   ├── css/
+│   │   └── style.css       # Master stylesheet (tokens, layout, responsive, dark/light)
+│   ├── images/             # Profile photos, brand logos & certificate assets
+│   └── js/
+│       ├── app.js          # Master dynamic renderer & page logic
+│       ├── cursor.js       # Dynamic canvas cursor trail
+│       ├── data.js         # Single source of truth (Projects, Experience, Profile)
+│       ├── lang.js         # EN / ID i18n localization engine
+│       └── theme.js        # Theme toggle with SVG ink displacement effect
+├── pages/
+│   ├── projects.html       # Project Archive & Category Filters
+│   ├── project.html        # Dynamic Project Detail Case Study
+│   └── experience.html     # Full Interactive Journey Map & Certifications
+├── index.html              # Landing Page (Hero, Sneak Peek Map, Project Trailer)
+└── 404.html                # Custom Not Found Page
+```
+
+---
+
+## 💻 Cara Run Secara Lokal
+
+Gak perlu `npm install` ribet-ribet yang menuhin storage `node_modules` kamu:
+
+1. Clone repo ini:
+   ```bash
+   git clone https://github.com/Erliandikasyahputraa/porto.git
+   ```
+2. Buka folder proyek di VS Code / editor favorit kamu.
+3. Klik kanan pada `index.html` terus pilih **Open with Live Server** (atau tinggal double-click `index.html` di browser).
+4. *Enjoy the smoothness!* 🎉
+
+---
+
+## 📬 Let's Connect & Collab!
+
+Lagi nyari engineer buat bangun produk keren atau sekadar mau ngobrol seputar software & tech? *Hit me up:*
+
 - **GitHub**: [@Erliandikasyahputraa](https://github.com/Erliandikasyahputraa)
-- **LinkedIn**: [Erliandika Syahputra](https://linkedin.com/in/erliandika-syahputra)
-- **Instagram**: [@erliandikasyahputra](https://instagram.com/erliandikasyahputra)
-- **Email**: syahputraerliandika@gmail.com
+- **LinkedIn**: [Erliandika Syahputra](https://www.linkedin.com/in/erliandika-syahputra/)
+- **Email**: [syahputraerliandika@gmail.com](mailto:syahputraerliandika@gmail.com)
 - **WhatsApp**: [+62 821-6934-9265](https://wa.me/6282169349265)
+
+---
+<p align="center">Crafted with precision & passion by <b>Erliandika Syahputra</b> 🚀</p>
+
