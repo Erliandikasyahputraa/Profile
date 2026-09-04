@@ -189,7 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   });
 
-  function playPixelGlitchSound() {
+  /* ── Dark Cyber Pixel Glitch Sound Synthesizer ── */
+  function playPixelGlitchSound(isExit = false) {
     try {
       const actx = getAppAudioCtx();
       if (!actx) return;
@@ -197,67 +198,71 @@ document.addEventListener('DOMContentLoaded', () => {
       const now = actx.currentTime;
 
       const master = actx.createGain();
-      // Balanced, subtle hollow volume
-      master.gain.setValueAtTime(0.26, now);
+      // Rich, dark, distinct cyber volume
+      const masterVol = isExit ? 0.30 : 0.36;
+      master.gain.setValueAtTime(masterVol, now);
       master.connect(actx.destination);
 
-      // Duration: 2.5x - 3x longer (~0.22s total) with 3 staggered hollow micro-bursts
+      // 1. Dark Sub-Bass Digital Rumble (Deep sawtooth cyber drone)
+      const subOsc = actx.createOscillator();
+      const subGain = actx.createGain();
+      subOsc.type = 'sawtooth';
+      if (isExit) {
+        subOsc.frequency.setValueAtTime(80, now);
+        subOsc.frequency.exponentialRampToValueAtTime(240, now + 0.16);
+      } else {
+        subOsc.frequency.setValueAtTime(260, now);
+        subOsc.frequency.exponentialRampToValueAtTime(65, now + 0.22);
+      }
+      subGain.gain.setValueAtTime(0.26, now);
+      subGain.gain.exponentialRampToValueAtTime(0.0001, now + (isExit ? 0.18 : 0.24));
+      subOsc.connect(subGain);
+      subGain.connect(master);
+      subOsc.start(now);
+      subOsc.stop(now + (isExit ? 0.19 : 0.25));
 
-      // 1. Hollow Resonant Digital Static (Bandpass with high Q for hollow pipe/cyber resonance)
-      const burstTimes = [0, 0.065, 0.135];
-      burstTimes.forEach((offset, idx) => {
+      // 2. Dark Hollow Digital Noise Bursts (Low-mid bandpass, gritty pixel static)
+      const burstOffsets = isExit ? [0, 0.06] : [0, 0.07, 0.14];
+      burstOffsets.forEach((offset, idx) => {
         const t = now + offset;
-        const bufLen = Math.floor(actx.sampleRate * 0.055);
+        const bufLen = Math.floor(actx.sampleRate * 0.05);
         const noiseBuf = actx.createBuffer(1, bufLen, actx.sampleRate);
         const data = noiseBuf.getChannelData(0);
         for (let i = 0; i < bufLen; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.38));
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.35));
         }
         const noiseSrc = actx.createBufferSource();
         noiseSrc.buffer = noiseBuf;
 
         const filter = actx.createBiquadFilter();
         filter.type = 'bandpass';
-        // Hollow resonance frequencies
-        filter.frequency.setValueAtTime(idx === 0 ? 1750 : (idx === 1 ? 2300 : 1350), t);
-        filter.Q.setValueAtTime(6.5, t); // High Q gives that hollow, metallic cyber pixel acoustic
+        // Darker resonance frequencies
+        filter.frequency.setValueAtTime(idx === 0 ? 1100 : (idx === 1 ? 750 : 1350), t);
+        filter.Q.setValueAtTime(5.5, t);
 
         const g = actx.createGain();
-        g.gain.setValueAtTime(0.24 - idx * 0.04, t);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+        g.gain.setValueAtTime(0.28 - idx * 0.05, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.048);
 
         noiseSrc.connect(filter);
         filter.connect(g);
         g.connect(master);
         noiseSrc.start(t);
-        noiseSrc.stop(t + 0.058);
+        noiseSrc.stop(t + 0.052);
       });
 
-      // 2. Hollow Cyber Sine/Triangle Droplet Sweeps (Low spatial blip)
-      const sweepOsc = actx.createOscillator();
-      const sweepGain = actx.createGain();
-      sweepOsc.type = 'triangle';
-      sweepOsc.frequency.setValueAtTime(1450, now);
-      sweepOsc.frequency.exponentialRampToValueAtTime(380, now + 0.18);
-      sweepGain.gain.setValueAtTime(0.16, now);
-      sweepGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.20);
-      sweepOsc.connect(sweepGain);
-      sweepGain.connect(master);
-      sweepOsc.start(now);
-      sweepOsc.stop(now + 0.21);
-
-      // 3. Sub-pixel Digital Grain Flutter (Square pulse flutter)
+      // 3. Dark Cyber Bitcrush Blip (Square pulse transient)
       const pulseOsc = actx.createOscillator();
       const pulseGain = actx.createGain();
       pulseOsc.type = 'square';
-      pulseOsc.frequency.setValueAtTime(280, now + 0.04);
-      pulseOsc.frequency.exponentialRampToValueAtTime(95, now + 0.21);
-      pulseGain.gain.setValueAtTime(0.10, now + 0.04);
-      pulseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+      pulseOsc.frequency.setValueAtTime(isExit ? 120 : 340, now + 0.02);
+      pulseOsc.frequency.exponentialRampToValueAtTime(isExit ? 290 : 85, now + (isExit ? 0.14 : 0.20));
+      pulseGain.gain.setValueAtTime(0.20, now + 0.02);
+      pulseGain.gain.exponentialRampToValueAtTime(0.0001, now + (isExit ? 0.15 : 0.21));
       pulseOsc.connect(pulseGain);
       pulseGain.connect(master);
-      pulseOsc.start(now + 0.04);
-      pulseOsc.stop(now + 0.23);
+      pulseOsc.start(now + 0.02);
+      pulseOsc.stop(now + (isExit ? 0.16 : 0.22));
     } catch (e) {}
   }
 
@@ -266,19 +271,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const photoContainer = document.querySelector('.hero__photo');
     if (!photoContainer) return;
 
-    const triggerGlitch = () => {
+    let exitTimer = null;
+
+    const triggerGlitchEnter = () => {
+      clearTimeout(exitTimer);
+      photoContainer.classList.remove('glitching-out');
       photoContainer.classList.add('glitching');
-      playPixelGlitchSound();
+      playPixelGlitchSound(false);
     };
 
-    photoContainer.addEventListener('mouseenter', triggerGlitch);
-    photoContainer.addEventListener('pointerenter', triggerGlitch);
-    photoContainer.addEventListener('touchstart', triggerGlitch, { passive: true });
-    photoContainer.addEventListener('click', triggerGlitch);
-
-    photoContainer.addEventListener('mouseleave', () => {
+    const triggerGlitchExit = () => {
+      if (!photoContainer.classList.contains('glitching')) return;
       photoContainer.classList.remove('glitching');
-    });
+      photoContainer.classList.add('glitching-out');
+      playPixelGlitchSound(true);
+      exitTimer = setTimeout(() => {
+        photoContainer.classList.remove('glitching-out');
+      }, 550);
+    };
+
+    photoContainer.addEventListener('mouseenter', triggerGlitchEnter);
+    photoContainer.addEventListener('pointerenter', triggerGlitchEnter);
+    photoContainer.addEventListener('touchstart', triggerGlitchEnter, { passive: true });
+    photoContainer.addEventListener('click', triggerGlitchEnter);
+
+    photoContainer.addEventListener('mouseleave', triggerGlitchExit);
+    photoContainer.addEventListener('pointerleave', triggerGlitchExit);
   }
 
   /* ── Experience Preview Map (Home Trailer) ── */

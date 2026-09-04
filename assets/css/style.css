@@ -252,8 +252,8 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 
 .hero__photo {
   position:relative;
-  width:clamp(116px, 10vw, 148px);
-  aspect-ratio:1;
+  width:clamp(120px, 11vw, 156px);
+  aspect-ratio: 3 / 4;
   margin:0 auto 2rem;
   flex-shrink:0;
   /* 8-bit stepped pixelated frame */
@@ -264,18 +264,24 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
     12px 100%, 12px calc(100% - 4px), 8px calc(100% - 4px), 8px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 12px), 0 calc(100% - 12px)
   );
   filter: drop-shadow(0 0 0 2px var(--fg));
-  background:var(--border-str);
+  background:var(--bg);
 }
 .hero__photo img {
   position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; object-position:top center;
+  object-fit:contain; object-position:center;
+  filter: grayscale(100%) contrast(1.10);
   image-rendering: -webkit-optimize-contrast;
 }
 .hero__photo-primary  { z-index:2; }
 .hero__photo-secondary { z-index:1; opacity:0; }
 
-.hero__photo:hover .hero__photo-primary  { animation:glitch-a .75s steps(2) forwards; }
-.hero__photo:hover .hero__photo-secondary { opacity:1; animation:glitch-b .75s steps(2) forwards; }
+.hero__photo:hover .hero__photo-primary,
+.hero__photo.glitching .hero__photo-primary  { animation:glitch-a .70s steps(2) forwards; }
+.hero__photo:hover .hero__photo-secondary,
+.hero__photo.glitching .hero__photo-secondary { opacity:1; animation:glitch-b .70s steps(2) forwards; }
+
+.hero__photo.glitching-out .hero__photo-primary { animation:glitch-return-a .50s steps(2) forwards; }
+.hero__photo.glitching-out .hero__photo-secondary { animation:glitch-return-b .50s steps(2) forwards; }
 
 @keyframes glitch-a {
   0%  { clip-path:none; transform:none; }
@@ -295,6 +301,22 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   45% { clip-path:inset(25% 0 25% 0); transform:translate(2px,0); }
   65% { clip-path:none; transform:translate(-1px,0); opacity:0.9; }
   100%{ opacity:1; clip-path:none; transform:none; }
+}
+
+@keyframes glitch-return-a {
+  0%   { opacity: 0; clip-path: inset(0 0 70% 0); transform: translate(3px, 0); }
+  25%  { opacity: 0.5; clip-path: inset(30% 0 30% 0); transform: translate(-3px, 0); }
+  55%  { opacity: 0.85; clip-path: inset(10% 0 10% 0); transform: translate(2px, 0); }
+  80%  { opacity: 1; clip-path: none; transform: translate(-1px, 0); }
+  100% { opacity: 1; clip-path: none; transform: none; }
+}
+
+@keyframes glitch-return-b {
+  0%   { opacity: 1; clip-path: none; transform: none; }
+  25%  { opacity: 0.7; clip-path: inset(20% 0 40% 0); transform: translate(-4px, 0); }
+  55%  { opacity: 0.3; clip-path: inset(60% 0 0 0); transform: translate(3px, 0); }
+  85%  { opacity: 0.1; clip-path: none; }
+  100% { opacity: 0; clip-path: none; transform: none; }
 }
 @media (prefers-reduced-motion:reduce) {
   .hero__photo:hover .hero__photo-primary  { animation:none; opacity:0; }
@@ -876,26 +898,26 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 
 .project-card__num {
   position: absolute;
-  top: 12px;
-  left: 14px;
+  top: 0.75rem;
+  left: 0.75rem;
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 700;
-  color: var(--fg);
-  background: var(--bg);
-  padding: 2px 8px;
-  border-radius: 3px;
-  border: 1px solid var(--border-mid);
+  color: #000000;
+  background: #ffffff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
   z-index: 5;
   letter-spacing: 0.08em;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
 .project-card__img-wrap {
   width: 100%;
-  height: 200px;
+  aspect-ratio: 4/3;
   overflow: hidden;
-  background: var(--border);
+  background: #ffffff !important;
   position: relative;
   border-bottom: 1px solid var(--border);
   display: flex;
@@ -1277,7 +1299,7 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   overflow: hidden;
   border-radius: 4px;
   border: 1px solid var(--border);
-  background: var(--border);
+  background: #ffffff !important;
 }
 .parow__img-wrap {
   width: 100%;
@@ -1287,13 +1309,14 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #ffffff !important;
 }
 .parow__img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: #080808;
-  padding: 10px 14px;
+  background: #ffffff !important;
+  padding: 14px 18px;
   filter: grayscale(100%) contrast(1.05);
   transition: filter 350ms ease;
 }
