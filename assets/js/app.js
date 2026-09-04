@@ -1050,7 +1050,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function buildFullWindingMap() {
     const wrap = document.getElementById('expFullMap');
-    if (!wrap || !D.experience) return;
+    if (!wrap || !D.experience || !D.experience.length) return;
 
     wrap.innerHTML = '';
 
@@ -1058,8 +1058,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const isMobile = window.innerWidth < 768;
 
     if (!isMobile) {
-      const VW = 1040;
-      const VH = 300;
+      const nodeCount = items.length;
+      const VW = Math.max(1100, nodeCount * 140 + 100);
+      const VH = 310;
+      const startX = 60;
+      const startY = 155;
+      const endX = VW - 60;
+      const stepX = (endX - startX) / (nodeCount + 0.5);
 
       const svg = mkSVG('svg', {
         viewBox: `0 0 ${VW} ${VH}`,
@@ -1069,14 +1074,46 @@ document.addEventListener('DOMContentLoaded', () => {
         'aria-label': 'Full professional journey map',
       });
 
-      // Smooth multi-segment sinusoidal bezier path
-      const pathD = `
-        M 60 150
-        C 140 150, 180 70, 270 70
-        C 370 70, 430 220, 530 220
-        C 630 220, 690 70, 790 70
-        C 880 70, 930 150, 980 150
-      `;
+      // Build sinusoidal node coordinates
+      const nodes = items.map((item, i) => {
+        const x = Math.round(startX + (i + 0.85) * stepX);
+        const isAbove = i % 2 === 0;
+        const y = isAbove ? 75 : 235;
+        const textY = isAbove ? 40 : 265;
+        return {
+          x,
+          y,
+          textX: x,
+          textY,
+          side: isAbove ? 'above' : 'below',
+          item,
+          id: `exp-card-${i}`,
+        };
+      });
+
+      // Generate smooth cubic bezier path connecting all nodes
+      let pathD = `M ${startX} ${startY}`;
+      let prevX = startX;
+      let prevY = startY;
+
+      nodes.forEach((nd) => {
+        const cp1x = prevX + (nd.x - prevX) * 0.5;
+        const cp1y = prevY;
+        const cp2x = prevX + (nd.x - prevX) * 0.5;
+        const cp2y = nd.y;
+        pathD += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${nd.x} ${nd.y}`;
+        prevX = nd.x;
+        prevY = nd.y;
+      });
+
+      // Tail segment
+      const tailX = VW - 40;
+      const tailY = 155;
+      const cp1x = prevX + (tailX - prevX) * 0.5;
+      const cp1y = prevY;
+      const cp2x = prevX + (tailX - prevX) * 0.5;
+      const cp2y = tailY;
+      pathD += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${tailX} ${tailY}`;
 
       const path = mkSVG('path', {
         d: pathD,
@@ -1086,20 +1123,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Origin dot
       svg.appendChild(mkSVG('circle', {
-        cx: '60',
-        cy: '150',
+        cx: String(startX),
+        cy: String(startY),
         r: '5',
         class: 'map-node-start',
       }));
 
-      const NODES = [
-        { x: 270, y: 70,  textX: 270, textY: 38,  side: 'above', item: items[0], id: 'exp-card-0' },
-        { x: 530, y: 220, textX: 530, textY: 252, side: 'below', item: items[1], id: 'exp-card-1' },
-        { x: 790, y: 70,  textX: 790, textY: 38,  side: 'above', item: items[2], id: 'exp-card-2' },
-        { x: 980, y: 150, textX: 980, textY: 182, side: 'below', item: items[3], id: 'exp-card-3' },
-      ];
-
-      NODES.forEach((nd, i) => {
+      nodes.forEach((nd) => {
         if (!nd.item) return;
 
         const g = mkSVG('g', {
@@ -1109,7 +1139,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'aria-label': `${nd.item.role} at ${nd.item.org} (${nd.item.year})`,
         });
 
-        // Outer halo
+        // Outer halo ring
         const halo = mkSVG('circle', {
           cx: String(nd.x),
           cy: String(nd.y),
@@ -1118,7 +1148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         g.appendChild(halo);
 
-        // Core
+        // Core dot
         const core = mkSVG('circle', {
           cx: String(nd.x),
           cy: String(nd.y),
@@ -1127,21 +1157,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         g.appendChild(core);
 
-        // Labels
+        // Typography labels
         const isAbove = nd.side === 'above';
-        const anchor = nd.x > VW * 0.85 ? 'end' : (nd.x < VW * 0.2 ? 'start' : 'middle');
+        const anchor = nd.x > VW * 0.88 ? 'end' : (nd.x < VW * 0.15 ? 'start' : 'middle');
+        const isIndo = window.currentLang === 'id';
+        const tagText = (isIndo && nd.item.typeLabel_id) ? nd.item.typeLabel_id : (nd.item.typeLabel || 'MILESTONE');
 
-        g.appendChild(mkSVGText(nd.item.typeLabel || 'MILESTONE', nd.textX, isAbove ? nd.textY - 14 : nd.textY, 'map-label-tag', anchor));
+        g.appendChild(mkSVGText(tagText.toUpperCase(), nd.textX, isAbove ? nd.textY - 14 : nd.textY, 'map-label-tag', anchor));
         g.appendChild(mkSVGText(nd.item.period || nd.item.year, nd.textX, isAbove ? nd.textY : nd.textY + 14, 'map-label-year', anchor));
         g.appendChild(mkSVGText(nd.item.role, nd.textX, isAbove ? nd.textY + 16 : nd.textY + 30, 'map-label-title', anchor));
 
-        // Click / Keydown scrolls down smoothly to the corresponding detail card
+        // Click / Enter scrolls down smoothly to the corresponding detail card
         const scrollToCard = () => {
           const target = document.getElementById(nd.id);
           if (target) {
             target.scrollIntoView({ behavior: 'smooth', block: 'center' });
             target.classList.add('highlighted');
-            setTimeout(() => target.classList.remove('highlighted'), 1200);
+            setTimeout(() => target.classList.remove('highlighted'), 1500);
           }
         };
 
