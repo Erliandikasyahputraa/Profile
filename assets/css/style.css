@@ -246,8 +246,18 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   display:flex; flex-direction:column; align-items:center;
   justify-content:center; text-align:center;
   min-height:100dvh;
-  padding-top:calc(var(--nav-h) + 48px);
+  padding-top:clamp(6.5rem, 13vh, 8.5rem);
   padding-bottom:4rem;
+}
+
+.exp-page,
+.projects-page {
+  padding-top:clamp(6.5rem, 13vh, 8.5rem);
+  padding-bottom:5rem;
+}
+
+.pdetail__header {
+  padding-top:clamp(5.5rem, 10vh, 7.5rem);
 }
 
 .hero__photo {
@@ -587,65 +597,126 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 .map-waypoint-anchor:focus-visible .waypoint-pill-tooltip {
   opacity: 1;
   transform: translateY(-6px);
-}
-.wp-pill-bg {
-  fill: var(--bg);
-  stroke: var(--border-mid);
-  stroke-width: 1;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.06));
-}
-.wp-pill-text {
-  font-family: var(--font-display);
-  font-size: 10.5px;
-  font-weight: 600;
-  fill: var(--fg);
-  letter-spacing: .02em;
-}
-
-/* Abstract Cartographic Survey Markers */
-.map-sketch,
-.map-survey {
-  pointer-events: none;
-  transition: opacity 250ms ease;
-}
-
-/* Soft Organic Mist & Clouds (No hard boundaries, neutral light gray) */
-.map-soft-clouds {
-  pointer-events: none;
-}
-.map-mystery-anchor {
+/* ── Interactive Mystery Fog & Waypoint on Landing Page ── */
+.map-fog-clickable-zone {
   cursor: pointer;
-  text-decoration: none;
   outline: none;
 }
+.map-fog-hitbox {
+  fill: transparent;
+}
+.map-fog-aura {
+  opacity: 0.35;
+  transition: opacity 300ms var(--ease), transform 400ms var(--ease);
+  transform-origin: 940px 110px;
+}
+.map-cloud-layer {
+  transition: transform 500ms var(--ease), opacity 300ms var(--ease);
+  transform-origin: 940px 110px;
+}
+.map-cloud-layer.c1 {
+  animation: cloud-drift-1 6s infinite ease-in-out alternate;
+}
+.map-cloud-layer.c2 {
+  animation: cloud-drift-2 7.5s infinite ease-in-out alternate;
+}
+.map-cloud-layer.c3 {
+  animation: cloud-drift-3 5s infinite ease-in-out alternate;
+}
+@keyframes cloud-drift-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-6px, 4px) scale(1.05); }
+}
+@keyframes cloud-drift-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(5px, -3px) scale(1.04); }
+}
+@keyframes cloud-drift-3 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-3px, -5px) scale(1.06); }
+}
+
+.map-fog-clickable-zone:hover .map-fog-aura,
+.map-fog-clickable-zone:focus-visible .map-fog-aura {
+  opacity: 0.85;
+  transform: scale(1.22);
+}
+.map-fog-clickable-zone:hover .map-cloud-layer,
+.map-fog-clickable-zone:focus-visible .map-cloud-layer {
+  opacity: 0.95;
+}
+.map-fog-clickable-zone:hover .waypoint-radar-outer,
+.map-fog-clickable-zone:focus-visible .waypoint-radar-outer {
+  stroke-opacity: 0.9;
+  transform: scale(1.35);
+}
+.map-fog-clickable-zone:hover .waypoint-radar,
+.map-fog-clickable-zone:focus-visible .waypoint-radar {
+  fill: var(--fg);
+}
+.map-fog-clickable-zone:hover .map-mystery-glyph,
+.map-fog-clickable-zone:focus-visible .map-mystery-glyph {
+  fill: var(--bg);
+}
+.map-fog-clickable-zone:hover .wp-pill-bg,
+.map-fog-clickable-zone:focus-visible .wp-pill-bg {
+  fill: var(--fg);
+}
+.map-fog-clickable-zone:hover .wp-pill-text,
+.map-fog-clickable-zone:focus-visible .wp-pill-text {
+  fill: var(--bg);
+  font-weight: 800;
+}
+.map-fog-clickable-zone:hover .waypoint-pill-tooltip,
+.map-fog-clickable-zone:focus-visible .waypoint-pill-tooltip {
+  opacity: 1;
+  transform: translateY(-4px);
+}
+
+.waypoint-radar-outer {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1px;
+  stroke-opacity: 0.25;
+  transform-origin: 940px 110px;
+  animation: radar-pulse 2.8s infinite ease-out;
+}
+@keyframes radar-pulse {
+  0% { r: 14px; opacity: 0.8; }
+  100% { r: 38px; opacity: 0; }
+}
+
 .map-mystery-glyph {
   font-family: var(--font-display);
-  font-size: 2.25rem;
-  font-weight: 700;
-  fill: var(--muted);
-  letter-spacing: -.02em;
-  opacity: .55;
-  transition: opacity 200ms var(--ease), transform 200ms var(--ease), fill 200ms;
-}
-.map-mystery-anchor:hover .map-mystery-glyph,
-.map-mystery-anchor:focus-visible .map-mystery-glyph {
-  opacity: 1;
+  font-size: 1.125rem;
+  font-weight: 800;
   fill: var(--fg);
-  transform: translateY(-2px);
+  pointer-events: none;
+  transition: fill 200ms;
 }
-.map-mystery-sub {
+
+.waypoint-pill-tooltip {
+  pointer-events: none;
+  opacity: 0.88;
+  transition: transform 220ms var(--ease), opacity 220ms;
+}
+
+.wp-pill-bg {
+  fill: var(--bg-glass);
+  stroke: var(--border-str);
+  stroke-width: 1px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 200ms;
+}
+.wp-pill-text {
   font-family: var(--font-mono);
-  font-size: 7.5px;
-  font-weight: 600;
-  letter-spacing: .16em;
-  fill: var(--muted);
-  opacity: .6;
-  text-transform: uppercase;
-  transition: opacity 200ms, fill 200ms;
-}
-.map-mystery-anchor:hover .map-mystery-sub {
-  opacity: .95;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   fill: var(--fg);
+  pointer-events: none;
+  transition: all 200ms;
 }
 
 /* ── Interactive Milestone Sneak Peek Floating Card ── */
@@ -2094,13 +2165,26 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   text-transform: uppercase;
 }
 
-/* ── Snaking Map SVG Styles ── */
+/* ── Topographic Expedition Snaking Map Styles ── */
 .exp-snaking-svg {
   display: block;
   width: 100%;
   height: auto;
   overflow: visible;
   filter: drop-shadow(0 8px 24px rgba(0,0,0,0.03));
+}
+.map-contour-line {
+  fill: none;
+  stroke: var(--border-mid);
+  stroke-width: 1px;
+  stroke-dasharray: 2 4;
+  opacity: 0.45;
+}
+.map-elevation-line {
+  stroke: var(--border-mid);
+  stroke-width: 1px;
+  stroke-dasharray: 2 2;
+  opacity: 0.6;
 }
 .map-road-glow {
   fill: none;
@@ -2119,8 +2203,25 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   stroke-linejoin: round;
   opacity: 0.85;
 }
+.map-start-basecamp {
+  transform-origin: 60px 100px;
+}
+.map-start-ring {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1px;
+  opacity: 0.4;
+}
+.map-start-label {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  fill: var(--muted);
+}
 .map-snaking-node {
   cursor: pointer;
+  outline: none;
 }
 .map-snaking-node .map-node-ring {
   fill: none;
@@ -2137,14 +2238,75 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 .map-snaking-node:hover .map-node-core {
   transform: scale(1.3);
 }
-.map-goal-core {
+
+/* Destination Collaboration Hook */
+.map-destination-hook {
+  cursor: pointer;
+  outline: none;
+  transform-origin: 840px 460px;
+}
+.map-dest-aura {
+  opacity: 0.35;
+  transition: opacity 250ms, transform 350ms;
+  animation: dest-aura-glow 3.5s infinite ease-in-out alternate;
+}
+@keyframes dest-aura-glow {
+  0% { transform: scale(1); opacity: 0.25; }
+  100% { transform: scale(1.2); opacity: 0.55; }
+}
+.map-dest-ring-outer {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.2px;
+  stroke-dasharray: 3 3;
+  animation: spin-slow 20s linear infinite;
+  transform-origin: 840px 460px;
+}
+@keyframes spin-slow {
+  100% { transform: rotate(360deg); }
+}
+.map-dest-ring-inner {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.5px;
+  opacity: 0.7;
+}
+.map-dest-core {
   fill: var(--fg);
 }
-.map-goal-label {
+.map-dest-badge {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.12em;
+  fill: var(--muted);
+}
+.map-dest-title {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  fill: var(--fg);
+}
+.map-dest-cta {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  fill: var(--muted-soft);
+  transition: fill 200ms;
+}
+.map-destination-hook:hover .map-dest-aura,
+.map-destination-hook:focus-visible .map-dest-aura {
+  opacity: 0.9;
+  transform: scale(1.35);
+}
+.map-destination-hook:hover .map-dest-title,
+.map-destination-hook:focus-visible .map-dest-title {
+  fill: var(--fg);
+}
+.map-destination-hook:hover .map-dest-cta,
+.map-destination-hook:focus-visible .map-dest-cta {
   fill: var(--fg);
 }
 
@@ -2420,24 +2582,27 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   gap: 1.25rem;
 }
 .cert-card--inline {
-  padding: 1.5rem 1.625rem;
+  position: relative;
+  padding: 1.65rem 1.75rem;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--bg-card);
   display: flex;
   flex-direction: column;
-  transition: all 200ms var(--ease);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+  transition: all 220ms var(--ease);
+  overflow: hidden;
 }
 .cert-card--inline:hover {
   border-color: var(--border-str);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
 }
 .cert-card__badge-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 .cert-card__cat {
   font-family: var(--font-mono);
@@ -2448,14 +2613,25 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   color: var(--muted);
 }
 .cert-card__verified-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 3px 8px;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 2px;
   font-family: var(--font-mono);
   font-size: 0.5625rem;
   font-weight: 800;
   letter-spacing: 0.06em;
-  padding: 2px 7px;
-  background: var(--fg);
-  color: var(--bg);
-  border-radius: 2px;
+}
+.cert-card__seal-icon {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  color: var(--fg);
+  opacity: 0.08;
+  pointer-events: none;
 }
 .cert-card__title {
   font-family: var(--font-display);
@@ -2470,14 +2646,14 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   font-size: 0.8125rem;
   color: var(--muted);
   line-height: 1.45;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 .cert-card__meta-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
-  padding-top: 0.75rem;
+  padding-top: 0.85rem;
   border-top: 1px solid var(--border);
 }
 .cert-card__year {
@@ -2489,10 +2665,10 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 .cert-card__pdf-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 3px 8px;
+  gap: 0.4rem;
+  padding: 4px 10px;
   border: 1px solid var(--border-mid);
-  border-radius: 3px;
+  border-radius: 4px;
   font-family: var(--font-mono);
   font-size: 0.5625rem;
   font-weight: 700;
@@ -2504,6 +2680,51 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 .cert-card__pdf-btn:hover {
   background: var(--fg);
   color: var(--bg);
+  border-color: var(--fg);
+}
+
+/* ── Global Site Footer ── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  padding: 2.25rem 0;
+  margin-top: 5rem;
+  position: relative;
+  z-index: 10;
+}
+.site-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+.site-footer__copy {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+.site-footer__right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.site-footer__link {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 150ms;
+}
+.site-footer__link:hover {
+  color: var(--fg);
+}
+.site-footer__sep {
+  color: var(--border-str);
+  font-size: 0.6875rem;
 }
 
 /* ── 16. 404 PAGE ───────────────────────────── */
