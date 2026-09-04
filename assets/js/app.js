@@ -797,6 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const roleText = getLoc(p, 'role');
         const ctaText = window.t ? window.t('project_row_cta') : 'Case Study';
         const fallbackSvg = getProjectSvgPlaceholder(p.name, catText);
+        const liveDemoTarget = resolveAsset(p.liveDemo || '404.html');
 
         // 3 Coherent Columns in ONE row: Left (Identity), Center (Showcase), Right (Tech & Links)
         row.innerHTML = `
@@ -813,18 +814,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <a href="project.html?slug=${p.slug}" class="parow__img-link" tabindex="-1" aria-hidden="true">
               <div class="parow__img-wrap">
                 <img src="${imgSrc}" alt="${p.name} screenshot" loading="lazy" class="parow__img" onerror="this.onerror=null;this.src='${fallbackSvg}'">
-                <div class="card-fan-overlay" aria-hidden="true"></div>
-                <div class="card-fan-wrap" aria-hidden="true">
-                  <div class="fan-card fan-card--1">
-                    <img src="${fanImg1}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${fallbackSvg}'">
-                  </div>
-                  <div class="fan-card fan-card--2">
-                    <img src="${fanImg2}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${fallbackSvg}'">
-                  </div>
-                  <div class="fan-card fan-card--3">
-                    <img src="${fanImg3}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${fallbackSvg}'">
-                  </div>
-                </div>
               </div>
             </a>
           </div>
@@ -842,12 +831,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>${ctaText}</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </a>
-              ${p.liveDemo ? `
-                <a href="${p.liveDemo}" target="_blank" rel="noopener noreferrer" class="parow__ext-link" aria-label="Live demo for ${p.name}">
-                  <span>Live Demo</span>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                </a>
-              ` : ''}
+              <a href="${liveDemoTarget}" class="parow__ext-link" aria-label="Live demo for ${p.name}">
+                <span>Live Demo</span>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </a>
               ${p.github ? `
                 <a href="${p.github}" target="_blank" rel="noopener noreferrer" class="parow__ext-link" aria-label="GitHub repository for ${p.name}">
                   <span>GitHub</span>
@@ -876,16 +863,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    filterTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        activeFilter = tab.getAttribute('data-filter') || 'all';
-        filterTabs.forEach(t => {
-          t.classList.toggle('active', t === tab);
-          t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+    if (filterTabs.length > 0) {
+      filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          activeFilter = tab.getAttribute('data-filter') || 'all';
+          filterTabs.forEach(t => {
+            t.classList.toggle('active', t === tab);
+            t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+          });
+          renderProjectRows(activeFilter);
         });
-        renderProjectRows(activeFilter);
       });
-    });
+    }
 
     renderProjectRows('all');
   }
@@ -924,6 +913,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const solText = getLoc(project, 'solution');
     const roleText = getLoc(project, 'role');
     const techDetailsText = getLoc(project, 'techDetails');
+    const liveDemoTarget = resolveAsset(project.liveDemo || '404.html');
 
     root.innerHTML = `
       <div class="pdetail__header">
@@ -975,9 +965,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="pdetail__col-showcase">
           <div class="pdetail__showcase-main" id="showcaseMainWrap">
             <img id="showcaseMainImg" src="${images[0]}" alt="${project.name} main showcase" loading="eager" class="pdetail__main-img" onerror="this.onerror=null;this.src='${getProjectSvgPlaceholder(project.name, catText)}'">
-            <div class="showcase-hover-preview" id="showcaseHoverPopup" aria-hidden="true">
-              <img id="showcaseHoverImg" src="${images[0]}" alt="Enlarged preview" onerror="this.onerror=null;this.src='${getProjectSvgPlaceholder(project.name, catText)}'">
-            </div>
           </div>
 
           ${images.length > 1 ? `
@@ -1010,12 +997,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="pdetail__links-box">
             <h2 class="pdetail__sec-label">${window.t ? window.t('modal_label_overview') : 'PROJECT LINKS'}</h2>
             <div class="pdetail__actions">
-              ${project.liveDemo ? `
-                <a href="${project.liveDemo}" target="_blank" rel="noopener noreferrer" class="pdetail__btn primary" aria-label="Visit Live Demo for ${project.name}">
-                  <span>Live Demo</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                </a>
-              ` : ''}
+              <a href="${liveDemoTarget}" class="pdetail__btn primary" aria-label="Visit Live Demo for ${project.name}">
+                <span>Live Demo</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </a>
               ${project.github ? `
                 <a href="${project.github}" target="_blank" rel="noopener noreferrer" class="pdetail__btn secondary" aria-label="Visit GitHub repository for ${project.name}">
                   <span>GitHub Repository</span>
@@ -1037,7 +1022,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Thumbnail click interaction
     const mainImg = document.getElementById('showcaseMainImg');
-    const hoverImg = document.getElementById('showcaseHoverImg');
     const thumbs  = root.querySelectorAll('.pdetail__thumb-btn');
 
     thumbs.forEach(btn => {
@@ -1046,29 +1030,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.classList.add('active');
         const src = btn.getAttribute('data-src');
         if (mainImg) mainImg.src = src;
-        if (hoverImg) hoverImg.src = src;
       });
     });
-
-    // Showcase Image Hover Popup Interaction
-    const showcaseWrap = document.getElementById('showcaseMainWrap');
-    const hoverPopup   = document.getElementById('showcaseHoverPopup');
-
-    if (showcaseWrap && hoverPopup) {
-      showcaseWrap.addEventListener('mousemove', (e) => {
-        const rect = showcaseWrap.getBoundingClientRect();
-        const relX = e.clientX - rect.left;
-        const relY = e.clientY - rect.top;
-
-        hoverPopup.classList.add('visible');
-        hoverPopup.style.left = `${relX + 16}px`;
-        hoverPopup.style.top  = `${relY + 16}px`;
-      });
-
-      showcaseWrap.addEventListener('mouseleave', () => {
-        hoverPopup.classList.remove('visible');
-      });
-    }
   }
 
   /* ════════════════════════════════════════════

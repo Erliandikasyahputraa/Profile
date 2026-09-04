@@ -310,7 +310,7 @@ window.PORTFOLIO_DATA = {
         'assets/images/projects/anti-nganggur-android.png'
       ],
       github: 'https://github.com/Erliandikasyahputraa/jobhunt',
-      liveDemo: 'https://anti-nganggur.vercel.app/',
+      liveDemo: '404.html',
       figma: null,
       status: 'live',
       featured: true,
@@ -346,7 +346,7 @@ window.PORTFOLIO_DATA = {
         'assets/images/projects/pennypath-android.png'
       ],
       github: 'https://github.com/Penny-Path-Bangkit',
-      liveDemo: null,
+      liveDemo: '404.html',
       figma: null,
       status: 'built',
       featured: true,
@@ -382,7 +382,7 @@ window.PORTFOLIO_DATA = {
         'assets/images/projects/emotica-android.png'
       ],
       github: 'https://github.com/Emotica-DBS',
-      liveDemo: null,
+      liveDemo: '404.html',
       figma: null,
       status: 'built',
       featured: true,
@@ -418,7 +418,7 @@ window.PORTFOLIO_DATA = {
         'assets/images/projects/bincard-android.png'
       ],
       github: 'https://github.com/Erliandikasyahputraa/bincard-inventory',
-      liveDemo: null,
+      liveDemo: '404.html',
       figma: null,
       status: 'built',
       featured: true,
@@ -454,7 +454,7 @@ window.PORTFOLIO_DATA = {
         'assets/images/projects/barakasir-android.png'
       ],
       github: 'https://github.com/Erliandikasyahputraa/bara-kasir',
-      liveDemo: null,
+      liveDemo: '404.html',
       figma: null,
       status: 'built',
       featured: true,
@@ -490,10 +490,10 @@ window.PORTFOLIO_DATA = {
         'assets/images/projects/tekateki-android.png'
       ],
       github: 'https://github.com/Erliandikasyahputraa/Scrabbleword-School',
-      liveDemo: null,
+      liveDemo: '404.html',
       figma: null,
       status: 'built',
-      featured: false,
+      featured: true,
     },
     {
       slug: 'desa-air-putih',
@@ -526,13 +526,13 @@ window.PORTFOLIO_DATA = {
         'assets/images/projects/desaairputih-android.png'
       ],
       github: 'https://github.com/Erliandikasyahputraa/web-profil-inhu-kkndesaputih',
-      liveDemo: 'https://desaairputih.my.id',
+      liveDemo: '404.html',
       figma: null,
       status: 'live',
       featured: false,
     },
   ],
 
-  /* ── HOME TRAILER: exactly 5 slugs ─────────── */
-  homeTrailerSlugs: ['anti-nganggur', 'penny-path', 'emotica', 'bincard', 'bara-kasir'],
+  /* ── HOME TRAILER: Selected Projects ─────────── */
+  homeTrailerSlugs: ['anti-nganggur', 'penny-path', 'emotica', 'bincard', 'bara-kasir', 'tekateki'],
 };
