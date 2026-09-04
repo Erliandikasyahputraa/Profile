@@ -55,7 +55,7 @@ body {
   font-size: 1rem; line-height: 1.65;
   background: var(--bg); color: var(--fg);
   overflow-x: hidden;
-  transition: background 600ms var(--ease), color 600ms var(--ease);
+  transition: background 280ms var(--ease), color 280ms var(--ease);
 }
 
 /* Custom pixel meat cursor active only when physical mouse/trackpad pointer is in use */

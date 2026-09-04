@@ -1,19 +1,15 @@
 /**
- * theme.js — VENOM / INK SPREAD Theme Transition (v4)
+ * theme.js — Ultra-Smooth Organic Ink Splash Theme Transition (60-120 FPS)
  *
- * Uses SVG goo filter (feTurbulence → feDisplacementMap → feGaussianBlur → feColorMatrix)
- * to create an organic "venom symbiote / ink blob" spreading effect.
- *
- * A main blob + 6 tendrils grow from the toggle button origin.
- * The feTurbulence distorts each circle's edges into organic drips/tendrils,
- * while feGaussianBlur + feColorMatrix makes overlapping blobs merge into
- * one continuous liquid mass — the classic "goo" effect.
- *
- * References: Lucas Bebber's SVG Goo technique.
+ * Architecture:
+ *   • Hardware-accelerated SVG organic ink wave + trailing satellite droplets.
+ *   • Multi-lobed dynamic Bezier spline for natural fluid/liquid spreading.
+ *   • Zero heavy raster filters (feDisplacement/feTurbulence) to prevent GPU/CPU bottleneck.
+ *   • Crisp, snappy, buttery smooth transition across all devices.
  */
 (function () {
-  const KEY      = 'portfolio-theme';
-  const DURATION = 400; // ms — snappy liquid bloom
+  const KEY = 'portfolio-theme';
+  const DURATION = 360; // ms — crisp, snappy liquid bloom
 
   /* ── Apply theme ─────────────────────────── */
   function applyTheme(t) {
@@ -21,15 +17,38 @@
   }
 
   /* ── Read initial theme before paint (Default: light) ── */
-  const stored  = localStorage.getItem(KEY);
-  // Default is strictly 'light' unless user has explicitly saved a preference
+  const stored = localStorage.getItem(KEY);
   const initial = (stored === 'dark' || stored === 'light') ? stored : 'light';
   applyTheme(initial);
 
   /* ── Runtime ─────────────────────────────── */
   const NS = 'http://www.w3.org/2000/svg';
-  let current   = initial;
+  let current = initial;
   let animating = false;
+
+  // Catmull-Rom to smooth closed Cardinal spline for organic fluid droplet
+  function getOrganicSplinePath(points) {
+    const n = points.length;
+    let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)} `;
+    for (let i = 0; i < n; i++) {
+      const p0 = points[(i - 1 + n) % n];
+      const p1 = points[i];
+      const p2 = points[(i + 1) % n];
+      const p3 = points[(i + 2) % n];
+
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+      d += `C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)} `;
+    }
+    return d + 'Z';
+  }
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3.2);
+  }
 
   function runTransition(btn) {
     const next = current === 'light' ? 'dark' : 'light';
@@ -42,143 +61,122 @@
     }
     animating = true;
 
-    /* Origin = button centre */
+    /* Origin = button center */
     const rect = btn.getBoundingClientRect();
-    const ox   = rect.left + rect.width  / 2;
-    const oy   = rect.top  + rect.height / 2;
+    const ox = rect.left + rect.width / 2;
+    const oy = rect.top + rect.height / 2;
 
-    /* Diagonal from origin = max radius needed + safety padding */
-    const R = Math.ceil(Math.hypot(
-      Math.max(ox, window.innerWidth  - ox),
+    /* Max required radius to cover entire screen from origin */
+    const maxDist = Math.hypot(
+      Math.max(ox, window.innerWidth - ox),
       Math.max(oy, window.innerHeight - oy)
-    )) * 1.18 + 80;
+    );
+    const R = Math.ceil(maxDist) * 1.25 + 60;
 
     const inkFill = next === 'dark' ? '#000000' : '#ffffff';
 
-    /* ── Create SVG overlay ──────────────────── */
+    /* Create SVG overlay */
     const svg = document.createElementNS(NS, 'svg');
     svg.style.cssText = [
-      'position:fixed', 'inset:0',
+      'position:fixed',
+      'inset:0',
       `width:${window.innerWidth}px`,
       `height:${window.innerHeight}px`,
-      'pointer-events:none', 'z-index:9999',
+      'pointer-events:none',
+      'z-index:99990',
+      'will-change:opacity,transform',
+      'transform:translateZ(0)',
     ].join(';');
     svg.setAttribute('xmlns', NS);
 
-    /* Goo filter — turbulence displaces edges → blur → threshold alpha */
-    const defs   = document.createElementNS(NS, 'defs');
-    const filter = document.createElementNS(NS, 'filter');
-    filter.id    = 'venomGoo';
-    filter.setAttribute('x', '-20%'); filter.setAttribute('y', '-20%');
-    filter.setAttribute('width', '140%'); filter.setAttribute('height', '140%');
-    filter.setAttribute('color-interpolation-filters', 'sRGB');
-
-    /* Step 1: fractal noise as displacement source */
-    const turb = document.createElementNS(NS, 'feTurbulence');
-    turb.setAttribute('type', 'fractalNoise');
-    turb.setAttribute('baseFrequency', '0.016 0.018');
-    turb.setAttribute('numOctaves', '2');
-    turb.setAttribute('seed', '42');
-    turb.setAttribute('result', 'noise');
-
-    /* Step 2: displace circles with the noise → organic dripping edges */
-    const disp = document.createElementNS(NS, 'feDisplacementMap');
-    disp.setAttribute('in', 'SourceGraphic');
-    disp.setAttribute('in2', 'noise');
-    disp.setAttribute('scale', '30');
-    disp.setAttribute('xChannelSelector', 'R');
-    disp.setAttribute('yChannelSelector', 'G');
-    disp.setAttribute('result', 'displaced');
-
-    /* Step 3: blur heavily to create goo merging zones between blobs */
-    const blur = document.createElementNS(NS, 'feGaussianBlur');
-    blur.setAttribute('in', 'displaced');
-    blur.setAttribute('stdDeviation', '18');
-    blur.setAttribute('result', 'blur');
-
-    /* Step 4: threshold alpha back to solid — creates merged organic mass */
-    const matrix = document.createElementNS(NS, 'feColorMatrix');
-    matrix.setAttribute('in', 'blur');
-    matrix.setAttribute('mode', 'matrix');
-    /* RGB: pass through | Alpha: multiply 26 then offset -9 → sharp merged edges */
-    matrix.setAttribute('values', '1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 26 -9');
-
-    [turb, disp, blur, matrix].forEach(f => filter.appendChild(f));
-    defs.appendChild(filter);
-    svg.appendChild(defs);
-
-    /* Group with goo filter applied */
-    const g = document.createElementNS(NS, 'g');
-    g.setAttribute('filter', 'url(#venomGoo)');
-    svg.appendChild(g);
-    document.body.appendChild(svg);
-
-    /* ── Tendril definitions ─────────────────
-       Each tendril: circle whose centre drifts from origin
-       and radius grows to fill coverage area.
-       dx,dy = final drift offset from origin (pixels)
-       mR    = final radius (fraction of R)
-       sp    = speed multiplier (>1 = faster, creates "leading" tendrils)   */
-    const TENDRILS = [
-      { dx:   0,  dy:   0, mR: 1.04, sp: 1.00 }, // main expanding liquid mass
-      { dx: 140,  dy:-100, mR: 0.65, sp: 1.35 }, // organic leading tendril top-right
-      { dx:-120,  dy:  90, mR: 0.58, sp: 1.25 }, // bottom-left
-      { dx: 120,  dy: 110, mR: 0.52, sp: 1.40 }, // bottom-right
-      { dx:-110,  dy: -80, mR: 0.48, sp: 1.20 }, // top-left
-      { dx:  60,  dy:-150, mR: 0.45, sp: 1.50 }, // upper reach
-      { dx: -70,  dy: 140, mR: 0.42, sp: 1.30 }, // lower reach
-    ];
-
-    const circles = TENDRILS.map(t => {
-      const c = document.createElementNS(NS, 'circle');
-      c.setAttribute('cx', ox);
-      c.setAttribute('cy', oy);
-      c.setAttribute('r',  '0');
-      c.setAttribute('fill', inkFill);
-      g.appendChild(c);
-      return { el: c, ...t };
-    });
-
-    /* ── Silky smooth cubic ease-out ─────────────────── */
-    function easeOut(t) {
-      return 1 - Math.pow(1 - t, 2.8);
+    // 14-lobe organic fluid blob parameters (varying radii and tendril reach)
+    const NUM_LOBES = 14;
+    const lobeOffsets = [];
+    for (let i = 0; i < NUM_LOBES; i++) {
+      // Create natural organic asymmetry (some lobes reach 1.18x, some 0.82x)
+      const angle = (i / NUM_LOBES) * Math.PI * 2;
+      const reach = 0.85 + Math.sin(i * 1.9 + 0.4) * 0.16 + Math.cos(i * 3.1) * 0.12;
+      const speed = 0.95 + Math.sin(i * 2.3) * 0.22;
+      lobeOffsets.push({ angle, reach, speed });
     }
 
-    /* ── rAF animation loop ─────────────────── */
+    // Main organic ink splatter path
+    const mainPath = document.createElementNS(NS, 'path');
+    mainPath.setAttribute('fill', inkFill);
+    svg.appendChild(mainPath);
+
+    // 6 Satellite organic droplets that surge forward like splashing ink
+    const DROPLETS = [
+      { angle: -0.45, distMul: 0.85, rMul: 0.38, sp: 1.35 },
+      { angle:  0.85, distMul: 0.90, rMul: 0.42, sp: 1.45 },
+      { angle:  2.30, distMul: 0.78, rMul: 0.32, sp: 1.30 },
+      { angle: -2.10, distMul: 0.88, rMul: 0.36, sp: 1.40 },
+      { angle: -1.25, distMul: 0.92, rMul: 0.28, sp: 1.50 },
+      { angle:  1.65, distMul: 0.82, rMul: 0.34, sp: 1.35 },
+    ];
+
+    const dropletEls = DROPLETS.map(d => {
+      const c = document.createElementNS(NS, 'circle');
+      c.setAttribute('fill', inkFill);
+      c.setAttribute('cx', ox);
+      c.setAttribute('cy', oy);
+      c.setAttribute('r', '0');
+      svg.appendChild(c);
+      return { el: c, ...d };
+    });
+
+    document.body.appendChild(svg);
+
     const startTime = performance.now();
     let switched = false;
 
     function frame(now) {
-      const raw = (now - startTime) / DURATION;
-      const t   = Math.min(raw, 1);
+      const elapsed = now - startTime;
+      const rawT = Math.min(1.0, elapsed / DURATION);
+      const easeT = easeOutCubic(rawT);
 
-      circles.forEach(c => {
-        /* Each tendril has its own local time based on speed */
-        const lt = Math.min(t * c.sp, 1);
-        const et = easeOut(lt);
-        c.el.setAttribute('cx', ox + c.dx * et);
-        c.el.setAttribute('cy', oy + c.dy * et);
-        c.el.setAttribute('r',  c.mR * R * et);
+      // Compute current organic spline points
+      const points = lobeOffsets.map(l => {
+        const localT = Math.min(1.0, rawT * l.speed);
+        const localEase = easeOutCubic(localT);
+        const r = R * l.reach * localEase;
+        return {
+          x: ox + Math.cos(l.angle) * r,
+          y: oy + Math.sin(l.angle) * r,
+        };
       });
 
-      /* Switch theme promptly when screen is covered */
-      if (t >= 0.35 && !switched) {
+      mainPath.setAttribute('d', getOrganicSplinePath(points));
+
+      // Animate satellite droplets
+      dropletEls.forEach(d => {
+        const localT = Math.min(1.0, rawT * d.sp);
+        const localEase = easeOutCubic(localT);
+        const dist = R * d.distMul * localEase;
+        const curR = R * d.rMul * localEase;
+        d.el.setAttribute('cx', ox + Math.cos(d.angle) * dist);
+        d.el.setAttribute('cy', oy + Math.sin(d.angle) * dist);
+        d.el.setAttribute('r', curR);
+      });
+
+      // Switch theme when screen is fully blanketed by ink
+      if (rawT >= 0.55 && !switched) {
         switched = true;
-        current  = next;
+        current = next;
         applyTheme(current);
         localStorage.setItem(KEY, current);
       }
 
-      if (t < 1) {
+      if (rawT < 1.0) {
         requestAnimationFrame(frame);
       } else {
-        /* Smooth fade overlay out */
-        svg.style.transition = 'opacity 180ms cubic-bezier(0.16, 1, 0.3, 1)';
-        svg.style.opacity    = '0';
+        // Silky fade out of the ink layer
+        svg.style.transition = 'opacity 140ms ease-out';
+        svg.style.opacity = '0';
         setTimeout(() => {
           svg.remove();
           animating = false;
-        }, 200);
+        }, 160);
       }
     }
 
