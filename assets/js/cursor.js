@@ -71,11 +71,13 @@
      3=tooth(bg/white), 4=bone mid-gray(#828288), 5=bone light(#b4b4ba)
   ═══════════════════════════════════════════════════════════ */
 
-  /* ── Roast Drumstick Cursor (12×12) ─────────────────────────
+  /* ── Roast Drumstick Cursor Variants (12×12) ──────────────────
      Three-tone: 1=meat(fg), 4=bone-mid(#828288), 5=bone-light(#b4b4ba)
      Pointer tip at top-left (col 1, row 0). Angled ↖↘ like a mouse cursor.
   */
-  const SPRITE_MEAT = [
+
+  // 1. Normal Default Drumstick
+  const SPRITE_MEAT_NORMAL = [
     //0  1  2  3  4  5  6  7  8  9 10 11
     [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0  tip
     [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r1  meat bulge
@@ -89,6 +91,42 @@
     [0, 0, 0, 0, 0, 4, 5, 0, 5, 4, 5, 0], // r9  knuckle
     [0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 4, 4], // r10 end
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5], // r11 tip
+  ];
+
+  // 2. Bitten Pointer Drumstick (Hover on clickable links & buttons)
+  // Has a distinct bite mark notch carved into the juicy meat
+  const SPRITE_MEAT_HOVER = [
+    //0  1  2  3  4  5  6  7  8  9 10 11
+    [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0  sharp pointer tip
+    [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], // r1  meat
+    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r2  bite cutout
+    [1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0], // r3  bite mark teeth
+    [0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r4  meat contour
+    [0, 0, 1, 1, 1, 1, 1, 1, 4, 5, 0, 0], // r5  meat→bone
+    [0, 0, 0, 1, 1, 1, 4, 5, 4, 5, 0, 0], // r6  bone joint
+    [0, 0, 0, 0, 4, 5, 4, 5, 4, 0, 0, 0], // r7  bone shaft
+    [0, 0, 0, 0, 0, 5, 4, 0, 4, 5, 0, 0], // r8  knuckle
+    [0, 0, 0, 0, 0, 4, 5, 0, 5, 4, 5, 0], // r9  knuckle
+    [0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 4, 4], // r10 end
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5], // r11 tip
+  ];
+
+  // 3. Chomped Drumstick (Active pointerdown click)
+  // Compressed deep bite with exposed bone joint
+  const SPRITE_MEAT_CLICK = [
+    //0  1  2  3  4  5  6  7  8  9 10 11
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0  sharp click point
+    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r1  
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r2  chomp depth
+    [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0], // r3  
+    [0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], // r4  
+    [0, 0, 0, 1, 1, 1, 1, 4, 5, 0, 0, 0], // r5  
+    [0, 0, 0, 0, 1, 1, 4, 5, 4, 5, 0, 0], // r6  
+    [0, 0, 0, 0, 4, 5, 4, 5, 4, 0, 0, 0], // r7  
+    [0, 0, 0, 0, 0, 5, 4, 0, 4, 5, 0, 0], // r8  
+    [0, 0, 0, 0, 0, 4, 5, 0, 5, 4, 5, 0], // r9  
+    [0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 4, 4], // r10 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5], // r11 
   ];
 
   /* ── Head: Normal Closed ─────────── */
@@ -240,6 +278,10 @@
   resize();
   window.addEventListener('resize', resize, { passive: true });
 
+  /* ── Interactive Cursor State (Meat Transforms) ── */
+  let isHoveringClickable = false;
+  let isPointerDown       = false;
+
   /* ── Touch Detection ── */
   let isTouchActive = false;
   window.addEventListener('touchstart', () => {
@@ -269,9 +311,32 @@
     mouseInside = true;
     document.documentElement.classList.add('custom-cursor-active');
 
+    // Check if hovering over clickable / interactive elements
+    const target = e.target;
+    if (target && target.closest) {
+      isHoveringClickable = !!target.closest(
+        'a, button, [role="button"], [role="tab"], input, select, textarea, label, ' +
+        '.project-card, .parow, .hero__photo, .fan-card, [tabindex], .map-waypoint-group, ' +
+        '.map-mystery-group, .pdetail__thumb-btn, .navbar__lang-pill, .navbar__toggle'
+      );
+    } else {
+      isHoveringClickable = false;
+    }
+
     if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING) {
       currentState = STATES.LAZY_FOLLOW;
     }
+  });
+
+  document.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch') return;
+    isPointerDown = true;
+    // Tiny crunchy tactile crumb on click
+    spawnBiteCrumbs(mouseX, mouseY);
+  });
+
+  document.addEventListener('pointerup', () => {
+    isPointerDown = false;
   });
 
   document.addEventListener('mouseenter', () => {
@@ -282,6 +347,8 @@
   });
   document.addEventListener('mouseleave', () => {
     mouseInside = false;
+    isHoveringClickable = false;
+    isPointerDown = false;
     document.documentElement.classList.remove('custom-cursor-active');
   });
 
@@ -1079,19 +1146,30 @@
       );
     }
 
-    /* ── H. Draw Meat Cursor ── */
+    /* ── H. Draw Meat Cursor (Transforms on Hover & Click) ── */
     if (foodVisible && mouseInside) {
-      const drawMeatX = Math.round(foodX - 1 * PX * foodScale);
-      const drawMeatY = Math.round(foodY - 1 * PX * foodScale);
+      let activeMeatSprite = SPRITE_MEAT_NORMAL;
+      let targetScale = foodScale;
+
+      if (isPointerDown) {
+        activeMeatSprite = SPRITE_MEAT_CLICK;
+        targetScale *= 0.90;
+      } else if (isHoveringClickable) {
+        activeMeatSprite = SPRITE_MEAT_HOVER;
+        targetScale *= 1.15;
+      }
+
+      const drawMeatX = Math.round(foodX - 1 * PX * targetScale);
+      const drawMeatY = Math.round(foodY - 1 * PX * targetScale);
 
       drawMatrix(
-        SPRITE_MEAT,
+        activeMeatSprite,
         drawMeatX,
         drawMeatY,
         fg,
         bg,
         false,
-        foodScale
+        targetScale
       );
     }
 
