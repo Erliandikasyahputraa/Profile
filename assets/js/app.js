@@ -197,59 +197,67 @@ document.addEventListener('DOMContentLoaded', () => {
       const now = actx.currentTime;
 
       const master = actx.createGain();
-      master.gain.setValueAtTime(0.42, now);
+      // Balanced, subtle hollow volume
+      master.gain.setValueAtTime(0.26, now);
       master.connect(actx.destination);
 
-      // 1. Digital Cyber Chirp (High-frequency FM pitch sweep)
-      const osc1 = actx.createOscillator();
-      const osc1Gain = actx.createGain();
-      osc1.type = 'sawtooth';
-      osc1.frequency.setValueAtTime(3200, now);
-      osc1.frequency.exponentialRampToValueAtTime(800, now + 0.05);
-      osc1Gain.gain.setValueAtTime(0.45, now);
-      osc1Gain.gain.exponentialRampToValueAtTime(0.001, now + 0.055);
-      osc1.connect(osc1Gain);
-      osc1Gain.connect(master);
-      osc1.start(now);
-      osc1.stop(now + 0.06);
+      // Duration: 2.5x - 3x longer (~0.22s total) with 3 staggered hollow micro-bursts
 
-      // 2. High-pass Digital Static Noise (Glitch burst)
-      const bufLen = Math.floor(actx.sampleRate * 0.045);
-      const noiseBuf = actx.createBuffer(1, bufLen, actx.sampleRate);
-      const data = noiseBuf.getChannelData(0);
-      for (let i = 0; i < bufLen; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.35));
-      }
-      const noiseSource = actx.createBufferSource();
-      noiseSource.buffer = noiseBuf;
+      // 1. Hollow Resonant Digital Static (Bandpass with high Q for hollow pipe/cyber resonance)
+      const burstTimes = [0, 0.065, 0.135];
+      burstTimes.forEach((offset, idx) => {
+        const t = now + offset;
+        const bufLen = Math.floor(actx.sampleRate * 0.055);
+        const noiseBuf = actx.createBuffer(1, bufLen, actx.sampleRate);
+        const data = noiseBuf.getChannelData(0);
+        for (let i = 0; i < bufLen; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.38));
+        }
+        const noiseSrc = actx.createBufferSource();
+        noiseSrc.buffer = noiseBuf;
 
-      const filter = actx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(4200, now);
-      filter.Q.setValueAtTime(4.0, now);
+        const filter = actx.createBiquadFilter();
+        filter.type = 'bandpass';
+        // Hollow resonance frequencies
+        filter.frequency.setValueAtTime(idx === 0 ? 1750 : (idx === 1 ? 2300 : 1350), t);
+        filter.Q.setValueAtTime(6.5, t); // High Q gives that hollow, metallic cyber pixel acoustic
 
-      const noiseGain = actx.createGain();
-      noiseGain.gain.setValueAtTime(0.42, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+        const g = actx.createGain();
+        g.gain.setValueAtTime(0.24 - idx * 0.04, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
 
-      noiseSource.connect(filter);
-      filter.connect(noiseGain);
-      noiseGain.connect(master);
-      noiseSource.start(now);
-      noiseSource.stop(now + 0.05);
+        noiseSrc.connect(filter);
+        filter.connect(g);
+        g.connect(master);
+        noiseSrc.start(t);
+        noiseSrc.stop(t + 0.058);
+      });
 
-      // 3. Sub-blip byte click
-      const osc2 = actx.createOscillator();
-      const osc2Gain = actx.createGain();
-      osc2.type = 'square';
-      osc2.frequency.setValueAtTime(720, now + 0.012);
-      osc2.frequency.exponentialRampToValueAtTime(160, now + 0.055);
-      osc2Gain.gain.setValueAtTime(0.32, now + 0.012);
-      osc2Gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-      osc2.connect(osc2Gain);
-      osc2Gain.connect(master);
-      osc2.start(now + 0.012);
-      osc2.stop(now + 0.065);
+      // 2. Hollow Cyber Sine/Triangle Droplet Sweeps (Low spatial blip)
+      const sweepOsc = actx.createOscillator();
+      const sweepGain = actx.createGain();
+      sweepOsc.type = 'triangle';
+      sweepOsc.frequency.setValueAtTime(1450, now);
+      sweepOsc.frequency.exponentialRampToValueAtTime(380, now + 0.18);
+      sweepGain.gain.setValueAtTime(0.16, now);
+      sweepGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.20);
+      sweepOsc.connect(sweepGain);
+      sweepGain.connect(master);
+      sweepOsc.start(now);
+      sweepOsc.stop(now + 0.21);
+
+      // 3. Sub-pixel Digital Grain Flutter (Square pulse flutter)
+      const pulseOsc = actx.createOscillator();
+      const pulseGain = actx.createGain();
+      pulseOsc.type = 'square';
+      pulseOsc.frequency.setValueAtTime(280, now + 0.04);
+      pulseOsc.frequency.exponentialRampToValueAtTime(95, now + 0.21);
+      pulseGain.gain.setValueAtTime(0.10, now + 0.04);
+      pulseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+      pulseOsc.connect(pulseGain);
+      pulseGain.connect(master);
+      pulseOsc.start(now + 0.04);
+      pulseOsc.stop(now + 0.23);
     } catch (e) {}
   }
 

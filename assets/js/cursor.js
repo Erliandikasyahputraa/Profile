@@ -602,8 +602,8 @@
 
       const t = now;
       const master = actx.createGain();
-      // Crisp, clearly audible, pleasant ASMR volume
-      const vol = isSprint ? 0.38 : 0.28;
+      // Balanced, comfortable ASMR volume (reduced by 20%)
+      const vol = isSprint ? 0.30 : 0.22;
       master.gain.setValueAtTime(vol, t);
       master.connect(actx.destination);
 
@@ -617,7 +617,7 @@
       osc.type = 'triangle';
       osc.frequency.setValueAtTime((baseFreq + (Math.random() - 0.5) * 12) * pitchMul, t);
       osc.frequency.exponentialRampToValueAtTime((baseFreq * 0.38) * pitchMul, t + 0.055);
-      oscGain.gain.setValueAtTime(0.48, t);
+      oscGain.gain.setValueAtTime(0.38, t);
       oscGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
       osc.connect(oscGain);
       oscGain.connect(master);
@@ -640,7 +640,7 @@
       filter.Q.setValueAtTime(4.2, t);
 
       const noiseGain = actx.createGain();
-      noiseGain.gain.setValueAtTime(0.32, t);
+      noiseGain.gain.setValueAtTime(0.25, t);
       noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.024);
 
       noiseSource.connect(filter);
