@@ -358,17 +358,18 @@
   /* ── Footprint Trail (appears when walking slowly) ── */
   function spawnFootprint(x, y, fg) {
     const dist = Math.hypot(x - lastFootstepX, y - lastFootstepY);
-    if (dist < 18) return; // Only stamp every 18px of movement
+    if (dist < 20) return; // Stamp every 20px of movement
     lastFootstepX = x;
     lastFootstepY = y;
     footprints.push({
-      x: x + (Math.random() - 0.5) * 4,
+      x: x + (Math.random() - 0.5) * 3,
       y,
       life: 1.0,
-      decay: 0.008,
+      decay: 0.006,
       color: fg,
     });
     if (footprints.length > MAX_FOOTPRINTS) footprints.shift();
+    playFootstepSound(false);
   }
 
   /* ── Dust Spawner ── */
@@ -572,6 +573,73 @@
 
       // Bite 3: ASMR crispy final chew (t = 300ms)
       playAsmrBite(actx, now + 0.30, 1.0);
+    } catch (e) {}
+  }
+
+  /* ── ASMR Melodic Pitter-Patter Footstep Synthesizer ── */
+  let lastStepSoundTime = 0;
+  let isLeftStep = false;
+
+  function playFootstepSound(isSprint = false) {
+    try {
+      const actx = getAudioContext();
+      if (!actx) return;
+      const now = actx.currentTime;
+
+      // Rhythm throttle: walk ~160ms, sprint ~95ms
+      const minInterval = isSprint ? 0.095 : 0.16;
+      if (now - lastStepSoundTime < minInterval) return;
+      lastStepSoundTime = now;
+      isLeftStep = !isLeftStep;
+
+      const t = now;
+      const master = actx.createGain();
+      // Gentle, soothing, non-intrusive ASMR volume
+      const vol = isSprint ? 0.048 : 0.034;
+      master.gain.setValueAtTime(vol, t);
+      master.connect(actx.destination);
+
+      // Alternating melodious pentatonic frequencies: Left = 440Hz (A4), Right = 523Hz (C5)
+      const baseFreq = isLeftStep ? 440 : 523.25;
+      const pitchMul = isSprint ? 0.88 : 1.0;
+
+      // 1. Tactile Wood / Marimba Pop (Soft resonant sine envelope)
+      const osc = actx.createOscillator();
+      const oscGain = actx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime((baseFreq + (Math.random() - 0.5) * 15) * pitchMul, t);
+      osc.frequency.exponentialRampToValueAtTime((baseFreq * 0.42) * pitchMul, t + 0.038);
+      oscGain.gain.setValueAtTime(0.20, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
+      osc.connect(oscGain);
+      oscGain.connect(master);
+      osc.start(t);
+      osc.stop(t + 0.045);
+
+      // 2. Delicate ASMR Ground Rustle / Patter (Soft high-frequency air tap)
+      const bufLen = Math.floor(actx.sampleRate * 0.018);
+      const noiseBuf = actx.createBuffer(1, bufLen, actx.sampleRate);
+      const data = noiseBuf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.3));
+      }
+      const noiseSource = actx.createBufferSource();
+      noiseSource.buffer = noiseBuf;
+
+      const filter = actx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(isLeftStep ? 3400 : 4100, t);
+      filter.Q.setValueAtTime(4.8, t);
+
+      const noiseGain = actx.createGain();
+      noiseGain.gain.setValueAtTime(0.09, t);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.019);
+
+      noiseSource.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(master);
+      noiseSource.start(t);
+      noiseSource.stop(t + 0.022);
     } catch (e) {}
   }
 
@@ -818,24 +886,29 @@
       spawnFootprint(footX, footY, fg);
     }
 
-    // Render fading footprints
+    // Render fading 3-toed dinosaur footprints
     for (let i = footprints.length - 1; i >= 0; i--) {
       const fp = footprints[i];
       fp.life -= fp.decay;
       if (fp.life <= 0) { footprints.splice(i, 1); continue; }
       ctx.fillStyle = fp.color;
-      ctx.globalAlpha = fp.life * 0.18;
-      // Two tiny dots (left/right foot)
-      ctx.fillRect(Math.round(fp.x - PX), Math.round(fp.y), PX, PX);
-      ctx.fillRect(Math.round(fp.x + PX), Math.round(fp.y), PX, PX);
+      ctx.globalAlpha = fp.life * 0.24;
+      const fx = Math.round(fp.x);
+      const fy = Math.round(fp.y);
+      // Realistic 3-toed pixel paw
+      ctx.fillRect(fx - PX, fy - PX, PX, PX);       // Left toe
+      ctx.fillRect(fx, fy - Math.round(PX * 1.5), PX, PX); // Middle claw
+      ctx.fillRect(fx + PX, fy - PX, PX, PX);       // Right toe
+      ctx.fillRect(fx - PX * 0.5, fy, PX * 2, PX);  // Heel pad
     }
 
-    /* ── E2. Sprint Dust ── */
-    if (currentState === STATES.CHASING && currentSpeed > 3.0) {
+    /* ── E2. Sprint Dust & Sprint Sound ── */
+    if (currentState === STATES.CHASING && currentSpeed > 2.8) {
       const trailingFootX = dinoX + (isFacingLeft ? spriteW * 0.8 : spriteW * 0.2);
       const trailingFootY = dinoY + spriteH - 2 * PX;
       const moveDir = velX !== 0 ? Math.sign(velX) : (isFacingLeft ? -1 : 1);
       spawnDust(trailingFootX, trailingFootY, moveDir);
+      playFootstepSound(true);
     }
 
     for (let i = dustParticles.length - 1; i >= 0; i--) {
