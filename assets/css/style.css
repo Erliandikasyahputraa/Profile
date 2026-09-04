@@ -597,6 +597,8 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 .map-waypoint-anchor:focus-visible .waypoint-pill-tooltip {
   opacity: 1;
   transform: translateY(-6px);
+}
+
 /* ── Interactive Mystery Fog & Waypoint on Landing Page ── */
 .map-fog-clickable-zone {
   cursor: pointer;
