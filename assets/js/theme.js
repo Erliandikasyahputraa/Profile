@@ -9,7 +9,7 @@
  */
 (function () {
   const KEY = 'portfolio-theme';
-  const DURATION = 360; // ms — crisp, snappy liquid bloom
+  const DURATION = 720; // ms — lush, cinematic organic liquid bloom
 
   /* ── Apply theme ─────────────────────────── */
   function applyTheme(t) {
@@ -47,7 +47,7 @@
   }
 
   function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3.2);
+    return 1 - Math.pow(1 - t, 3.0);
   }
 
   function runTransition(btn) {
@@ -160,7 +160,7 @@
       });
 
       // Switch theme when screen is fully blanketed by ink
-      if (rawT >= 0.55 && !switched) {
+      if (rawT >= 0.52 && !switched) {
         switched = true;
         current = next;
         applyTheme(current);
@@ -171,12 +171,12 @@
         requestAnimationFrame(frame);
       } else {
         // Silky fade out of the ink layer
-        svg.style.transition = 'opacity 140ms ease-out';
+        svg.style.transition = 'opacity 220ms ease-out';
         svg.style.opacity = '0';
         setTimeout(() => {
           svg.remove();
           animating = false;
-        }, 160);
+        }, 240);
       }
     }
 
