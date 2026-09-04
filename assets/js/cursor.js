@@ -602,8 +602,8 @@
 
       const t = now;
       const master = actx.createGain();
-      // Audible, crisp, satisfying ASMR volume
-      const vol = isSprint ? 0.36 : 0.28;
+      // Audible, crisp, satisfying ASMR volume (walk 0.23, sprint 0.30)
+      const vol = isSprint ? 0.30 : 0.23;
       master.gain.setValueAtTime(vol, t);
       master.connect(actx.destination);
 
@@ -617,7 +617,7 @@
       osc.type = 'triangle';
       osc.frequency.setValueAtTime((baseFreq + (Math.random() - 0.5) * 12) * pitchMul, t);
       osc.frequency.exponentialRampToValueAtTime((baseFreq * 0.38) * pitchMul, t + 0.055);
-      oscGain.gain.setValueAtTime(0.44, t);
+      oscGain.gain.setValueAtTime(0.38, t);
       oscGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
       osc.connect(oscGain);
       oscGain.connect(master);
