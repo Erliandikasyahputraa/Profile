@@ -598,7 +598,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const fallbackSvg = getProjectSvgPlaceholder(p.name, catText);
 
       card.innerHTML = `
-        <div class="project-card__num">${String(i + 1).padStart(2, '0')}</div>
         <div class="project-card__img-wrap">
           <img src="${imgSrc}" alt="${p.name} preview" loading="lazy" class="project-card__img" onerror="this.onerror=null;this.src='${fallbackSvg}'">
           <div class="card-fan-overlay" aria-hidden="true"></div>
@@ -802,7 +801,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3 Coherent Columns in ONE row: Left (Identity), Center (Showcase), Right (Tech & Links)
         row.innerHTML = `
           <div class="parow__left">
-            <div class="parow__num">${p.index || String(idx + 1).padStart(2, '0')}</div>
             <div class="parow__cat">${catText.toUpperCase()}</div>
             <h2 class="parow__title">
               <a href="project.html?slug=${p.slug}">${p.name}</a>
