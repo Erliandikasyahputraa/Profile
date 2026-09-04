@@ -1515,7 +1515,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fullWrap.parentNode.insertBefore(listWrap, fullWrap.nextSibling);
   }
 
-  /* ── Rich Inline Certifications Grid ── */
+  /* ── Rich Inline Certifications Grid (Direct Image Visuals) ── */
   function buildCertifications() {
     const grid = document.getElementById('certsGrid');
     if (!grid || !D.certifications) return;
@@ -1530,6 +1530,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const catText = (isIndo && cert.category_id) ? cert.category_id : (cert.category || 'CERTIFICATE');
+      const imgSrc = cert.image ? resolveAsset(cert.image) : '';
+      const pdfTarget = cert.credential ? resolveAsset(cert.credential) : '';
 
       card.innerHTML = `
         <div class="cert-card__badge-row">
@@ -1539,24 +1541,92 @@ document.addEventListener('DOMContentLoaded', () => {
             <span>${isIndo ? 'TERVERIFIKASI' : 'VERIFIED CREDENTIAL'}</span>
           </span>
         </div>
-        <div class="cert-card__seal-icon" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        </div>
+
+        ${imgSrc ? `
+          <div class="cert-card__visual-wrap" role="button" tabindex="0" aria-label="${isIndo ? 'Perbesar sertifikat' : 'Enlarge certificate'} ${cert.name}">
+            <img src="${imgSrc}" alt="${cert.name}" loading="lazy" class="cert-card__img">
+            <div class="cert-card__visual-overlay">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              <span>${isIndo ? 'PERBESAR' : 'EXPAND'}</span>
+            </div>
+          </div>
+        ` : ''}
+
         <h3 class="cert-card__title">${cert.name}</h3>
         <div class="cert-card__issuer">${cert.issuer}</div>
         <div class="cert-card__meta-bottom">
           <span class="cert-card__year">${cert.year}</span>
-          ${cert.credential ? `
-            <a href="${cert.credential}" target="_blank" rel="noopener noreferrer" class="cert-card__pdf-btn">
+          ${pdfTarget ? `
+            <a href="${pdfTarget}" target="_blank" rel="noopener noreferrer" class="cert-card__pdf-btn" aria-label="Open PDF document">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <span>${isIndo ? 'LIHAT DOKUMEN PDF' : 'VIEW PDF CREDENTIAL'}</span>
+              <span>PDF</span>
             </a>
           ` : ''}
         </div>
       `;
 
+      const visualWrap = card.querySelector('.cert-card__visual-wrap');
+      if (visualWrap && imgSrc) {
+        visualWrap.addEventListener('click', () => {
+          openCertLightbox(imgSrc, cert.name, cert.issuer);
+        });
+        visualWrap.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openCertLightbox(imgSrc, cert.name, cert.issuer);
+          }
+        });
+      }
+
       grid.appendChild(card);
     });
+  }
+
+  /* ── Certificate Lightbox Modal ── */
+  function openCertLightbox(imgSrc, title, issuer) {
+    let lb = document.getElementById('certLightbox');
+    if (!lb) {
+      lb = el('div', {
+        id: 'certLightbox',
+        class: 'cert-lightbox-backdrop',
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-label': 'Certificate Preview',
+      });
+      document.body.appendChild(lb);
+
+      lb.addEventListener('click', (e) => {
+        if (e.target === lb || e.target.closest('#certLightboxClose')) {
+          lb.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lb.classList.contains('active')) {
+          lb.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+
+    lb.innerHTML = `
+      <div class="cert-lightbox__dialog">
+        <button class="cert-lightbox__close" id="certLightboxClose" aria-label="Close preview">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="cert-lightbox__img-wrap">
+          <img src="${imgSrc}" alt="${title}" class="cert-lightbox__img">
+        </div>
+        <div class="cert-lightbox__caption">
+          <div class="cert-lightbox__title">${title}</div>
+          <div class="cert-lightbox__issuer">${issuer}</div>
+        </div>
+      </div>
+    `;
+
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
   }
 
   /* ── Listen for language change to update dynamic content ── */

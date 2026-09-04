@@ -327,6 +327,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Professional Competency',
       category_id: 'Kompetensi Profesi Nasional',
+      image: 'assets/images/certs/bnsp_certificate_erliandikasyahputra.png',
       credential: '../BNSP-Certificate-ErliandikaSyahputra.pdf',
     },
     {
@@ -336,6 +337,7 @@ window.PORTFOLIO_DATA = {
       year: '2024 — 2025',
       category: 'Mobile & Cloud Engineering',
       category_id: 'Rekayasa Mobile & Cloud',
+      image: 'assets/images/certs/erliandika_syahputra_1.png',
       credential: '../Erliandika Syahputra (1).pdf',
     },
     {
@@ -345,6 +347,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Full-Stack Web Development',
       category_id: 'Pengembangan Web Full-Stack',
+      image: 'assets/images/certs/erliandika_syahputra_certificate___fc220d5y0389_1_1.png',
       credential: '../Erliandika Syahputra Certificate - FC220D5Y0389-1 (1).pdf',
     },
     {
@@ -354,6 +357,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Product Design & AI/IoT',
       category_id: 'Desain Produk & AI/IoT',
+      image: 'assets/images/certs/sertifikat_design_thinking_workshop___samsung_solve_for_tomorrow_2025_1.png',
       credential: '../Sertifikat Design Thinking Workshop - Samsung Solve for Tomorrow 2025 (1).pdf',
     },
     {
@@ -363,6 +367,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Mentoring & Technical Education',
       category_id: 'Edukasi & Mentoring Teknis',
+      image: 'assets/images/certs/precision_10.png',
       credential: '../Precision-10.pdf',
     },
     {
@@ -372,6 +377,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Data Mining & Public Speaking',
       category_id: 'Sains Data & Public Speaking',
+      image: 'assets/images/certs/sertifikat___erliandika_syahputra.png',
       credential: '../Sertifikat - Erliandika Syahputra.pdf',
     },
     {
@@ -381,6 +387,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Language Proficiency',
       category_id: 'Kemampuan Bahasa Inggris',
+      image: 'assets/images/certs/toefl_itp_1.png',
       credential: '../Toefl ITP (1).pdf',
     },
     {
@@ -390,6 +397,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Vocational Web Development',
       category_id: 'Pelatihan Vokasi Web',
+      image: 'assets/images/certs/sertifikat_kelulusan_pelatihan___1808127501_f5abfe6a.png',
       credential: '../SERTIFIKAT KELULUSAN PELATIHAN - 1808127501-F5ABFE6A.pdf',
     },
   ],

@@ -241,23 +241,34 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   display:flex; align-items:center; gap:1rem;
 }
 
-/* ── 8. HERO (CENTERED) ─────────────────────── */
+/* ── 8. HERO & PAGE CLEARANCE ─────────────────────── */
 .hero {
   display:flex; flex-direction:column; align-items:center;
   justify-content:center; text-align:center;
   min-height:100dvh;
-  padding-top:clamp(6.5rem, 13vh, 8.5rem);
+  padding-top:clamp(9rem, 18vh, 13rem);
   padding-bottom:4rem;
 }
 
 .exp-page,
 .projects-page {
-  padding-top:clamp(6.5rem, 13vh, 8.5rem);
+  padding-top:clamp(9rem, 18vh, 13rem);
+  padding-bottom:5rem;
+}
+
+.pdetail {
+  padding-top:clamp(8rem, 15vh, 11rem);
   padding-bottom:5rem;
 }
 
 .pdetail__header {
-  padding-top:clamp(5.5rem, 10vh, 7.5rem);
+  padding-top:1rem;
+}
+
+.exp-page__heading,
+.projects-page__heading {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .hero__photo {
@@ -2635,6 +2646,50 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   opacity: 0.08;
   pointer-events: none;
 }
+.cert-card__visual-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border-mid);
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+.cert-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background: #fdfdfd;
+  transition: transform 260ms var(--ease);
+}
+.cert-card__visual-wrap:hover .cert-card__img {
+  transform: scale(1.04);
+}
+.cert-card__visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity 200ms var(--ease);
+}
+.cert-card__visual-wrap:hover .cert-card__visual-overlay,
+.cert-card__visual-wrap:focus-visible .cert-card__visual-overlay {
+  opacity: 1;
+}
 .cert-card__title {
   font-family: var(--font-display);
   font-size: 1.0625rem;
@@ -2683,6 +2738,99 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   background: var(--fg);
   color: var(--bg);
   border-color: var(--fg);
+}
+
+/* ── Certificate Lightbox Modal ── */
+.cert-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cert-lightbox-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.cert-lightbox__dialog {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--border-str);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  transform: scale(0.95);
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cert-lightbox-backdrop.active .cert-lightbox__dialog {
+  transform: scale(1);
+}
+.cert-lightbox__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-mid);
+  background: var(--bg);
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 150ms;
+}
+.cert-lightbox__close:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+.cert-lightbox__img-wrap {
+  width: 100%;
+  max-height: 75vh;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fdfdfd;
+}
+.cert-lightbox__img {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  display: block;
+}
+.cert-lightbox__caption {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+.cert-lightbox__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--fg);
+}
+.cert-lightbox__issuer {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
 }
 
 /* ── Global Site Footer ── */
