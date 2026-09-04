@@ -94,14 +94,14 @@
   ];
 
   // 2. Bitten Pointer Drumstick (Hover on clickable links & buttons)
-  // Has a distinct bite mark notch carved into the juicy meat
+  // Has a distinct exposed inner meat section in high-contrast opposite color (3 = bg)
   const SPRITE_MEAT_HOVER = [
     //0  1  2  3  4  5  6  7  8  9 10 11
-    [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0  sharp pointer tip
-    [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], // r1  meat
-    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r2  bite cutout
-    [1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0], // r3  bite mark teeth
-    [0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r4  meat contour
+    [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0  pointer tip (fg)
+    [1, 3, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r1  exposed bite meat (bg)
+    [1, 3, 3, 3, 3, 1, 0, 0, 0, 0, 0, 0], // r2  deep bite cavity (bg)
+    [1, 3, 3, 3, 3, 3, 1, 0, 0, 0, 0, 0], // r3  exposed inner meat (bg)
+    [0, 1, 3, 3, 3, 3, 1, 1, 0, 0, 0, 0], // r4  meat contour (fg + bg)
     [0, 0, 1, 1, 1, 1, 1, 1, 4, 5, 0, 0], // r5  meat→bone
     [0, 0, 0, 1, 1, 1, 4, 5, 4, 5, 0, 0], // r6  bone joint
     [0, 0, 0, 0, 4, 5, 4, 5, 4, 0, 0, 0], // r7  bone shaft
@@ -112,16 +112,16 @@
   ];
 
   // 3. Chomped Drumstick (Active pointerdown click)
-  // Compressed deep bite with exposed bone joint
+  // Deep bite with exposed inner meat and bone joint
   const SPRITE_MEAT_CLICK = [
     //0  1  2  3  4  5  6  7  8  9 10 11
-    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0  sharp click point
-    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r1  
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r2  chomp depth
-    [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0], // r3  
-    [0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], // r4  
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0  pointer bone tip
+    [1, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r1  
+    [1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0], // r2  chomp cavity (bg)
+    [0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0], // r3  
+    [0, 0, 1, 3, 3, 1, 1, 0, 0, 0, 0, 0], // r4  
     [0, 0, 0, 1, 1, 1, 1, 4, 5, 0, 0, 0], // r5  
-    [0, 0, 0, 0, 1, 1, 4, 5, 4, 5, 0, 0], // r6  
+    [0, 0, 0, 0, 1, 4, 5, 4, 5, 0, 0, 0], // r6  
     [0, 0, 0, 0, 4, 5, 4, 5, 4, 0, 0, 0], // r7  
     [0, 0, 0, 0, 0, 5, 4, 0, 4, 5, 0, 0], // r8  
     [0, 0, 0, 0, 0, 4, 5, 0, 5, 4, 5, 0], // r9  
