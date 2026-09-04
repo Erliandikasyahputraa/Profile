@@ -560,11 +560,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const rawList = (p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0)
         ? p.temporaryPreviewImages
-        : ['assets/images/pp.jpg'];
+        : ['assets/images/profile-primary.png'];
       const imgSrc = resolveAsset(rawList[0]);
-      const fanImg1 = resolveAsset(rawList[0] || rawList[0]);
-      const fanImg2 = resolveAsset(rawList[1] || rawList[0]);
-      const fanImg3 = resolveAsset(rawList[2] || rawList[1] || rawList[0]);
+      const fanImg1 = resolveAsset(rawList[1] || rawList[0]);
+      const fanImg2 = resolveAsset(rawList[2] || rawList[0]);
+      const fanImg3 = resolveAsset(rawList[3] || rawList[1] || rawList[0]);
 
       const catText = getLoc(p, 'category') || 'Software Project';
       const descText = getLoc(p, 'shortDescription');
@@ -761,11 +761,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const rawList = (p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0)
           ? p.temporaryPreviewImages
-          : ['assets/images/pp.jpg'];
+          : ['assets/images/profile-primary.png'];
         const imgSrc = resolveAsset(rawList[0]);
-        const fanImg1 = resolveAsset(rawList[0] || rawList[0]);
-        const fanImg2 = resolveAsset(rawList[1] || rawList[0]);
-        const fanImg3 = resolveAsset(rawList[2] || rawList[1] || rawList[0]);
+        const fanImg1 = resolveAsset(rawList[1] || rawList[0]);
+        const fanImg2 = resolveAsset(rawList[2] || rawList[0]);
+        const fanImg3 = resolveAsset(rawList[3] || rawList[1] || rawList[0]);
 
         const catText = getLoc(p, 'category') || 'PROJECT';
         const descText = getLoc(p, 'shortDescription');
@@ -890,7 +890,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.title = `${project.name} — Erliandika Syahputra`;
 
     const hasImages = project.temporaryPreviewImages && project.temporaryPreviewImages.length > 0;
-    const rawImages = hasImages ? project.temporaryPreviewImages : ['assets/images/pp.jpg'];
+    const rawImages = hasImages ? project.temporaryPreviewImages : ['assets/images/profile-primary.png'];
     const images = rawImages.map(resolveAsset);
 
     const catText = getLoc(project, 'category') || 'SOFTWARE';

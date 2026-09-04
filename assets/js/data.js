@@ -11,8 +11,8 @@ window.PORTFOLIO_DATA = {
     role:          'Software Engineer',
     location:      'Pekanbaru, Indonesia',
     email:         'syahputraerliandika@gmail.com',
-    photoPrimary:  'assets/images/pp-removebg-preview.png',
-    photoSecondary:'assets/images/pp.jpg',
+    photoPrimary:  'assets/images/profile-primary.png',
+    photoSecondary:'assets/images/profile-glitch.png',
     cv:            null, // add path when CV file is available
   },
 
@@ -304,9 +304,10 @@ window.PORTFOLIO_DATA = {
       techDetails_id: 'Arsitektur dirancang khusus untuk memproses inferensi AI langsung di perangkat (on-device). Pemilihan teknologi berfokus pada efisiensi daya baterai dan performa render grafik yang mulus.',
       images: [],
       temporaryPreviewImages: [
-        'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1579621970588-a3f5ce5a08ae?w=600&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop'
+        'assets/images/projects/pennypath-logo.png',
+        'assets/images/projects/pennypath-iphone.png',
+        'assets/images/projects/pennypath-laptop.png',
+        'assets/images/projects/pennypath-android.png'
       ],
       github: 'https://github.com/Erliandikasyahputraa',
       liveDemo: null,
@@ -339,9 +340,10 @@ window.PORTFOLIO_DATA = {
       techDetails_id: 'Dibangun secara native menggunakan Kotlin dan Jetpack Compose untuk performa antarmuka yang sangat responsif. Sinkronisasi data ditangani oleh Firebase, sedangkan analisis emosi dijalankan langsung di perangkat via TensorFlow Lite demi menjamin privasi pengguna.',
       images: [],
       temporaryPreviewImages: [
-        'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=600&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=400&fit=crop'
+        'assets/images/projects/emotica-logo.png',
+        'assets/images/projects/emotica-iphone.png',
+        'assets/images/projects/emotica-laptop.png',
+        'assets/images/projects/emotica-android.png'
       ],
       github: 'https://github.com/Erliandikasyahputraa/Emotica-APP',
       liveDemo: null,
@@ -409,9 +411,10 @@ window.PORTFOLIO_DATA = {
       techDetails_id: 'Laravel 10 menjadi tulang punggung pengelolaan aturan bisnis inventaris yang ketat. Alih-alih membuat SPA yang berat, Livewire dan Alpine.js digunakan agar pemindaian QR dan pembaruan stok berlangsung reaktif tanpa perlu API terpisah.',
       images: [],
       temporaryPreviewImages: [
-        'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=600&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&h=400&fit=crop'
+        'assets/images/projects/bincard-logo.png',
+        'assets/images/projects/bincard-iphone.png',
+        'assets/images/projects/bincard-laptop.png',
+        'assets/images/projects/bincard-android.png'
       ],
       github: 'https://github.com/Erliandikasyahputraa/bincard-inventory',
       liveDemo: null,
@@ -444,9 +447,10 @@ window.PORTFOLIO_DATA = {
       techDetails_id: 'Dirancang dengan arsitektur offline-first menggunakan Dexie.js untuk membungkus IndexedDB browser. Seluruh transaksi dan mutasi stok tersimpan aman di perangkat lokal dan dapat disinkronkan saat kembali online.',
       images: [],
       temporaryPreviewImages: [
-        'https://images.unsplash.com/photo-1556742049-0cf34b6e16a2?w=600&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1556742031-c6961e8560b0?w=600&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1556742212-5b311f3b890e?w=600&h=400&fit=crop'
+        'assets/images/projects/barakasir-logo.png',
+        'assets/images/projects/barakasir-iphone.png',
+        'assets/images/projects/barakasir-laptop.png',
+        'assets/images/projects/barakasir-android.png'
       ],
       github: 'https://github.com/Erliandikasyahputraa/bara-kasir',
       liveDemo: null,
@@ -543,6 +547,12 @@ window.PORTFOLIO_DATA = {
       techDetails: 'I decoupled the architecture into a Laravel 11 API and a React SPA. The crossword UI required extremely fast state updates, so relying on React Query for caching was crucial. I used Laravel Sanctum for secure role-based auth between teachers and students. Initially, we deployed this on local school servers, so I used SQLite for lightweight, zero-configuration database portability.',
       techDetails_id: 'Arsitektur dipisahkan menjadi backend Laravel 11 API dan frontend React SPA. Cache React Query menjamin responsivitas form TTS yang instan, sementara Laravel Sanctum mengamankan otentikasi peran antara guru dan siswa.',
       images: [],
+      temporaryPreviewImages: [
+        'assets/images/projects/tekateki-logo.png',
+        'assets/images/projects/tekateki-iphone.png',
+        'assets/images/projects/tekateki-laptop.png',
+        'assets/images/projects/tekateki-android.png'
+      ],
       github: 'https://github.com/Erliandikasyahputraa/Scrabbleword-School',
       liveDemo: null,
       figma: null,
