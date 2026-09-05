@@ -1958,14 +1958,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const pdfTarget = cert.credential ? resolveAsset(cert.credential) : '';
 
       card.innerHTML = `
-        <div class="cert-card__badge-row">
-          <span class="cert-card__cat">${catText.toUpperCase()}</span>
-          <span class="cert-card__verified-tag">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>${window.t('cert_verify')}</span>
-          </span>
-        </div>
-
         ${imgSrc ? `
           <div class="cert-card__visual-wrap" role="button" tabindex="0" aria-label="${window.t('aria_cert_expand')} ${cert.name}">
             <img src="${imgSrc}" alt="${cert.name}" loading="lazy" class="cert-card__img">
