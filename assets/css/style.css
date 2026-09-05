@@ -2390,7 +2390,7 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   stroke-width: 1.2px;
   stroke-dasharray: 3 3;
   animation: spin-slow 20s linear infinite;
-  transform-origin: 1260px 260px;
+  transform-origin: 1265px 220px;
 }
 @keyframes spin-slow {
   100% { transform: rotate(360deg); }

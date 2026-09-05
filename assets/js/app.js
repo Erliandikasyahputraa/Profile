@@ -1331,7 +1331,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buildCertifications();
   }
 
-  /* ── 3-Tier Career Expedition Map (Editorial Cartographic Journey) ── */
+  /* ── 3-Zone Career Expedition Map (Organic Cartographic Journey) ── */
   function buildFullSnakingMap() {
     const wrap = document.getElementById('expFullMap');
     if (!wrap || !D.experience || !D.experience.length) return;
@@ -1344,7 +1344,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!isMobile) {
       const VW = 1320;
-      const VH = 620;
+      const VH = 560;
 
       const svg = mkSVG('svg', {
         viewBox: `0 0 ${VW} ${VH}`,
@@ -1358,17 +1358,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const defs = mkSVG('defs');
       
       const starGlow = mkSVG('radialGradient', { id: 'collabStarGlow', cx: '50%', cy: '50%', r: '50%' });
-      starGlow.appendChild(mkSVG('stop', { offset: '0%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.28' }));
+      starGlow.appendChild(mkSVG('stop', { offset: '0%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.22' }));
       starGlow.appendChild(mkSVG('stop', { offset: '100%', 'stop-color': 'var(--fg)', 'stop-opacity': '0' }));
       defs.appendChild(starGlow);
 
       svg.appendChild(defs);
 
-      // Subtle atmospheric topographic contour lines
+      // Subtle atmospheric topographic contour lines (single gentle horizon contour)
       const topoContours = [
-        'M 40 160 C 180 110, 320 200, 500 150 C 680 100, 860 190, 1060 140 C 1180 110, 1280 150, 1300 150',
-        'M 30 360 C 200 320, 420 400, 640 350 C 820 300, 1020 380, 1200 340 C 1260 330, 1290 340, 1310 340',
-        'M 50 530 C 240 490, 460 550, 680 510 C 880 470, 1080 540, 1280 510',
+        'M 30 260 C 220 220, 440 310, 680 250 C 900 190, 1120 270, 1290 230',
       ];
       topoContours.forEach(d => {
         svg.appendChild(mkSVG('path', { d, class: 'map-path-contour' }));
@@ -1377,20 +1375,21 @@ document.addEventListener('DOMContentLoaded', () => {
       // Corner Coordinate Markers & Subtle Quote
       svg.appendChild(mkSVGText('+ 00°31\'40" N', 45, 32, 'map-grid-coord', 'start'));
       svg.appendChild(mkSVGText('+ 101°27\'05" E', 1275, 32, 'map-grid-coord', 'end'));
-      svg.appendChild(mkSVGText(isIndo ? 'Tempat berbeda · Tujuan sama · Masa depan yang lebih baik.' : 'Different places · Same purpose · A better tomorrow.', 1275, 52, 'map-grid-quote', 'end'));
+      svg.appendChild(mkSVGText(isIndo ? 'Tempat berbeda · Tujuan sama · Masa depan yang lebih baik.' : 'Different places · Same purpose · A better tomorrow.', 1275, 50, 'map-grid-quote', 'end'));
 
-      // ── Continuous 8-Waypoint Cartographic Expedition Path ──
+      // ── Organic 8-Waypoint Cartographic Expedition Path ──
+      // Silhouette: (60, 310) → (190, 240) → (330, 275) → (480, 150) → (640, 380) → (790, 270) → (920, 305) → (1050, 160) → (1170, 220) → (1265, 220)
       const pathD = `
-        M 65 320
-        C 105 320, 145 190, 195 190
-        C 250 190, 285 390, 345 390
-        C 405 390, 440 160, 495 160
-        C 550 160, 590 390, 645 390
-        C 700 390, 740 170, 795 170
-        C 850 170, 885 390, 935 390
-        C 985 390, 1020 180, 1065 180
-        C 1110 180, 1140 360, 1175 360
-        C 1205 360, 1235 260, 1260 260
+        M 60 310
+        C 105 310, 145 240, 190 240
+        C 240 240, 280 275, 330 275
+        C 380 275, 425 150, 480 150
+        C 540 150, 580 380, 640 380
+        C 700 380, 740 270, 790 270
+        C 840 270, 875 305, 920 305
+        C 970 305, 1005 160, 1050 160
+        C 1095 160, 1130 220, 1170 220
+        C 1205 220, 1235 220, 1265 220
       `;
 
       svg.appendChild(mkSVG('path', { d: pathD, class: 'map-road-glow' }));
@@ -1398,32 +1397,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // ── Origin Node: BASECAMP ──
       const startG = mkSVG('g', { class: 'map-start-basecamp', tabindex: '0', role: 'region', 'aria-label': 'Basecamp origin' });
-      startG.appendChild(mkSVG('circle', { cx: '65', cy: '320', r: '14', class: 'map-start-halo' }));
-      startG.appendChild(mkSVG('circle', { cx: '65', cy: '320', r: '8', class: 'map-start-ring' }));
-      startG.appendChild(mkSVG('circle', { cx: '65', cy: '320', r: '4', class: 'map-node-start' }));
+      startG.appendChild(mkSVG('circle', { cx: '60', cy: '310', r: '12', class: 'map-start-halo' }));
+      startG.appendChild(mkSVG('circle', { cx: '60', cy: '310', r: '7', class: 'map-start-ring' }));
+      startG.appendChild(mkSVG('circle', { cx: '60', cy: '310', r: '3.5', class: 'map-node-start' }));
       
-      startG.appendChild(mkSVGText('BASECAMP', 65, 348, 'map-start-label', 'middle'));
-      startG.appendChild(mkSVGText(isIndo ? 'Semua berawal dari rasa ingin tahu.' : 'It all started from curiosity.', 65, 362, 'map-start-sub', 'middle'));
+      startG.appendChild(mkSVGText('BASECAMP', 60, 336, 'map-start-label', 'middle'));
+      startG.appendChild(mkSVGText(isIndo ? 'Awal mula rasa ingin tahu' : 'Where curiosity began', 60, 350, 'map-start-sub', 'middle'));
       svg.appendChild(startG);
 
-      // ── Deterministic Waypoint Coordinates (All 8 Milestones) ──
+      // ── Deterministic Waypoint Coordinates (Organic 3-Zone Terrain) ──
       const NODE_POSITIONS = [
-        // 0: S1 Sistem Informasi (Pendidikan)
-        { x: 195, y: 190, side: 'above', labelY: 82,  leaderY1: 178, leaderY2: 96, align: 'middle' },
-        // 1: IT Support & Lab Assistant (Infrastruktur IT)
-        { x: 345, y: 390, side: 'below', labelY: 462, leaderY1: 402, leaderY2: 444, align: 'middle' },
-        // 2: Project Director & Division Head (Kepemimpinan & Komunitas)
-        { x: 495, y: 160, side: 'above', labelY: 62,  leaderY1: 148, leaderY2: 76, align: 'middle' },
-        // 3: Network Infrastructure Deployment (Infrastruktur Jaringan)
-        { x: 645, y: 390, side: 'below', labelY: 462, leaderY1: 402, leaderY2: 444, align: 'middle' },
-        // 4: Bangkit Mobile Development (Program Industri)
-        { x: 795, y: 170, side: 'above', labelY: 72,  leaderY1: 158, leaderY2: 86, align: 'middle' },
-        // 5: Coding Camp DBS Full-Stack (Program Industri)
-        { x: 935, y: 390, side: 'below', labelY: 462, leaderY1: 402, leaderY2: 444, align: 'middle' },
-        // 6: Head of Software Dev (Kepemimpinan Rekayasa)
-        { x: 1065, y: 180, side: 'above', labelY: 82,  leaderY1: 168, leaderY2: 96, align: 'middle' },
-        // 7: Sertifikasi BNSP Web (Sertifikasi Profesi)
-        { x: 1175, y: 360, side: 'below', labelY: 452, leaderY1: 372, leaderY2: 434, align: 'middle' },
+        // 0: S1 Sistem Informasi (Pendidikan) — gentle ascent
+        { x: 190, y: 240, side: 'above', labelY: 135, leaderY1: 226, leaderY2: 160, align: 'middle' },
+        // 1: IT Support & Lab Assistant (Infrastruktur IT) — shelf step
+        { x: 330, y: 275, side: 'below', labelY: 355, leaderY1: 287, leaderY2: 335, align: 'middle' },
+        // 2: Project Director & Division Head (Kepemimpinan & Komunitas) — early summit
+        { x: 480, y: 150, side: 'above', labelY: 55,  leaderY1: 136, leaderY2: 80,  align: 'middle' },
+        // 3: Network Infrastructure Deployment (Infrastruktur Jaringan) — fieldwork valley
+        { x: 640, y: 380, side: 'below', labelY: 455, leaderY1: 392, leaderY2: 435, align: 'middle' },
+        // 4: Bangkit Mobile Development (Program Industri) — industry plateau
+        { x: 790, y: 270, side: 'above', labelY: 175, leaderY1: 256, leaderY2: 200, align: 'middle' },
+        // 5: Coding Camp DBS Full-Stack (Program Industri) — continuing plateau
+        { x: 920, y: 305, side: 'below', labelY: 385, leaderY1: 317, leaderY2: 365, align: 'middle' },
+        // 6: Head of Software Dev (Kepemimpinan Rekayasa) — leadership peak
+        { x: 1050, y: 160, side: 'above', labelY: 65,  leaderY1: 146, leaderY2: 90,  align: 'middle' },
+        // 7: Sertifikasi BNSP Web (Sertifikasi Profesi) — credential shelf
+        { x: 1170, y: 220, side: 'below', labelY: 300, leaderY1: 232, leaderY2: 280, align: 'middle' },
       ];
 
       // ── Render 8 Milestone Waypoints with Elevation Leader Lines & Typography ──
@@ -1575,8 +1574,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // ── Destination Endpoint: ✦ LANGKAH BERIKUTNYA / ✦ THE NEXT CHAPTER ──
-      const destX = 1260;
-      const destY = 260;
+      const destX = 1265;
+      const destY = 220;
 
       const destG = mkSVG('g', {
         class: 'map-destination-hook',
@@ -1586,24 +1585,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Destination Aura & Concentric Target Ring
-      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '28', fill: 'url(#collabStarGlow)', class: 'map-dest-aura' }));
-      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '14', class: 'map-dest-ring-outer' }));
-      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '8', class: 'map-dest-ring-inner' }));
-      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '4', class: 'map-dest-core' }));
+      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '24', fill: 'url(#collabStarGlow)', class: 'map-dest-aura' }));
+      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '12', class: 'map-dest-ring-outer' }));
+      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '7', class: 'map-dest-ring-inner' }));
+      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '3.5', class: 'map-dest-core' }));
 
-      // Flag pole / Guide line
-      destG.appendChild(mkSVG('line', {
-        x1: String(destX),
-        y1: String(destY),
-        x2: String(destX),
-        y2: String(destY + 22),
-        class: 'map-elevation-line',
-      }));
-
-      // Destination Typography
-      destG.appendChild(mkSVGText(window.t('map_dest_badge'), destX, destY + 38, 'map-dest-badge', 'middle'));
-      destG.appendChild(mkSVGText(window.t('map_dest_title'), destX, destY + 54, 'map-dest-title', 'middle'));
-      destG.appendChild(mkSVGText(window.t('map_dest_cta'), destX, destY + 70, 'map-dest-cta', 'middle'));
+      // Destination Typography (Quiet horizon arrival)
+      destG.appendChild(mkSVGText(window.t('map_dest_badge'), destX, destY + 32, 'map-dest-badge', 'middle'));
+      destG.appendChild(mkSVGText(window.t('map_dest_title'), destX, destY + 48, 'map-dest-title', 'middle'));
+      destG.appendChild(mkSVGText(window.t('map_dest_cta'), destX, destY + 64, 'map-dest-cta', 'middle'));
 
       destG.addEventListener('click', () => {
         window.location.href = 'mailto:syahputraerliandika@gmail.com?subject=Collaboration%20Inquiry%20%E2%80%94%20Erliandika%20Syahputra';
@@ -1620,19 +1610,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // ── Cartographic Scale Bar (Bottom Left) ──
       const scaleG = mkSVG('g', { class: 'map-scale-bar' });
-      scaleG.appendChild(mkSVG('line', { x1: '45', y1: '585', x2: '185', y2: '585', class: 'map-scale-axis' }));
-      scaleG.appendChild(mkSVG('line', { x1: '45', y1: '580', x2: '45', y2: '585', class: 'map-scale-tick' }));
-      scaleG.appendChild(mkSVG('line', { x1: '91', y1: '582', x2: '91', y2: '585', class: 'map-scale-tick' }));
-      scaleG.appendChild(mkSVG('line', { x1: '138', y1: '582', x2: '138', y2: '585', class: 'map-scale-tick' }));
-      scaleG.appendChild(mkSVG('line', { x1: '185', y1: '580', x2: '185', y2: '585', class: 'map-scale-tick' }));
-      scaleG.appendChild(mkSVGText('0    100    200    300 km', 45, 575, 'map-scale-text', 'start'));
+      scaleG.appendChild(mkSVG('line', { x1: '45', y1: '525', x2: '185', y2: '525', class: 'map-scale-axis' }));
+      scaleG.appendChild(mkSVG('line', { x1: '45', y1: '520', x2: '45', y2: '525', class: 'map-scale-tick' }));
+      scaleG.appendChild(mkSVG('line', { x1: '91', y1: '522', x2: '91', y2: '525', class: 'map-scale-tick' }));
+      scaleG.appendChild(mkSVG('line', { x1: '138', y1: '522', x2: '138', y2: '525', class: 'map-scale-tick' }));
+      scaleG.appendChild(mkSVG('line', { x1: '185', y1: '520', x2: '185', y2: '525', class: 'map-scale-tick' }));
+      scaleG.appendChild(mkSVGText('0    100    200    300 km', 45, 515, 'map-scale-text', 'start'));
       svg.appendChild(scaleG);
 
       // ── Center Bottom Stage Marker ──
       svg.appendChild(mkSVGText(
         'EXPLORATION  ·  LEARNING  ·  BUILDING  ·  CONTRIBUTING  ·  BEYOND',
         VW / 2,
-        585,
+        525,
         'map-bottom-stages',
         'middle'
       ));
@@ -1652,7 +1642,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // MOBILE VERTICAL EXPEDITION TRAIL (< 768px)
       // ══════════════════════════════════════════════════════════
       const MVW = 380;
-      const MVH = 1260;
+      const MVH = 1180;
 
       const svg = mkSVG('svg', {
         viewBox: `0 0 ${MVW} ${MVH}`,
@@ -1662,28 +1652,18 @@ document.addEventListener('DOMContentLoaded', () => {
         'aria-label': isIndo ? 'Linimasa Vertikal Ekspedisi Karier' : 'Vertical Career Expedition Trail',
       });
 
-      // Topographic vertical contours
-      const mobileContours = [
-        'M 20 100 C 60 140, 60 260, 20 320 C -20 380, 50 480, 20 540',
-        'M 360 200 C 320 280, 320 400, 360 480 C 400 560, 330 680, 360 760',
-        'M 20 700 C 60 760, 60 880, 20 940 C -20 1000, 50 1100, 20 1160',
-      ];
-      mobileContours.forEach(d => {
-        svg.appendChild(mkSVG('path', { d, class: 'map-path-contour' }));
-      });
-
-      // Continuous vertical path curve
+      // Continuous vertical path curve with gentle wander
       const mobilePathD = `
-        M 45 55
-        C 45 95, 55 120, 55 160
-        C 55 210, 75 230, 75 280
-        C 75 330, 50 350, 50 400
-        C 50 450, 75 470, 75 520
-        C 75 570, 50 590, 50 640
-        C 50 690, 75 710, 75 760
-        C 75 810, 50 830, 50 880
-        C 50 930, 75 950, 75 1000
-        C 75 1050, 50 1080, 50 1140
+        M 50 50
+        C 50 85, 65 115, 65 155
+        C 65 200, 50 225, 50 265
+        C 50 310, 75 340, 75 385
+        C 75 435, 45 465, 45 510
+        C 45 560, 70 585, 70 630
+        C 70 675, 55 705, 55 750
+        C 55 795, 80 825, 80 870
+        C 80 915, 60 945, 60 990
+        C 60 1035, 60 1070, 60 1110
       `;
 
       svg.appendChild(mkSVG('path', { d: mobilePathD, class: 'map-road-glow' }));
@@ -1691,24 +1671,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Mobile Origin: BASECAMP
       const mStartG = mkSVG('g', { class: 'map-start-basecamp', tabindex: '0', role: 'region', 'aria-label': 'Basecamp origin' });
-      mStartG.appendChild(mkSVG('circle', { cx: '45', cy: '55', r: '12', class: 'map-start-halo' }));
-      mStartG.appendChild(mkSVG('circle', { cx: '45', cy: '55', r: '7', class: 'map-start-ring' }));
-      mStartG.appendChild(mkSVG('circle', { cx: '45', cy: '55', r: '3.5', class: 'map-node-start' }));
+      mStartG.appendChild(mkSVG('circle', { cx: '50', cy: '50', r: '11', class: 'map-start-halo' }));
+      mStartG.appendChild(mkSVG('circle', { cx: '50', cy: '50', r: '6', class: 'map-start-ring' }));
+      mStartG.appendChild(mkSVG('circle', { cx: '50', cy: '50', r: '3', class: 'map-node-start' }));
       
-      mStartG.appendChild(mkSVGText('BASECAMP', 75, 52, 'map-start-label', 'start'));
-      mStartG.appendChild(mkSVGText(isIndo ? 'Semua berawal dari rasa ingin tahu.' : 'It all started from curiosity.', 75, 66, 'map-start-sub', 'start'));
+      mStartG.appendChild(mkSVGText('BASECAMP', 75, 48, 'map-start-label', 'start'));
+      mStartG.appendChild(mkSVGText(isIndo ? 'Awal mula rasa ingin tahu' : 'Where curiosity began', 75, 62, 'map-start-sub', 'start'));
       svg.appendChild(mStartG);
 
-      // Mobile Waypoint Coordinates (8 Milestones)
+      // Mobile Waypoint Coordinates (8 Milestones with organic vertical offsets)
       const M_POSITIONS = [
-        { x: 55, y: 160 },
-        { x: 75, y: 280 },
-        { x: 50, y: 400 },
-        { x: 75, y: 520 },
-        { x: 50, y: 640 },
-        { x: 75, y: 760 },
-        { x: 50, y: 880 },
-        { x: 75, y: 1000 },
+        { x: 65, y: 155 },
+        { x: 50, y: 265 },
+        { x: 75, y: 385 },
+        { x: 45, y: 510 },
+        { x: 70, y: 630 },
+        { x: 55, y: 750 },
+        { x: 80, y: 870 },
+        { x: 60, y: 990 },
       ];
 
       items.forEach((item, i) => {
@@ -1732,17 +1712,17 @@ document.addEventListener('DOMContentLoaded', () => {
         g.appendChild(mkSVG('line', {
           x1: String(pos.x + 8),
           y1: String(pos.y),
-          x2: '90',
+          x2: '92',
           y2: String(pos.y),
           class: 'map-elevation-line',
         }));
 
         // Halo Ring & Node
-        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '12', class: 'map-node-ring' }));
-        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '4.5', class: 'map-node-core' }));
+        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '11', class: 'map-node-ring' }));
+        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '4', class: 'map-node-core' }));
 
         // Typography Stack beside node
-        const labelX = 102;
+        const labelX = 104;
         g.appendChild(mkSVGText(`${String(i + 1).padStart(2, '0')} · ${tagText.toUpperCase()}`, labelX, pos.y - 14, 'map-label-tag', 'start'));
         g.appendChild(mkSVGText(item.period || item.year, labelX, pos.y, 'map-label-year', 'start'));
         g.appendChild(mkSVGText(roleShort, labelX, pos.y + 15, 'map-label-title', 'start'));
@@ -1763,7 +1743,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Mobile Destination: ✦ LANGKAH BERIKUTNYA
-      const mDestY = 1140;
+      const mDestY = 1110;
       const mDestG = mkSVG('g', {
         class: 'map-destination-hook',
         tabindex: '0',
@@ -1771,13 +1751,13 @@ document.addEventListener('DOMContentLoaded', () => {
         'aria-label': `${window.t('map_dest_badge')} — ${window.t('map_dest_title')}`,
       });
 
-      mDestG.appendChild(mkSVG('circle', { cx: '50', cy: String(mDestY), r: '20', fill: 'url(#collabStarGlow)', class: 'map-dest-aura' }));
-      mDestG.appendChild(mkSVG('circle', { cx: '50', cy: String(mDestY), r: '12', class: 'map-dest-ring-outer' }));
-      mDestG.appendChild(mkSVG('circle', { cx: '50', cy: String(mDestY), r: '4', class: 'map-dest-core' }));
+      mDestG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '18', fill: 'url(#collabStarGlow)', class: 'map-dest-aura' }));
+      mDestG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '11', class: 'map-dest-ring-outer' }));
+      mDestG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '3.5', class: 'map-dest-core' }));
 
-      mDestG.appendChild(mkSVGText(window.t('map_dest_badge'), 85, mDestY - 10, 'map-dest-badge', 'start'));
-      mDestG.appendChild(mkSVGText(window.t('map_dest_title'), 85, mDestY + 6, 'map-dest-title', 'start'));
-      mDestG.appendChild(mkSVGText(window.t('map_dest_cta'), 85, mDestY + 22, 'map-dest-cta', 'start'));
+      mDestG.appendChild(mkSVGText(window.t('map_dest_badge'), 92, mDestY - 10, 'map-dest-badge', 'start'));
+      mDestG.appendChild(mkSVGText(window.t('map_dest_title'), 92, mDestY + 6, 'map-dest-title', 'start'));
+      mDestG.appendChild(mkSVGText(window.t('map_dest_cta'), 92, mDestY + 22, 'map-dest-cta', 'start'));
 
       mDestG.addEventListener('click', () => {
         window.location.href = 'mailto:syahputraerliandika@gmail.com?subject=Collaboration%20Inquiry%20%E2%80%94%20Erliandika%20Syahputra';
