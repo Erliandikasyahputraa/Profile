@@ -1590,10 +1590,10 @@ document.addEventListener('DOMContentLoaded', () => {
       destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '7', class: 'map-dest-ring-inner' }));
       destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '3.5', class: 'map-dest-core' }));
 
-      // Destination Typography (Quiet horizon arrival)
-      destG.appendChild(mkSVGText(window.t('map_dest_badge'), destX, destY + 32, 'map-dest-badge', 'middle'));
-      destG.appendChild(mkSVGText(window.t('map_dest_title'), destX, destY + 48, 'map-dest-title', 'middle'));
-      destG.appendChild(mkSVGText(window.t('map_dest_cta'), destX, destY + 64, 'map-dest-cta', 'middle'));
+      // Destination Typography (Placed above the horizon arrival node)
+      destG.appendChild(mkSVGText(window.t('map_dest_badge'), destX, destY - 50, 'map-dest-badge', 'middle'));
+      destG.appendChild(mkSVGText(window.t('map_dest_title'), destX, destY - 34, 'map-dest-title', 'middle'));
+      destG.appendChild(mkSVGText(window.t('map_dest_cta'), destX, destY - 18, 'map-dest-cta', 'middle'));
 
       destG.addEventListener('click', () => {
         window.location.href = 'mailto:syahputraerliandika@gmail.com?subject=Collaboration%20Inquiry%20%E2%80%94%20Erliandika%20Syahputra';
