@@ -66,6 +66,7 @@
     SATISFIED:        'SATISFIED',
     ROARING:          'ROARING',  // Cold predator growl on click
     SLEEPING:         'SLEEPING', // Stuffed / gemoy sleep after 15s idle or 10 drumsticks
+    WAKING:           'WAKING',   // Seamless cat stretch & yawn when waking up
   };
 
   /* ═══════════════════════════════════════════════════════════
@@ -258,6 +259,32 @@
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r17 ground line
   ];
 
+  /* ── Morning Cat Stretch & Yawn Pose (Waking State) ──
+     Downward cat stretch: front paws extended forward on the floor,
+     chest lowered, hind legs standing high, head tilted yawning with sleepy eyes.
+  ── */
+  const DINO_STRETCH_YAWN = [
+    //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], // r0 tilted head
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r1 forehead
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 3, 1, 1, 1, 1, 0, 0], // r2 closed yawn eye slit
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], // r3 snout
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 3, 3, 3, 3, 0, 0, 0], // r4 upper teeth
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], // r5 open yawning void
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 3, 3, 3, 1, 1, 0, 0], // r6 lower teeth
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], // r7 neck
+    [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r8 tail stretching up
+    [0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r9 arched back
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0], // r10 front arms stretching
+    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0], // r11 downward slope
+    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0], // r12 rear haunches high
+    [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0], // r13 front paws reaching
+    [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1], // r14 front paws extended
+    [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1], // r15 paws touching floor
+    [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1], // r16 flat ground level
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r17 ground line
+  ];
+
 
   /* ═══════════════════════════════════════════════════════════
      4. STATE & DYNAMICS
@@ -388,10 +415,16 @@
       isHoveringClickable = false;
     }
 
-    if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING || currentState === STATES.WALKING_TO_FOOD || currentState === STATES.SLEEPING) {
-      currentState = STATES.LAZY_FOLLOW;
+    if (currentState === STATES.SLEEPING) {
+      // Waking up: start cute morning cat stretch & yawn transition!
+      currentState = STATES.WAKING;
+      stateTimer   = performance.now();
       consecutiveEats = 0;
       zzzParticles.length = 0;
+      playYawnSound();
+    } else if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING || currentState === STATES.WALKING_TO_FOOD) {
+      currentState = STATES.LAZY_FOLLOW;
+      consecutiveEats = 0;
     }
   });
 
@@ -834,7 +867,7 @@
     } catch (e) {}
   }
 
-  /* ── Cute Soft Snore Synthesizer (Ngorok Kecil saat Tidur) ── */
+  /* ── Cute Audible Snore Synthesizer (Ngorok Kecil saat Tidur) ── */
   function playSnoreSound() {
     try {
       const actx = getAudioContext();
@@ -844,29 +877,51 @@
       const t = now;
 
       const master = actx.createGain();
-      master.gain.setValueAtTime(0.12, t);
+      // Audible volume (0.28) matching footsteps and eats so it plays clearly on laptop/phone speakers
+      master.gain.setValueAtTime(0.28, t);
       master.connect(actx.destination);
 
-      // 1. Soft breath hum (sine wave rising then falling softly)
+      // 1. Inhale Snore: Warm triangle wave in audible vocal range (~185Hz rising to ~245Hz)
       const osc = actx.createOscillator();
       const oscGain = actx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(60, t);
-      osc.frequency.exponentialRampToValueAtTime(84, t + 0.35);
-      osc.frequency.exponentialRampToValueAtTime(52, t + 0.72);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(185, t);
+      osc.frequency.exponentialRampToValueAtTime(245, t + 0.32);
+      osc.frequency.exponentialRampToValueAtTime(140, t + 0.72);
 
-      // 2. Gentle purr / snore flutter LFO (~11Hz flutter)
+      // 2. Flutter / Purr LFO (audible 13Hz flutter vibration)
       const lfo = actx.createOscillator();
       const lfoGain = actx.createGain();
       lfo.type = 'sine';
-      lfo.frequency.setValueAtTime(11.5, t);
-      lfoGain.gain.setValueAtTime(0.045, t);
+      lfo.frequency.setValueAtTime(13, t);
+      lfoGain.gain.setValueAtTime(0.08, t);
       lfo.connect(lfoGain);
       lfoGain.connect(oscGain.gain);
 
-      // Smooth envelope: soft rise, gentle flutter, soft exhale fadeout
+      // 3. Soft breath noise for realistic gentle snore texture
+      const bufLen = Math.floor(actx.sampleRate * 0.08);
+      const noiseBuf = actx.createBuffer(1, bufLen, actx.sampleRate);
+      const data = noiseBuf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.4));
+      }
+      const noiseSrc = actx.createBufferSource();
+      noiseSrc.buffer = noiseBuf;
+      const noiseFilter = actx.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.setValueAtTime(450, t);
+      noiseFilter.Q.setValueAtTime(3.0, t);
+      const noiseGain = actx.createGain();
+      noiseGain.gain.setValueAtTime(0.06, t);
+      noiseGain.gain.linearRampToValueAtTime(0.001, t + 0.35);
+      noiseSrc.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(master);
+      noiseSrc.start(t + 0.05);
+
+      // Envelope: gentle rise, snore crest, soft exhale fadeout
       oscGain.gain.setValueAtTime(0.001, t);
-      oscGain.gain.linearRampToValueAtTime(0.09, t + 0.28);
+      oscGain.gain.linearRampToValueAtTime(0.18, t + 0.28);
       oscGain.gain.linearRampToValueAtTime(0.001, t + 0.75);
 
       osc.connect(oscGain);
@@ -876,6 +931,39 @@
       lfo.start(t);
       osc.stop(t + 0.78);
       lfo.stop(t + 0.78);
+    } catch (e) {}
+  }
+
+  /* ── Cute Sleepy Yawn Synthesizer (Nguap saat Bangun) ── */
+  function playYawnSound() {
+    try {
+      const actx = getAudioContext();
+      if (!actx) return;
+      if (actx.state === 'suspended') actx.resume().catch(() => {});
+      const now = actx.currentTime;
+      const t = now;
+
+      const master = actx.createGain();
+      master.gain.setValueAtTime(0.22, t);
+      master.connect(actx.destination);
+
+      // Gentle cute rising then sighing sine tone
+      const osc = actx.createOscillator();
+      const oscGain = actx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(260, t);
+      osc.frequency.exponentialRampToValueAtTime(380, t + 0.22);
+      osc.frequency.exponentialRampToValueAtTime(180, t + 0.55);
+
+      oscGain.gain.setValueAtTime(0.001, t);
+      oscGain.gain.linearRampToValueAtTime(0.15, t + 0.18);
+      oscGain.gain.linearRampToValueAtTime(0.001, t + 0.58);
+
+      osc.connect(oscGain);
+      oscGain.connect(master);
+
+      osc.start(t);
+      osc.stop(t + 0.60);
     } catch (e) {}
   }
 
@@ -1052,6 +1140,14 @@
         }
         break;
 
+      case STATES.WAKING: {
+        const wakeElapsed = now - stateTimer;
+        if (wakeElapsed >= 680) {
+          currentState = STATES.LAZY_FOLLOW;
+        }
+        break;
+      }
+
       case STATES.ROARING:
         if (now - stateTimer >= ROAR_DURATION) {
           currentState = STATES.LAZY_FOLLOW;
@@ -1130,8 +1226,8 @@
 
     // Direction update: Stable hysteresis deadzone based on cursor relative to dino center (±30px).
     // If cursor is on or near dino's body, lock facing completely to eliminate any rapid flip jitter (linglung).
-    if (currentState === STATES.SLEEPING || currentState === STATES.EATING || currentState === STATES.ROARING) {
-      // Keep facing locked during static / bite / sleep animations
+    if (currentState === STATES.SLEEPING || currentState === STATES.WAKING || currentState === STATES.EATING || currentState === STATES.ROARING) {
+      // Keep facing locked during static / bite / sleep / waking stretch animations
     } else if (distFromCenter < 35 || Math.abs(centerDeltaX) < 30 || isCursorOnDino) {
       // Cursor is on or right next to dino's body -> LOCK FACING, DO NOT FLIP!
     } else if (centerDeltaX < -30) {
@@ -1302,11 +1398,20 @@
       }
     }
 
-    // Curled cat pose when sleeping, normal standing/walking otherwise
+    // Curled cat pose when sleeping, morning cat stretch & yawn when waking up, normal standing/walking otherwise
     let fullDinoMatrix;
     if (currentState === STATES.SLEEPING) {
       fullDinoMatrix = DINO_CAT_SLEEP;
       verticalBob = 0;
+    } else if (currentState === STATES.WAKING) {
+      const wakeElapsed = now - stateTimer;
+      if (wakeElapsed < 420) {
+        fullDinoMatrix = DINO_STRETCH_YAWN;
+        verticalBob = 0;
+      } else {
+        fullDinoMatrix = [...HEAD_NORMAL, ...LEGS_STAND];
+        verticalBob = 0;
+      }
     } else {
       fullDinoMatrix = [...activeHead, ...activeLegs];
     }
