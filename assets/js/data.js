@@ -328,7 +328,7 @@ window.PORTFOLIO_DATA = {
       category: 'Professional Competency',
       category_id: 'Kompetensi Profesi Nasional',
       image: 'assets/images/certs/bnsp_certificate_erliandikasyahputra.webp',
-      credential: '../BNSP-Certificate-ErliandikaSyahputra.pdf',
+      credential: 'assets/docs/certs/bnsp-certificate-erliandika.pdf',
     },
     {
       id: 'cert-bangkit',
@@ -338,7 +338,7 @@ window.PORTFOLIO_DATA = {
       category: 'Mobile & Cloud Engineering',
       category_id: 'Rekayasa Mobile & Cloud',
       image: 'assets/images/certs/erliandika_syahputra_1.webp',
-      credential: '../Erliandika Syahputra (1).pdf',
+      credential: 'assets/docs/certs/bangkit-mobile-development-erliandika.pdf',
     },
     {
       id: 'cert-codingcamp',
@@ -348,7 +348,7 @@ window.PORTFOLIO_DATA = {
       category: 'Full-Stack Web Development',
       category_id: 'Pengembangan Web Full-Stack',
       image: 'assets/images/certs/erliandika_syahputra_certificate___fc220d5y0389_1_1.webp',
-      credential: '../Erliandika Syahputra Certificate - FC220D5Y0389-1 (1).pdf',
+      credential: 'assets/docs/certs/dbs-coding-camp-fullstack-erliandika.pdf',
     },
     {
       id: 'cert-samsung',
@@ -358,7 +358,7 @@ window.PORTFOLIO_DATA = {
       category: 'Product Design & AI/IoT',
       category_id: 'Desain Produk & AI/IoT',
       image: 'assets/images/certs/sertifikat_design_thinking_workshop___samsung_solve_for_tomorrow_2025_1.webp',
-      credential: '../Sertifikat Design Thinking Workshop - Samsung Solve for Tomorrow 2025 (1).pdf',
+      credential: 'assets/docs/certs/samsung-design-thinking-erliandika.pdf',
     },
     {
       id: 'cert-precision',
@@ -368,7 +368,7 @@ window.PORTFOLIO_DATA = {
       category: 'Mentoring & Technical Education',
       category_id: 'Edukasi & Mentoring Teknis',
       image: 'assets/images/certs/precision_10.webp',
-      credential: '../Precision-10.pdf',
+      credential: 'assets/docs/certs/precision-programming-tutor-erliandika.pdf',
     },
     {
       id: 'cert-speaker',
@@ -378,7 +378,7 @@ window.PORTFOLIO_DATA = {
       category: 'Data Mining & Public Speaking',
       category_id: 'Sains Data & Public Speaking',
       image: 'assets/images/certs/sertifikat___erliandika_syahputra.webp',
-      credential: '../Sertifikat - Erliandika Syahputra.pdf',
+      credential: 'assets/docs/certs/speaker-data-mining-himasi-erliandika.pdf',
     },
     {
       id: 'cert-toefl',
@@ -388,7 +388,7 @@ window.PORTFOLIO_DATA = {
       category: 'Language Proficiency',
       category_id: 'Kemampuan Bahasa Inggris',
       image: 'assets/images/certs/toefl_itp_1.webp',
-      credential: '../Toefl ITP (1).pdf',
+      credential: 'assets/docs/certs/toefl-itp-official-erliandika.pdf',
     },
     {
       id: 'cert-bbpvp-pelatihan',
@@ -398,7 +398,7 @@ window.PORTFOLIO_DATA = {
       category: 'Vocational Web Development',
       category_id: 'Pelatihan Vokasi Web',
       image: 'assets/images/certs/sertifikat_kelulusan_pelatihan___1808127501_f5abfe6a.webp',
-      credential: '../SERTIFIKAT KELULUSAN PELATIHAN - 1808127501-F5ABFE6A.pdf',
+      credential: 'assets/docs/certs/bbpvp-pelatihan-web-erliandika.pdf',
     },
   ],
 

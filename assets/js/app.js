@@ -1309,7 +1309,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    document.title = `${project.name} — Erliandika Syahputra`;
+    document.title = `${project.name} — Erliandika Syahputra | Software Engineer`;
 
     const hasImages = project.temporaryPreviewImages && project.temporaryPreviewImages.length > 0;
     const rawImages = hasImages ? project.temporaryPreviewImages : ['assets/images/profile-primary.webp'];
