@@ -64,7 +64,7 @@
     EATING:       'EATING',
     SATISFIED:    'SATISFIED',
     ROARING:      'ROARING',  // Cold predator growl on click
-    SLEEPING:     'SLEEPING', // Stuffed / fat sleep after 30s idle
+    SLEEPING:     'SLEEPING', // Stuffed / gemoy sleep after 15s idle or 10 drumsticks
   };
 
   /* ═══════════════════════════════════════════════════════════
