@@ -2197,13 +2197,13 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   stroke: var(--fg);
   stroke-width: 1px;
   stroke-dasharray: 3 6;
-  opacity: 0.14;
+  opacity: 0.12;
 }
 .map-elevation-line {
   stroke: var(--border-mid);
   stroke-width: 1px;
   stroke-dasharray: 2 2;
-  opacity: 0.6;
+  opacity: 0.55;
 }
 .map-grid-coord {
   font-family: var(--font-mono);
@@ -2212,6 +2212,14 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   letter-spacing: 0.14em;
   fill: var(--muted-soft);
   opacity: 0.65;
+}
+.map-grid-quote {
+  font-family: var(--font-mono);
+  font-size: 0.46875rem;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  fill: var(--muted-soft);
+  opacity: 0.55;
 }
 .map-road-glow {
   fill: none;
@@ -2224,37 +2232,71 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 .map-road-track {
   fill: none;
   stroke: var(--fg);
-  stroke-width: 1.85px;
-  stroke-dasharray: 6 6;
+  stroke-width: 1.75px;
+  stroke-dasharray: 5 6;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.55;
+  opacity: 0.5;
   transition: opacity 250ms ease;
 }
 .exp-full-map-wrap:hover .map-road-track {
-  opacity: 0.85;
+  opacity: 0.8;
 }
+
+/* Basecamp Origin */
 .map-start-basecamp {
-  transform-origin: 50px 110px;
+  outline: none;
+}
+.map-start-halo {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1px;
+  opacity: 0.18;
+  animation: basecamp-pulse 3s infinite ease-in-out;
+}
+@keyframes basecamp-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.18; }
+  50% { transform: scale(1.35); opacity: 0.05; }
 }
 .map-start-ring {
   fill: none;
   stroke: var(--fg);
-  stroke-width: 1px;
-  opacity: 0.4;
+  stroke-width: 1.2px;
+  opacity: 0.45;
+}
+.map-node-start {
+  fill: var(--fg);
 }
 .map-start-label {
   font-family: var(--font-mono);
   font-size: 0.5rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  fill: var(--muted);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  fill: var(--fg);
 }
-.map-snaking-node {
+.map-start-sub {
+  font-family: var(--font-mono);
+  font-size: 0.4375rem;
+  letter-spacing: 0.04em;
+  fill: var(--muted-soft);
+  opacity: 0.75;
+}
+
+/* 8 Waypoint Nodes & Cartographic Labels */
+.map-node-group {
   cursor: pointer;
   outline: none;
 }
-.map-snaking-node .map-node-core {
+.map-node-halo {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1px;
+  opacity: 0.12;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 220ms var(--ease), opacity 220ms ease;
+}
+.map-node-core {
   fill: var(--fg);
   stroke: var(--bg);
   stroke-width: 1.5px;
@@ -2262,7 +2304,7 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   transform-origin: center;
   transition: transform 200ms var(--ease), stroke-width 200ms ease, fill 200ms ease;
 }
-.map-snaking-node .map-node-ring {
+.map-node-ring {
   fill: none;
   stroke: var(--fg);
   stroke-width: 1.5px;
@@ -2271,23 +2313,67 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   transform-origin: center;
   transition: opacity 200ms var(--ease), stroke-width 200ms ease, transform 200ms var(--ease);
 }
-.map-snaking-node:hover .map-node-ring,
-.map-snaking-node:focus-visible .map-node-ring {
+.map-node-group:hover .map-node-ring,
+.map-node-group:focus-visible .map-node-ring {
   opacity: 0.6;
   stroke-width: 2px;
-  transform: scale(1.25);
+  transform: scale(1.3);
 }
-.map-snaking-node:hover .map-node-core,
-.map-snaking-node:focus-visible .map-node-core {
+.map-node-group:hover .map-node-core,
+.map-node-group:focus-visible .map-node-core {
   transform: scale(1.25);
   stroke-width: 2px;
+}
+.map-node-group:hover .map-node-halo,
+.map-node-group:focus-visible .map-node-halo {
+  transform: scale(1.4);
+  opacity: 0.3;
+}
+
+.map-label-tag {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: var(--muted-soft);
+  transition: fill 180ms ease;
+}
+.map-label-year {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  fill: var(--muted);
+  transition: fill 180ms ease;
+}
+.map-label-title {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  fill: var(--fg);
+  transition: fill 180ms ease;
+}
+.map-label-sub {
+  font-family: var(--font-mono);
+  font-size: 0.46875rem;
+  letter-spacing: 0.02em;
+  fill: var(--muted-soft);
+  opacity: 0.85;
+  transition: fill 180ms ease;
+}
+.map-node-group:hover .map-label-tag {
+  fill: var(--fg);
+}
+.map-node-group:hover .map-label-title {
+  fill: var(--fg);
 }
 
 /* Destination Collaboration Hook */
 .map-destination-hook {
   cursor: pointer;
   outline: none;
-  transform-origin: 840px 460px;
 }
 .map-dest-aura {
   opacity: 0.35;
@@ -2304,7 +2390,7 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   stroke-width: 1.2px;
   stroke-dasharray: 3 3;
   animation: spin-slow 20s linear infinite;
-  transform-origin: 840px 460px;
+  transform-origin: 1260px 260px;
 }
 @keyframes spin-slow {
   100% { transform: rotate(360deg); }
@@ -2320,29 +2406,29 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 }
 .map-dest-badge {
   font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  font-size: 0.53125rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   fill: var(--muted);
 }
 .map-dest-title {
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   fill: var(--fg);
 }
 .map-dest-cta {
   font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  font-size: 0.5rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   fill: var(--muted-soft);
   transition: fill 200ms;
 }
 .map-destination-hook:hover .map-dest-aura,
 .map-destination-hook:focus-visible .map-dest-aura {
-  opacity: 0.9;
+  opacity: 0.85;
   transform: scale(1.35);
 }
 .map-destination-hook:hover .map-dest-title,
@@ -2352,6 +2438,123 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 .map-destination-hook:hover .map-dest-cta,
 .map-destination-hook:focus-visible .map-dest-cta {
   fill: var(--fg);
+}
+
+/* Scale Bar & Stages */
+.map-scale-axis {
+  stroke: var(--border-mid);
+  stroke-width: 1px;
+}
+.map-scale-tick {
+  stroke: var(--border-mid);
+  stroke-width: 1px;
+}
+.map-scale-text {
+  font-family: var(--font-mono);
+  font-size: 0.4375rem;
+  letter-spacing: 0.08em;
+  fill: var(--muted-soft);
+}
+.map-bottom-stages {
+  font-family: var(--font-mono);
+  font-size: 0.46875rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  fill: var(--muted-soft);
+  opacity: 0.55;
+}
+
+/* Mobile Vertical Trail SVG */
+.exp-mobile-trail-svg {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  height: auto;
+  overflow: visible;
+}
+.map-mobile-node {
+  cursor: pointer;
+}
+
+/* Floating Sneak Peek Tooltip Card */
+.map-sneak-peek {
+  position: absolute;
+  width: 260px;
+  padding: 1rem 1.15rem;
+  background: var(--bg);
+  border: 1px solid var(--border-str);
+  border-radius: 4px;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.18);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
+  z-index: 50;
+}
+[data-theme="dark"] .map-sneak-peek {
+  box-shadow: 0 16px 36px rgba(0,0,0,0.5);
+  background: var(--bg-card);
+}
+.map-sneak-peek.active {
+  opacity: 1;
+  visibility: visible;
+}
+.msp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+.msp-badge {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.msp-year {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--muted-soft);
+}
+.msp-title {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  line-height: 1.25;
+  margin-bottom: 0.2rem;
+}
+.msp-meta {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--muted-soft);
+  margin-bottom: 0.5rem;
+}
+.msp-desc {
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: var(--muted);
+  margin-bottom: 0.625rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.msp-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--fg);
+  text-transform: uppercase;
 }
 
 /* ── Executive Experience Dossier Modal ── */
