@@ -1372,11 +1372,6 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.appendChild(mkSVG('path', { d, class: 'map-path-contour' }));
       });
 
-      // Corner Coordinate Markers & Subtle Quote
-      svg.appendChild(mkSVGText('+ 00°31\'40" N', 45, 32, 'map-grid-coord', 'start'));
-      svg.appendChild(mkSVGText('+ 101°27\'05" E', 1275, 32, 'map-grid-coord', 'end'));
-      svg.appendChild(mkSVGText(isIndo ? 'Tempat berbeda · Tujuan sama · Masa depan yang lebih baik.' : 'Different places · Same purpose · A better tomorrow.', 1275, 50, 'map-grid-quote', 'end'));
-
       // ── Organic 8-Waypoint Cartographic Expedition Path ──
       // Silhouette: (60, 310) → (190, 240) → (330, 275) → (480, 150) → (640, 380) → (790, 270) → (920, 305) → (1050, 160) → (1170, 220) → (1265, 220)
       const pathD = `
@@ -1607,25 +1602,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       svg.appendChild(destG);
-
-      // ── Cartographic Scale Bar (Bottom Left) ──
-      const scaleG = mkSVG('g', { class: 'map-scale-bar' });
-      scaleG.appendChild(mkSVG('line', { x1: '45', y1: '525', x2: '185', y2: '525', class: 'map-scale-axis' }));
-      scaleG.appendChild(mkSVG('line', { x1: '45', y1: '520', x2: '45', y2: '525', class: 'map-scale-tick' }));
-      scaleG.appendChild(mkSVG('line', { x1: '91', y1: '522', x2: '91', y2: '525', class: 'map-scale-tick' }));
-      scaleG.appendChild(mkSVG('line', { x1: '138', y1: '522', x2: '138', y2: '525', class: 'map-scale-tick' }));
-      scaleG.appendChild(mkSVG('line', { x1: '185', y1: '520', x2: '185', y2: '525', class: 'map-scale-tick' }));
-      scaleG.appendChild(mkSVGText('0    100    200    300 km', 45, 515, 'map-scale-text', 'start'));
-      svg.appendChild(scaleG);
-
-      // ── Center Bottom Stage Marker ──
-      svg.appendChild(mkSVGText(
-        'EXPLORATION  ·  LEARNING  ·  BUILDING  ·  CONTRIBUTING  ·  BEYOND',
-        VW / 2,
-        525,
-        'map-bottom-stages',
-        'middle'
-      ));
 
       // Floating Sneak Peek Card Container (anchored inside wrap)
       const peekCard = el('div', { class: 'map-sneak-peek', 'aria-hidden': 'true' });

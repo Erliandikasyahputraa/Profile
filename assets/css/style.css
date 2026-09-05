@@ -2178,6 +2178,281 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   text-transform: uppercase;
 }
 
+/* ── Compact 5-Column Certifications Grid ── */
+.certs-section {
+  margin-top: 4.5rem;
+  margin-bottom: 3.5rem;
+}
+.certs-section__heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.certs-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 1200px) {
+  .certs-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.875rem;
+  }
+}
+@media (max-width: 960px) {
+  .certs-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.875rem;
+  }
+}
+@media (max-width: 680px) {
+  .certs-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+@media (max-width: 400px) {
+  .certs-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.cert-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0.875rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.cert-card:hover {
+  border-color: var(--border-str);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+[data-theme="dark"] .cert-card:hover {
+  box-shadow: 0 8px 20px rgba(255,255,255,0.03);
+}
+
+.cert-card__badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-bottom: 0.625rem;
+}
+.cert-card__cat {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+.cert-card__verified-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.4375rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted-soft);
+  text-transform: uppercase;
+}
+.cert-card__visual-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cert-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+  transition: transform 220ms ease;
+}
+.cert-card__visual-wrap:hover .cert-card__img {
+  transform: scale(1.04);
+}
+.cert-card__visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.cert-card__visual-wrap:hover .cert-card__visual-overlay,
+.cert-card__visual-wrap:focus-visible .cert-card__visual-overlay {
+  opacity: 1;
+}
+
+.cert-card__title {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  line-height: 1.3;
+  margin-bottom: 0.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cert-card__issuer {
+  font-size: 0.6875rem;
+  color: var(--muted);
+  margin-bottom: 0.625rem;
+  line-height: 1.35;
+}
+.cert-card__meta-bottom {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+.cert-card__year {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: var(--muted-soft);
+}
+.cert-card__pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: var(--fg);
+  text-decoration: none;
+  padding: 2px 7px;
+  border: 1px solid var(--border-mid);
+  border-radius: 999px;
+  transition: all 140ms ease;
+}
+.cert-card__pdf-btn:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* Certificate Lightbox Modal */
+.cert-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+.cert-lightbox-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.cert-lightbox__dialog {
+  background: var(--bg);
+  border: 1px solid var(--border-str);
+  border-radius: 6px;
+  max-width: 860px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+}
+.cert-lightbox__close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-mid);
+  background: var(--bg);
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 150ms ease;
+}
+.cert-lightbox__close-btn:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+.cert-lightbox__body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  overflow-y: auto;
+}
+.cert-lightbox__img {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+.cert-lightbox__meta {
+  text-align: center;
+}
+.cert-lightbox__title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 0.25rem;
+}
+.cert-lightbox__issuer {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
 /* ── Topographic Expedition Snaking Map Styles ── */
 .exp-full-map-wrap {
   position: relative;
