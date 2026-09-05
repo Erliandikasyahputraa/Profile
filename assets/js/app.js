@@ -849,6 +849,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="pmodal__sec-text">${techDetailsText}</p>
               </div>
             ` : ''}
+
+            ${(p.techRationale || p.techRationale_id) ? `
+              <div class="pmodal__section pmodal__rationale-box">
+                <span class="pmodal__sec-label">${isIndo ? 'MENGAPA TECH STACK INI DIPILIH' : 'WHY THIS TECH STACK'}</span>
+                <div class="pmodal__rationale-grid">
+                  ${((isIndo && p.techRationale_id) ? p.techRationale_id : (p.techRationale || [])).map(item => `
+                    <div class="pmodal__rationale-item">
+                      <span class="pmodal__rationale-tech">${item.tech}</span>
+                      <span class="pmodal__rationale-reason">${item.reason}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
           </div>
 
           <div class="pmodal__right-col">
@@ -1228,6 +1242,20 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
+          ${(project.techRationale || project.techRationale_id) ? `
+            <div class="pdetail__tech-box pmodal__rationale-box">
+              <h2 class="pdetail__sec-label">${isIndo ? 'MENGAPA TECH STACK INI DIPILIH' : 'WHY THIS TECH STACK'}</h2>
+              <div class="pmodal__rationale-grid">
+                ${((isIndo && project.techRationale_id) ? project.techRationale_id : (project.techRationale || [])).map(item => `
+                  <div class="pmodal__rationale-item">
+                    <span class="pmodal__rationale-tech">${item.tech}</span>
+                    <span class="pmodal__rationale-reason">${item.reason}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
           <div class="pdetail__links-box">
             <h2 class="pdetail__sec-label">${window.t ? window.t('modal_label_overview') : 'PROJECT LINKS'}</h2>
             <div class="pdetail__actions">
@@ -1282,7 +1310,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buildCertifications();
   }
 
-  /* ── 3-Tier Snaking Expedition Map (Real Adventure Route) ── */
+  /* ── 3-Tier Snaking Expedition Map (Authentic Treasure Map Adventure) ── */
   function buildFullSnakingMap() {
     const wrap = document.getElementById('expFullMap');
     if (!wrap || !D.experience || !D.experience.length) return;
@@ -1294,14 +1322,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!isMobile) {
       const VW = 1000;
-      const VH = 580;
+      const VH = 620;
 
       const svg = mkSVG('svg', {
         viewBox: `0 0 ${VW} ${VH}`,
         width: '100%',
         height: 'auto',
         class: 'exp-snaking-svg',
-        'aria-label': 'Interactive career journey expedition map',
+        'aria-label': 'Interactive career journey expedition treasure map',
       });
 
       // SVG Defs
@@ -1314,55 +1342,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
       svg.appendChild(defs);
 
-      // Coordinates for 8 milestones in natural 3-tier expedition trail:
-      // Row 1 (y = 100): Left to Right
-      // Row 2 (y = 280): Right to Left
-      // Row 3 (y = 460): Left to Right -> Destination
+      // Topographic background elevation contour waves (True Treasure Map Atmosphere)
+      const topoContours = [
+        'M 30 50 C 180 30, 320 80, 500 45 C 680 10, 820 60, 970 40',
+        'M 50 160 C 240 180, 420 130, 600 170 C 780 210, 880 140, 960 180',
+        'M 40 330 C 200 360, 380 310, 580 350 C 780 390, 880 320, 970 340',
+        'M 50 560 C 240 530, 440 580, 650 540 C 800 510, 900 560, 970 530'
+      ];
+      topoContours.forEach(d => {
+        svg.appendChild(mkSVG('path', { d, class: 'map-path-contour' }));
+      });
+
+      // Coordinate Markers / Crosshairs
+      svg.appendChild(mkSVGText('+ 00°31\'40" N', 50, 40, 'map-grid-coord', 'start'));
+      svg.appendChild(mkSVGText('+ 101°27\'05" E', 950, 40, 'map-grid-coord', 'end'));
+      svg.appendChild(mkSVGText('EXPEDITION LOG · 2022—2026', 500, 40, 'map-grid-coord', 'middle'));
+
+      // Coordinates for 8 milestones in real zig-zag treasure trail:
+      // Row 1 (y = 110, Left to Right): 0, 1, 2 (Text ABOVE at y = 60)
+      // Row 2 (y = 280, Right to Left): 3, 4, 5 (Text ABOVE at y = 230)
+      // Row 3 (y = 450, Left to Right): 6, 7, Destination (Text BELOW at y = 488 - NO CLIPPING!)
       const NODE_POSITIONS = [
-        { x: 200, y: 100, side: 'above', textY: 55,  align: 'middle' }, // 0: S1 Sistem Informasi (Sep 2022 — Jun 2026)
-        { x: 500, y: 100, side: 'above', textY: 55,  align: 'middle' }, // 1: IT Support 83 Workstations (2022 — 2024)
-        { x: 800, y: 100, side: 'above', textY: 55,  align: 'middle' }, // 2: Event & Community Leadership (2023 — 2025)
-        { x: 800, y: 280, side: 'below', textY: 320, align: 'middle' }, // 3: Network Infrastructure Deployment (Jun 2024 — Aug 2024)
-        { x: 500, y: 280, side: 'below', textY: 320, align: 'middle' }, // 4: Bangkit Mobile Dev (Sep 2024 — Jan 2025)
-        { x: 200, y: 280, side: 'below', textY: 320, align: 'middle' }, // 5: Coding Camp Full-Stack (Feb 2025 — Jul 2025)
-        { x: 240, y: 460, side: 'above', textY: 415, align: 'middle' }, // 6: Head of Software Dev (Mar 2025 — Jan 2026)
-        { x: 540, y: 460, side: 'above', textY: 415, align: 'middle' }, // 7: Sertifikasi BNSP Web (2025 — 2028)
+        { x: 190, y: 110, side: 'above', textY: 60,  align: 'middle' }, // 0: S1 Sistem Informasi
+        { x: 480, y: 110, side: 'above', textY: 60,  align: 'middle' }, // 1: IT Support 83 Workstations
+        { x: 770, y: 110, side: 'above', textY: 60,  align: 'middle' }, // 2: Event & Leadership
+        { x: 790, y: 280, side: 'above', textY: 230, align: 'middle' }, // 3: Network Infrastructure 256 AP
+        { x: 490, y: 280, side: 'above', textY: 230, align: 'middle' }, // 4: Bangkit Mobile Dev Lead
+        { x: 190, y: 280, side: 'above', textY: 230, align: 'middle' }, // 5: Coding Camp Full-Stack
+        { x: 230, y: 450, side: 'below', textY: 488, align: 'middle' }, // 6: Head of Software Dev (TEXT BELOW!)
+        { x: 530, y: 450, side: 'below', textY: 488, align: 'middle' }, // 7: Sertifikasi BNSP Web (TEXT BELOW!)
       ];
 
-      // Organic winding expedition trail with natural curvature
+      // Organic curved zig-zag expedition path
       const pathD = `
-        M 60 100
-        C 120 100, 160 100, 200 100
-        C 280 100, 420 100, 500 100
-        C 580 100, 720 100, 800 100
-        C 940 100, 940 280, 800 280
-        C 720 280, 580 280, 500 280
-        C 420 280, 280 280, 200 280
-        C 60 280, 60 460, 240 460
-        C 340 460, 460 460, 540 460
-        C 640 460, 740 460, 840 460
+        M 50 110
+        C 100 110, 140 110, 190 110
+        C 280 110, 390 110, 480 110
+        C 570 110, 680 110, 770 110
+        C 910 110, 940 280, 790 280
+        C 690 280, 590 280, 490 280
+        C 390 280, 280 280, 190 280
+        C 60 280, 60 450, 230 450
+        C 330 450, 430 450, 530 450
+        C 630 450, 730 450, 830 450
       `;
 
-      // Subtle topographic contour echoes (feels like an authentic adventure trail)
-      const contourD = `
-        M 80 120 C 300 120, 700 80, 920 120
-        M 900 260 C 650 300, 350 260, 100 260
-        M 100 480 C 350 440, 650 480, 920 440
-      `;
-      const contourPath = mkSVG('path', {
-        d: contourD,
-        class: 'map-contour-line',
-      });
-      svg.appendChild(contourPath);
-
-      // Background road glow
+      // Soft glow aura path
       const roadGlow = mkSVG('path', {
         d: pathD,
         class: 'map-road-glow',
       });
       svg.appendChild(roadGlow);
 
-      // Main dashed road
+      // Signature nautical dashed treasure trail
       const roadPath = mkSVG('path', {
         d: pathD,
         class: 'map-road-track',
@@ -1371,15 +1403,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Basecamp Origin Pin
       const startG = mkSVG('g', { class: 'map-start-basecamp' });
-      startG.appendChild(mkSVG('circle', { cx: '60', cy: '100', r: '7', class: 'map-start-ring' }));
-      startG.appendChild(mkSVG('circle', { cx: '60', cy: '100', r: '4', class: 'map-node-start' }));
-      startG.appendChild(mkSVGText('BASECAMP', 60, 126, 'map-start-label', 'middle'));
+      startG.appendChild(mkSVG('circle', { cx: '50', cy: '110', r: '7', class: 'map-start-ring' }));
+      startG.appendChild(mkSVG('circle', { cx: '50', cy: '110', r: '4', class: 'map-node-start' }));
+      startG.appendChild(mkSVGText('BASECAMP', 50, 134, 'map-start-label', 'middle'));
       svg.appendChild(startG);
 
       // Destination Endpoint: The Next Chapter / Collaboration Hook
       const isIndo = window.currentLang === 'id';
-      const destX = 840;
-      const destY = 460;
+      const destX = 830;
+      const destY = 450;
 
       const destG = mkSVG('g', {
         class: 'map-destination-hook',
@@ -1392,22 +1424,31 @@ document.addEventListener('DOMContentLoaded', () => {
       const aura = mkSVG('circle', {
         cx: String(destX),
         cy: String(destY),
-        r: '36',
+        r: '34',
         fill: 'url(#collabStarGlow)',
         class: 'map-dest-aura',
       });
       destG.appendChild(aura);
 
-      // Outer rings
+      // Outer rings & radar
       destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '18', class: 'map-dest-ring-outer' }));
       destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '10', class: 'map-dest-ring-inner' }));
       destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '5', class: 'map-dest-core' }));
 
-      // Hook typography
+      // Guide line pointing down
+      destG.appendChild(mkSVG('line', {
+        x1: String(destX),
+        y1: String(destY),
+        x2: String(destX),
+        y2: String(destY + 18),
+        class: 'map-elevation-line',
+      }));
+
+      // Hook typography ALL BELOW THE LINE
       destG.appendChild(mkSVGText(
         isIndo ? '✦ BABAK SELANJUTNYA' : '✦ THE NEXT CHAPTER',
         destX,
-        destY - 34,
+        destY + 36,
         'map-dest-badge',
         'middle'
       ));
@@ -1415,7 +1456,7 @@ document.addEventListener('DOMContentLoaded', () => {
       destG.appendChild(mkSVGText(
         isIndo ? 'Kolaborasi Kita?' : 'Our Collaboration?',
         destX,
-        destY - 18,
+        destY + 52,
         'map-dest-title',
         'middle'
       ));
@@ -1423,7 +1464,7 @@ document.addEventListener('DOMContentLoaded', () => {
       destG.appendChild(mkSVGText(
         isIndo ? 'Mari Membangun Bersama →' : "Let's build together →",
         destX,
-        destY + 30,
+        destY + 68,
         'map-dest-cta',
         'middle'
       ));

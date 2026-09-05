@@ -2186,12 +2186,13 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   overflow: visible;
   filter: drop-shadow(0 8px 24px rgba(0,0,0,0.03));
 }
-.map-contour-line {
+.map-contour-line,
+.map-path-contour {
   fill: none;
-  stroke: var(--border-mid);
+  stroke: var(--fg);
   stroke-width: 1px;
-  stroke-dasharray: 2 4;
-  opacity: 0.45;
+  stroke-dasharray: 3 6;
+  opacity: 0.14;
 }
 .map-elevation-line {
   stroke: var(--border-mid);
@@ -2199,25 +2200,37 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   stroke-dasharray: 2 2;
   opacity: 0.6;
 }
+.map-grid-coord {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  fill: var(--muted-soft);
+  opacity: 0.65;
+}
 .map-road-glow {
   fill: none;
-  stroke: var(--border-str);
+  stroke: var(--fg);
   stroke-width: 6px;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.4;
+  opacity: 0.08;
 }
 .map-road-track {
   fill: none;
   stroke: var(--fg);
-  stroke-width: 2.2px;
-  stroke-dasharray: 6 5;
+  stroke-width: 1.85px;
+  stroke-dasharray: 6 6;
   stroke-linecap: round;
   stroke-linejoin: round;
+  opacity: 0.55;
+  transition: opacity 250ms ease;
+}
+.exp-full-map-wrap:hover .map-road-track {
   opacity: 0.85;
 }
 .map-start-basecamp {
-  transform-origin: 60px 100px;
+  transform-origin: 50px 110px;
 }
 .map-start-ring {
   fill: none;
@@ -2862,6 +2875,42 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   background: var(--bg-card);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+/* Why This Tech Stack Rationale Box */
+.pmodal__rationale-box {
+  padding: 1.15rem 1.25rem;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px dashed var(--border-mid);
+  border-radius: 4px;
+}
+[data-theme="dark"] .pmodal__rationale-box {
+  background: rgba(255, 255, 255, 0.025);
+}
+.pmodal__rationale-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.45rem;
+}
+.pmodal__rationale-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  border-left: 2px solid var(--fg);
+  padding-left: 0.75rem;
+}
+.pmodal__rationale-tech {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: 0.02em;
+}
+.pmodal__rationale-reason {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 /* Modal Bottom Switcher */
