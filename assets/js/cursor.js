@@ -231,32 +231,9 @@
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
-  /* ── Head: SLEEP (horizontal calm eye slit, sleeping peacefully) ── */
-  const HEAD_SLEEP = [
-    //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1], // closed eye slit (bg color)
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-  ];
-
-  /* ── Legs: SLEEP (Stuffed full belly, legs resting flat on ground) ── */
-  const LEGS_SLEEP = [
-    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Stuffed bulging belly
-    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Full belly curve
-    [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Resting tucked paws
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ];
+  /* ── Sleep Sprite: Classic Normal Dino (no weird bloat / distortion) ── */
+  const HEAD_SLEEP = HEAD_NORMAL;
+  const LEGS_SLEEP = LEGS_STAND;
 
 
   /* ═══════════════════════════════════════════════════════════
@@ -1159,8 +1136,8 @@
     let verticalBob = 0;
 
     if (currentState === STATES.SLEEPING) {
-      activeLegs = LEGS_SLEEP;
-      verticalBob = 2; // Resting flat on ground
+      activeLegs = LEGS_STAND;
+      verticalBob = 0;
     } else if (currentState === STATES.ROARING) {
       activeLegs = LEGS_STAND;
       verticalBob = -1; // Slight lift — chest puff
@@ -1176,7 +1153,7 @@
 
     let activeHead = HEAD_NORMAL;
     if (currentState === STATES.SLEEPING) {
-      activeHead = HEAD_SLEEP;
+      activeHead = HEAD_NORMAL;
     } else if (currentState === STATES.ROARING) {
       // Roar: head oscillates between ROAR and CHOMP for angry snapping effect
       const roarT = (now - roarStartTime) / ROAR_DURATION;
@@ -1208,9 +1185,12 @@
       if (z.life <= 0) { zzzParticles.splice(i, 1); continue; }
       ctx.font = `700 ${Math.round(z.size)}px 'JetBrains Mono', monospace`;
       ctx.fillStyle = fg;
-      ctx.globalAlpha = z.life * 0.70;
+      ctx.globalAlpha = Math.max(0, Math.min(1, z.life * 0.70));
       ctx.fillText(z.char, Math.round(z.x), Math.round(z.y));
     }
+
+    // Always restore full opacity before drawing the dinosaur — eliminates any blinking/flickering!
+    ctx.globalAlpha = 1.0;
 
     /* ── G. Draw Dino ──
        During ROARING: scale the sprite up slightly (Godzilla chest-puff)
@@ -1241,6 +1221,9 @@
         fg, bg, isFacingLeft, 1.0
       );
     }
+
+    // Restore full opacity before drawing the meat cursor
+    ctx.globalAlpha = 1.0;
 
     /* ── H. Draw Meat Cursor (Transforms on Hover & Click) ── */
     if (foodVisible && mouseInside) {
