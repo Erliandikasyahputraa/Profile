@@ -522,19 +522,22 @@
     }
   }
 
-  /* ── Dust Spawner ── */
+  /* ── Dust Spawner (Subtle Running Smoke Puffs) ── */
   function spawnDust(x, y, dirX) {
     if (dustParticles.length >= MAX_DUST) return;
     for (let i = 0; i < DUST_SPAWN_RATE; i++) {
       dustParticles.push({
-        x: x + (Math.random() - 0.5) * 6,
-        y: y + (Math.random() - 0.5) * 4,
-        vx: -dirX * (Math.random() * 1.6 + 0.6),
-        vy: -(Math.random() * 0.8 + 0.2),
-        size: PX * (Math.random() * 0.6 + 0.7),
-        scale: 0.8,
+        x: x + (Math.random() - 0.5) * 4,
+        y: y + (Math.random() - 0.5) * 2,
+        vx: -dirX * (Math.random() * 1.2 + 0.35),
+        vy: -(Math.random() * 0.5 + 0.15), // gentle upward smoke drift
+        baseR: 1.5 + Math.random() * 0.5,  // subtle starting radius: 1.5 - 2.0px
+        maxR: 2.8 + Math.random() * 0.6,   // gentle puff expansion: 2.8 - 3.4px
+        satOffsetX: -dirX * (Math.random() * 2 + 1),
+        satOffsetY: -(Math.random() * 2 + 1),
+        satR: 1.0 + Math.random() * 0.4,
         life: 1.0,
-        decay: 0.05 + Math.random() * 0.03,
+        decay: 0.048 + Math.random() * 0.02,
       });
     }
   }
@@ -1259,24 +1262,42 @@
     }
 
     /* ── E2. Sprint Dust & Sprint Sound ── */
-    if (currentState === STATES.CHASING && currentSpeed > 2.6) {
-      const trailingFootX = dinoX + (isFacingLeft ? spriteW * 0.8 : spriteW * 0.2);
-      const trailingFootY = dinoY + spriteH - 2 * PX;
-      const moveDir = velX !== 0 ? Math.sign(velX) : (isFacingLeft ? -1 : 1);
-      spawnDust(trailingFootX, trailingFootY, moveDir);
+    if (currentState === STATES.CHASING && currentSpeed > 1.8) {
+      if (walkTick % 3 === 0) {
+        const trailingFootX = dinoX + (isFacingLeft ? spriteW * 0.78 : spriteW * 0.22);
+        const trailingFootY = dinoY + spriteH - PX;
+        const moveDir = velX !== 0 ? Math.sign(velX) : (isFacingLeft ? -1 : 1);
+        spawnDust(trailingFootX, trailingFootY, moveDir);
+      }
       playFootstepSound(true);
     }
 
     for (let i = dustParticles.length - 1; i >= 0; i--) {
       const p = dustParticles[i];
-      p.x += p.vx; p.y += p.vy;
-      p.scale += 0.03;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.93; // Air resistance slows smoke down
+      p.vy *= 0.95;
       p.life -= p.decay;
       if (p.life <= 0) { dustParticles.splice(i, 1); continue; }
+
+      const progress = 1 - p.life;
+      const r = p.baseR + (p.maxR - p.baseR) * progress;
+
       ctx.fillStyle = fg;
+      // Main soft smoke cloud puff
       ctx.globalAlpha = p.life * 0.22;
-      const sz = Math.ceil(p.size * p.scale);
-      ctx.fillRect(Math.round(p.x), Math.round(p.y), sz, sz);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Whispy secondary puff for organic smoke texture
+      if (p.life > 0.28) {
+        ctx.globalAlpha = p.life * 0.12;
+        ctx.beginPath();
+        ctx.arc(p.x + p.satOffsetX, p.y + p.satOffsetY, p.satR * (1 + progress * 0.35), 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
     /* ── E3. Bite Crumbs ── */

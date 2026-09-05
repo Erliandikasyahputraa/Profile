@@ -9,21 +9,11 @@
   ],
   "headers": [
     {
-      "source": "/(.*).html",
+      "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
-      ]
-    },
-    {
-      "source": "/",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
-      ]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, s-maxage=0" },
+        { "key": "CDN-Cache-Control", "value": "max-age=0, must-revalidate" },
+        { "key": "Vercel-CDN-Cache-Control", "value": "max-age=0, must-revalidate" }
       ]
     }
   ]
