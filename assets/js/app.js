@@ -41,11 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const cleanTitle = (title || 'Project').replace(/[<>&"]/g, '');
     const cleanCat = (category || 'SOFTWARE').toUpperCase().replace(/[<>&"]/g, '');
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 375" width="100%" height="100%" style="background:#121212;display:block;"><rect width="100%" height="100%" fill="#121212"/><line x1="24" y1="24" x2="64" y2="24" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/><line x1="24" y1="24" x2="24" y2="64" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/><line x1="576" y1="351" x2="536" y2="351" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/><line x1="576" y1="351" x2="576" y2="311" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/><circle cx="300" cy="155" r="46" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="300" cy="155" r="22" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/><text x="300" y="235" fill="#ffffff" font-family="'Space Grotesk', system-ui, sans-serif" font-size="20" font-weight="700" text-anchor="middle" letter-spacing="-0.5">${cleanTitle}</text><text x="300" y="260" fill="rgba(255,255,255,0.45)" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" text-anchor="middle" letter-spacing="2">${cleanCat}</text></svg>`;
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.trim());
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
-
-  /* ── Bilingual Data Getter Helper ── */
   function getLoc(item, field) {
+    if (typeof window.getLangText === 'function') {
+      return window.getLangText(item, field);
+    }
     if (!item) return '';
     const lang = window.currentLang || 'en';
     if (lang === 'id' && item[field + '_id']) {
@@ -198,7 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const now = actx.currentTime;
 
       const master = actx.createGain();
-      // Rich, dark, distinct cyber volume
       const masterVol = isExit ? 0.30 : 0.36;
       master.gain.setValueAtTime(masterVol, now);
       master.connect(actx.destination);
@@ -236,7 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const filter = actx.createBiquadFilter();
         filter.type = 'bandpass';
-        // Darker resonance frequencies
         filter.frequency.setValueAtTime(idx === 0 ? 1100 : (idx === 1 ? 750 : 1350), t);
         filter.Q.setValueAtTime(5.5, t);
 
@@ -382,11 +381,14 @@ document.addEventListener('DOMContentLoaded', () => {
       DESKTOP_NODES.forEach(nd => {
         if (!nd.item) return;
 
+        const badgeText = getLoc(nd.item, 'badge');
+        const titleText = getLoc(nd.item, 'title');
+
         const g = mkSVG('g', {
           class: 'map-node-group',
           tabindex: '0',
           role: 'button',
-          'aria-label': `${nd.item.title} (${nd.item.year})`,
+          'aria-label': `${titleText} (${nd.item.year})`,
         });
 
         // Outer halo ring
@@ -411,18 +413,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const isAbove = nd.side === 'above';
         const anchor = nd.x > VW * 0.85 ? 'end' : (nd.x < VW * 0.2 ? 'start' : 'middle');
 
-        g.appendChild(mkSVGText(nd.item.badge, nd.textX, isAbove ? nd.textY - 14 : nd.textY, 'map-label-tag', anchor));
+        g.appendChild(mkSVGText(badgeText, nd.textX, isAbove ? nd.textY - 14 : nd.textY, 'map-label-tag', anchor));
         g.appendChild(mkSVGText(nd.item.year, nd.textX, isAbove ? nd.textY : nd.textY + 14, 'map-label-year', anchor));
-        g.appendChild(mkSVGText(nd.item.title, nd.textX, isAbove ? nd.textY + 16 : nd.textY + 30, 'map-label-title', anchor));
+        g.appendChild(mkSVGText(titleText, nd.textX, isAbove ? nd.textY + 16 : nd.textY + 30, 'map-label-title', anchor));
 
         // Exact Hover Sneak Peek Trigger
         g.addEventListener('mouseenter', () => {
-          const isIndo = window.currentLang === 'id';
-          const badgeText = (isIndo && nd.item.badge_id) ? nd.item.badge_id : nd.item.badge;
-          const titleText = (isIndo && nd.item.title_id) ? nd.item.title_id : nd.item.title;
-          const reflectionText = (isIndo && nd.item.reflection_id) ? nd.item.reflection_id : nd.item.reflection;
+          const reflectionText = getLoc(nd.item, 'reflection');
           const roleText = nd.item.role ? `<span class="msp-role">${nd.item.role}</span>` : '';
           const locText = nd.item.location ? `<span class="msp-loc"> · ${nd.item.location}</span>` : '';
+          const hintLabel = window.t('exp_view_cta');
 
           peekCard.innerHTML = `
             <div class="msp-header">
@@ -433,12 +433,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="msp-meta">${roleText}${locText}</div>
             <p class="msp-desc">${reflectionText}</p>
             <div class="msp-hint">
-              <span>${isIndo ? 'LIHAT DETAIL PENGALAMAN' : 'VIEW EXPERIENCE DOSSIER'}</span>
+              <span>${hintLabel}</span>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </div>
           `;
 
-          // Exact pixel calculation relative to wrap container
           const dotRect = dot.getBoundingClientRect();
           const wrapRect = wrap.getBoundingClientRect();
 
@@ -473,12 +472,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // ── WIDE CLICKABLE MYSTERY FOG & WAYPOINT ZONE ──
-      const isIndo = window.currentLang === 'id';
       const fogClickGroup = mkSVG('g', {
         class: 'map-fog-clickable-zone',
         tabindex: '0',
         role: 'button',
-        'aria-label': isIndo ? 'Buka Peta Pengalaman Lengkap' : 'Explore Complete Career Journey Map',
+        'aria-label': window.t('journey_explore_cta'),
       });
 
       // Broad invisible hitbox
@@ -528,9 +526,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Badge / Tooltip Label
       const pillG = mkSVG('g', { class: 'waypoint-pill-tooltip' });
       const pillBg = mkSVG('rect', {
-        x: '860',
+        x: '850',
         y: '50',
-        width: '160',
+        width: '180',
         height: '26',
         rx: '13',
         class: 'wp-pill-bg',
@@ -543,7 +541,7 @@ document.addEventListener('DOMContentLoaded', () => {
         class: 'wp-pill-text',
         'text-anchor': 'middle',
       });
-      pillText.textContent = isIndo ? 'BUKA PETA LENGKAP →' : 'EXPLORE FULL MAP →';
+      pillText.textContent = window.currentLang === 'id' ? 'JELAJAHI LINIMASA LENGKAP →' : 'EXPLORE FULL MAP →';
       pillG.appendChild(pillText);
       fogClickGroup.appendChild(pillG);
 
@@ -566,6 +564,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Mobile preview list
       const listWrap = el('div', { class: 'exp-mobile-preview-list' });
       milestones.forEach((m, idx) => {
+        const badgeText = getLoc(m, 'badge');
+        const titleText = getLoc(m, 'title');
+        const reflectionText = getLoc(m, 'reflection');
+
         const itemEl = el('a', {
           href: PAGES_REL + 'experience.html',
           class: 'exp-mobile-preview-item',
@@ -574,11 +576,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="exp-mobile-preview-dot"></div>
           <div class="exp-mobile-preview-body">
             <div class="exp-mobile-preview-meta">
-              <span class="map-label-tag">${m.badge}</span>
+              <span class="map-label-tag">${badgeText}</span>
               <span class="map-label-year">${m.year}</span>
             </div>
-            <div class="map-label-title">${m.title}</div>
-            <div class="exp-mobile-preview-desc">${m.reflection}</div>
+            <div class="map-label-title">${titleText}</div>
+            <div class="exp-mobile-preview-desc">${reflectionText}</div>
           </div>
         `;
         listWrap.appendChild(itemEl);
@@ -604,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
         href: `${PAGES_REL}project.html?slug=${p.slug}`,
         class: 'project-card',
         role: 'listitem',
-        'aria-label': `${p.name} — ${getLoc(p, 'category')}. View case study.`,
+        'aria-label': `${p.name} — ${getLoc(p, 'category')}`,
       });
 
       const rawList = (p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0)
@@ -617,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const catText = getLoc(p, 'category') || 'Software Project';
       const descText = getLoc(p, 'shortDescription');
-      const ctaText = window.t ? window.t('project_row_cta') : 'VIEW CASE STUDY';
+      const ctaText = window.t('project_trailer_cta');
       const fallbackSvg = getProjectSvgPlaceholder(p.name, catText);
 
       card.innerHTML = `
@@ -655,13 +657,12 @@ document.addEventListener('DOMContentLoaded', () => {
       href: `${PAGES_REL}projects.html`,
       class: 'projects-track__next-btn',
       role: 'button',
-      'aria-label': 'View all projects',
-      title: window.t ? window.t('projects_view_all') : 'View all projects',
+      'aria-label': window.t('projects_view_all'),
+      title: window.t('projects_view_all'),
     });
 
-    const isIndo = window.currentLang === 'id';
-    const tagText = isIndo ? 'KARYA' : 'WORKS';
-    const labelText = isIndo ? 'SEMUA PROYEK' : 'ALL PROJECTS';
+    const tagText = window.t('projects_view_all_tag');
+    const labelText = window.t('projects_view_all');
 
     nextArrowBtn.innerHTML = `
       <div class="projects-track__next-circle">
@@ -759,6 +760,9 @@ document.addEventListener('DOMContentLoaded', () => {
      3. PROJECTS PAGE (projects.html)
      EDITORIAL ROWS WITH INTERACTIVE POPUP MODAL
   ════════════════════════════════════════════ */
+  let activeModalProject = null;
+  let activeModalList = null;
+
   if (IS.projects) {
     initProjectsArchive();
   }
@@ -776,8 +780,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentFilteredList = D.projects;
 
     function openProjectModal(p, list) {
-      if (!modalBackdrop || !modalContent) return;
-      const currentListRef = list || currentFilteredList || D.projects;
+      if (!modalBackdrop || !modalContent || !p) return;
+      activeModalProject = p;
+      activeModalList = list || currentFilteredList || D.projects;
+
+      const currentListRef = activeModalList;
       const currentIndex = currentListRef.findIndex(item => item.slug === p.slug);
       const prevProject = currentIndex > 0 ? currentListRef[currentIndex - 1] : null;
       const nextProject = currentIndex < currentListRef.length - 1 ? currentListRef[currentIndex + 1] : null;
@@ -796,6 +803,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const liveDemoTarget = resolveAsset(p.liveDemo || '404.html');
       const fallbackSvg = getProjectSvgPlaceholder(p.name, catText);
 
+      const isIndo = window.currentLang === 'id';
+      const rationaleList = (isIndo && p.techRationale_id) ? p.techRationale_id : (p.techRationale || []);
+
       modalContent.innerHTML = `
         <div class="pmodal__header">
           <div class="pmodal__meta-bar">
@@ -808,12 +818,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="pmodal__role">${roleText || 'Software Engineer'}</p>
           <div class="pmodal__actions">
             <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="pmodal__action-btn pmodal__action-btn--primary">
-              <span>${window.t ? window.t('modal_btn_live_demo') : 'LIVE DEMO'}</span>
+              <span>${window.t('modal_btn_live_demo')}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
             </a>
             ${p.github ? `
               <a href="${p.github}" target="_blank" rel="noopener noreferrer" class="pmodal__action-btn pmodal__action-btn--secondary">
-                <span>${window.t ? window.t('modal_btn_github') : 'GITHUB'}</span>
+                <span>${window.t('modal_btn_github')}</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
               </a>
             ` : ''}
@@ -837,7 +847,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ` : ''}
 
             <div class="pmodal__section">
-              <span class="pmodal__sec-label">${window.t ? window.t('modal_label_tech_stack') : 'TECH STACK'}</span>
+              <span class="pmodal__sec-label">${window.t('modal_label_tech_stack')}</span>
               <div class="pmodal__tech-chips">
                 ${(p.techStack || []).map(t => `<span class="pmodal__tech-chip">${t}</span>`).join('')}
               </div>
@@ -845,16 +855,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ${techDetailsText ? `
               <div class="pmodal__section">
-                <span class="pmodal__sec-label">${window.t ? window.t('architecture_label') : 'ARCHITECTURE & DECISIONS'}</span>
+                <span class="pmodal__sec-label">${window.t('architecture_label')}</span>
                 <p class="pmodal__sec-text">${techDetailsText}</p>
               </div>
             ` : ''}
 
-            ${(p.techRationale || p.techRationale_id) ? `
+            ${rationaleList.length ? `
               <div class="pmodal__section pmodal__rationale-box">
-                <span class="pmodal__sec-label">${isIndo ? 'MENGAPA TECH STACK INI DIPILIH' : 'WHY THIS TECH STACK'}</span>
+                <span class="pmodal__sec-label">${window.t('modal_label_why_tech')}</span>
                 <div class="pmodal__rationale-grid">
-                  ${((isIndo && p.techRationale_id) ? p.techRationale_id : (p.techRationale || [])).map(item => `
+                  ${rationaleList.map(item => `
                     <div class="pmodal__rationale-item">
                       <span class="pmodal__rationale-tech">${item.tech}</span>
                       <span class="pmodal__rationale-reason">${item.reason}</span>
@@ -867,27 +877,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="pmodal__right-col">
             <div class="pmodal__section">
-              <span class="pmodal__sec-label">${window.t ? window.t('modal_label_overview') : 'OVERVIEW'}</span>
+              <span class="pmodal__sec-label">${window.t('modal_label_overview')}</span>
               <p class="pmodal__lead-text">${leadText}</p>
             </div>
 
             ${probText ? `
               <div class="pmodal__section">
-                <span class="pmodal__sec-label">${window.t ? window.t('modal_label_problem') : 'THE PROBLEM'}</span>
+                <span class="pmodal__sec-label">${window.t('modal_label_problem')}</span>
                 <p class="pmodal__sec-text">${probText}</p>
               </div>
             ` : ''}
 
             ${solText ? `
               <div class="pmodal__section">
-                <span class="pmodal__sec-label">${window.t ? window.t('modal_label_solution') : 'THE SOLUTION'}</span>
+                <span class="pmodal__sec-label">${window.t('modal_label_solution')}</span>
                 <p class="pmodal__sec-text">${solText}</p>
               </div>
             ` : ''}
 
             ${whyText ? `
               <div class="pmodal__section">
-                <span class="pmodal__sec-label">${window.t ? window.t('modal_label_why') : 'WHY I BUILT IT'}</span>
+                <span class="pmodal__sec-label">${window.t('modal_label_why')}</span>
                 <p class="pmodal__sec-text">${whyText}</p>
               </div>
             ` : ''}
@@ -897,10 +907,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="pmodal__footer">
           <button class="pmodal__nav-btn" id="modalPrevBtn" ${!prevProject ? 'disabled' : ''}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-            <span>${prevProject ? prevProject.name : 'Start'}</span>
+            <span>${prevProject ? prevProject.name : window.t('modal_nav_start')}</span>
           </button>
           <button class="pmodal__nav-btn" id="modalNextBtn" ${!nextProject ? 'disabled' : ''}>
-            <span>${nextProject ? nextProject.name : 'End'}</span>
+            <span>${nextProject ? nextProject.name : window.t('modal_nav_end')}</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
         </div>
@@ -943,6 +953,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeProjectModal() {
       if (!modalBackdrop) return;
+      activeModalProject = null;
       modalBackdrop.classList.remove('active');
       modalBackdrop.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
@@ -954,6 +965,11 @@ document.addEventListener('DOMContentLoaded', () => {
         window.history.pushState({}, '', url.pathname + (url.hash || ''));
       } catch (err) {}
     }
+
+    window.openProjectModal = openProjectModal;
+    window.reOpenProjectModal = () => {
+      if (activeModalProject) openProjectModal(activeModalProject, activeModalList);
+    };
 
     if (modalCloseBtn) {
       modalCloseBtn.addEventListener('click', closeProjectModal);
@@ -978,9 +994,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (found) openProjectModal(found, D.projects);
       } else {
         if (modalBackdrop && modalBackdrop.classList.contains('active')) {
-          modalBackdrop.classList.remove('active');
-          modalBackdrop.setAttribute('aria-hidden', 'true');
-          document.body.style.overflow = '';
+          closeProjectModal();
         }
       }
     });
@@ -1031,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const catText = getLoc(p, 'category') || 'PROJECT';
         const descText = getLoc(p, 'shortDescription');
         const roleText = getLoc(p, 'role');
-        const ctaText = window.t ? window.t('project_row_cta') : 'VIEW PROJECT';
+        const ctaText = window.t('project_row_cta');
         const fallbackSvg = getProjectSvgPlaceholder(p.name, catText);
         const liveDemoTarget = resolveAsset(p.liveDemo || '404.html');
 
@@ -1056,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="parow__right">
             <div class="parow__tech-sec">
-              <span class="parow__tech-lbl">${window.t ? window.t('tech_col_label') : 'TECH STACK'}</span>
+              <span class="parow__tech-lbl">${window.t('tech_col_label')}</span>
               <div class="parow__tech-list">
                 ${(p.techStack || []).map(t => `<span class="parow__tech-pill">${t}</span>`).join('')}
               </div>
@@ -1068,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
               <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="parow__ext-link" aria-label="Live demo for ${p.name}">
-                <span>Live Demo</span>
+                <span>${window.t('modal_btn_live_demo')}</span>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
               </a>
               ${p.github ? `
@@ -1094,11 +1108,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (list.length === 0) {
         container.innerHTML = `
           <div class="parow__empty">
-            <p>${window.t ? window.t('empty_category') : 'No projects found in this category.'}</p>
+            <p>${window.t('empty_category')}</p>
           </div>
         `;
       }
     }
+
+    window.reRenderProjectRows = () => renderProjectRows(activeFilter);
 
     if (filterTabs.length > 0) {
       filterTabs.forEach(tab => {
@@ -1144,7 +1160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const project = D.projects.find(p => p.slug === slug) || D.projects[0];
 
     if (!project) {
-      root.innerHTML = '<p class="pdetail__not-found">Project not found.</p>';
+      root.innerHTML = `<p class="pdetail__not-found">${window.t('pdetail_not_found')}</p>`;
       return;
     }
 
@@ -1163,11 +1179,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const techDetailsText = getLoc(project, 'techDetails');
     const liveDemoTarget = resolveAsset(project.liveDemo || '404.html');
 
+    const isIndo = window.currentLang === 'id';
+    const rationaleList = (isIndo && project.techRationale_id) ? project.techRationale_id : (project.techRationale || []);
+
     root.innerHTML = `
       <div class="pdetail__header">
         <a href="projects.html" class="pdetail__back-link">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-          <span data-i18n="pdetail_back">${window.t ? window.t('pdetail_back') : 'BACK TO PROJECTS'}</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span data-i18n="pdetail_back">${window.t('pdetail_back')}</span>
         </a>
       </div>
 
@@ -1182,28 +1201,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
           ${probText ? `
             <div class="pdetail__story-block">
-              <h2 class="pdetail__sec-label">${window.t ? window.t('modal_label_problem') : 'PROBLEM'}</h2>
+              <h2 class="pdetail__sec-label">${window.t('modal_label_problem')}</h2>
               <p class="pdetail__sec-text">${probText}</p>
             </div>
           ` : ''}
 
           ${whyText ? `
             <div class="pdetail__story-block">
-              <h2 class="pdetail__sec-label">${window.t ? window.t('modal_label_why') : 'WHY I BUILT IT'}</h2>
+              <h2 class="pdetail__sec-label">${window.t('modal_label_why')}</h2>
               <p class="pdetail__sec-text">${whyText}</p>
             </div>
           ` : ''}
 
           ${solText ? `
             <div class="pdetail__story-block">
-              <h2 class="pdetail__sec-label">${window.t ? window.t('modal_label_solution') : 'SOLUTION'}</h2>
+              <h2 class="pdetail__sec-label">${window.t('modal_label_solution')}</h2>
               <p class="pdetail__sec-text">${solText}</p>
             </div>
           ` : ''}
 
           ${roleText ? `
             <div class="pdetail__story-block">
-              <h2 class="pdetail__sec-label">${window.t ? window.t('modal_label_role') : 'MY ROLE'}</h2>
+              <h2 class="pdetail__sec-label">${window.t('modal_label_role')}</h2>
               <p class="pdetail__sec-text">${roleText}</p>
             </div>
           ` : ''}
@@ -1227,7 +1246,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           ${techDetailsText ? `
             <div class="pdetail__story-block" style="margin-top: 2rem;">
-              <h2 class="pdetail__sec-label">${window.t ? window.t('modal_label_tech') : 'ARCHITECTURE & DECISIONS'}</h2>
+              <h2 class="pdetail__sec-label">${window.t('architecture_label')}</h2>
               <p class="pdetail__sec-text">${techDetailsText}</p>
             </div>
           ` : ''}
@@ -1236,17 +1255,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- 30% RIGHT: TECH + LINKS -->
         <div class="pdetail__col-tech">
           <div class="pdetail__tech-box">
-            <h2 class="pdetail__sec-label">${window.t ? window.t('modal_label_tech_stack') : 'TECH STACK'}</h2>
+            <h2 class="pdetail__sec-label">${window.t('modal_label_tech_stack')}</h2>
             <div class="pdetail__tech-badges">
               ${(project.techStack || []).map(t => `<span class="pdetail__tech-pill">${t}</span>`).join('')}
             </div>
           </div>
 
-          ${(project.techRationale || project.techRationale_id) ? `
+          ${rationaleList.length ? `
             <div class="pdetail__tech-box pmodal__rationale-box">
-              <h2 class="pdetail__sec-label">${isIndo ? 'MENGAPA TECH STACK INI DIPILIH' : 'WHY THIS TECH STACK'}</h2>
+              <h2 class="pdetail__sec-label">${window.t('modal_label_why_tech')}</h2>
               <div class="pmodal__rationale-grid">
-                ${((isIndo && project.techRationale_id) ? project.techRationale_id : (project.techRationale || [])).map(item => `
+                ${rationaleList.map(item => `
                   <div class="pmodal__rationale-item">
                     <span class="pmodal__rationale-tech">${item.tech}</span>
                     <span class="pmodal__rationale-reason">${item.reason}</span>
@@ -1257,15 +1276,15 @@ document.addEventListener('DOMContentLoaded', () => {
           ` : ''}
 
           <div class="pdetail__links-box">
-            <h2 class="pdetail__sec-label">${window.t ? window.t('modal_label_overview') : 'PROJECT LINKS'}</h2>
+            <h2 class="pdetail__sec-label">${window.t('pdetail_links_label')}</h2>
             <div class="pdetail__actions">
               <a href="${liveDemoTarget}" class="pdetail__btn primary" aria-label="Visit Live Demo for ${project.name}">
-                <span>Live Demo</span>
+                <span>${window.t('modal_btn_live_demo')}</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
               </a>
               ${project.github ? `
                 <a href="${project.github}" target="_blank" rel="noopener noreferrer" class="pdetail__btn secondary" aria-label="Visit GitHub repository for ${project.name}">
-                  <span>GitHub Repository</span>
+                  <span>${window.t('modal_btn_github')}</span>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
                 </a>
               ` : ''}
@@ -1300,6 +1319,8 @@ document.addEventListener('DOMContentLoaded', () => {
      5. EXPERIENCE PAGE (experience.html)
      SNAKING JOURNEY MAP, POPUP DOSSIER & CERTS
   ════════════════════════════════════════════ */
+  let activeExpModalIdx = null;
+
   if (IS.exp) {
     initExperiencePage();
   }
@@ -1357,11 +1378,6 @@ document.addEventListener('DOMContentLoaded', () => {
       svg.appendChild(mkSVGText('+ 101°27\'05" E', 960, 30, 'map-grid-coord', 'end'));
 
       // ── Organic Winding Expedition Route (No stiff straight lines) ──
-      // Row 1 (L->R): Basecamp (50, 105) -> Node 0 (190, 75) -> Node 1 (470, 140) -> Node 2 (750, 75)
-      // Loop 1: Sweeps around (940, 180) into Row 2
-      // Row 2 (R->L): Node 3 (780, 315) -> Node 4 (480, 255) -> Node 5 (190, 315)
-      // Loop 2: Sweeps around (60, 420) into Row 3
-      // Row 3 (L->R): Node 6 (250, 515) -> Node 7 (530, 485) -> Destination (820, 520)
       const pathD = `
         M 50 105
         C 95 95, 140 75, 190 75
@@ -1401,7 +1417,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const startG = mkSVG('g', { class: 'map-start-basecamp' });
       startG.appendChild(mkSVG('circle', { cx: '50', cy: '105', r: '7', class: 'map-start-ring' }));
       startG.appendChild(mkSVG('circle', { cx: '50', cy: '105', r: '4', class: 'map-node-start' }));
-      startG.appendChild(mkSVGText('BASECAMP', 50, 130, 'map-start-label', 'middle'));
+      startG.appendChild(mkSVGText(window.t('map_basecamp'), 50, 130, 'map-start-label', 'middle'));
       svg.appendChild(startG);
 
       // Node Positions along the natural undulating curve with perfect clearance
@@ -1417,7 +1433,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
 
       // Destination Endpoint: The Next Chapter / Collaboration Hook
-      const isIndo = window.currentLang === 'id';
       const destX = 820;
       const destY = 520;
 
@@ -1425,7 +1440,7 @@ document.addEventListener('DOMContentLoaded', () => {
         class: 'map-destination-hook',
         tabindex: '0',
         role: 'button',
-        'aria-label': isIndo ? 'Kolaborasi Kita Selanjutnya? Klik untuk terhubung!' : 'Our Next Collaboration? Click to connect!',
+        'aria-label': window.t('map_dest_title'),
       });
 
       // Aura
@@ -1454,7 +1469,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Hook typography ALL BELOW THE LINE
       destG.appendChild(mkSVGText(
-        isIndo ? '✦ BABAK SELANJUTNYA' : '✦ THE NEXT CHAPTER',
+        window.t('map_dest_badge'),
         destX,
         destY + 36,
         'map-dest-badge',
@@ -1462,7 +1477,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ));
 
       destG.appendChild(mkSVGText(
-        isIndo ? 'Kolaborasi Kita?' : 'Our Collaboration?',
+        window.t('map_dest_title'),
         destX,
         destY + 52,
         'map-dest-title',
@@ -1470,7 +1485,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ));
 
       destG.appendChild(mkSVGText(
-        isIndo ? 'Mari Membangun Bersama →' : "Let's build together →",
+        window.t('map_dest_cta'),
         destX,
         destY + 68,
         'map-dest-cta',
@@ -1536,7 +1551,7 @@ document.addEventListener('DOMContentLoaded', () => {
         g.appendChild(core);
 
         // Step index tag
-        const tagText = (isIndo && item.typeLabel_id) ? item.typeLabel_id : (item.typeLabel || 'MILESTONE');
+        const tagText = getLoc(item, 'typeLabel') || 'MILESTONE';
         const roleShort = item.role.length > 28 ? item.role.substring(0, 26) + '…' : item.role;
 
         // Tag badge
@@ -1568,10 +1583,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Exact Hover Sneak Peek Trigger on Experience Map
         g.addEventListener('mouseenter', () => {
-          const badgeText = (isIndo && item.typeLabel_id) ? item.typeLabel_id : item.typeLabel;
+          const badgeText = getLoc(item, 'typeLabel');
           const roleText = item.role || '';
           const orgText = item.org ? `<span class="msp-loc"> · ${item.org}</span>` : '';
-          const descText = (isIndo && item.beginning_id) ? item.beginning_id : (item.beginning || item.headline || '');
+          const descText = getLoc(item, 'beginning') || getLoc(item, 'headline') || '';
 
           peekCard.innerHTML = `
             <div class="msp-header">
@@ -1582,7 +1597,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="msp-meta">${orgText}</div>
             <p class="msp-desc">${descText}</p>
             <div class="msp-hint">
-              <span>${isIndo ? 'BUKA DOSSIER LENGKAP' : 'OPEN FULL DOSSIER'}</span>
+              <span>${window.t('exp_view_cta')}</span>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </div>
           `;
@@ -1634,11 +1649,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ── Dedicated Experience Dossier Modal Popup ── */
-  let currentExpModalIdx = 0;
-
   function openExperienceModal(idx) {
     if (!D.experience || !D.experience[idx]) return;
-    currentExpModalIdx = idx;
+    activeExpModalIdx = idx;
 
     let modal = document.getElementById('expModal');
     if (!modal) {
@@ -1660,24 +1673,23 @@ document.addEventListener('DOMContentLoaded', () => {
       document.addEventListener('keydown', (e) => {
         if (!modal.classList.contains('active')) return;
         if (e.key === 'Escape') closeExperienceModal();
-        if (e.key === 'ArrowLeft' && currentExpModalIdx > 0) openExperienceModal(currentExpModalIdx - 1);
-        if (e.key === 'ArrowRight' && currentExpModalIdx < D.experience.length - 1) openExperienceModal(currentExpModalIdx + 1);
+        if (e.key === 'ArrowLeft' && activeExpModalIdx > 0) openExperienceModal(activeExpModalIdx - 1);
+        if (e.key === 'ArrowRight' && activeExpModalIdx < D.experience.length - 1) openExperienceModal(activeExpModalIdx + 1);
       });
     }
 
     const item = D.experience[idx];
-    const isIndo = window.currentLang === 'id';
     const total = D.experience.length;
-    const catText = (isIndo && item.typeLabel_id) ? item.typeLabel_id : (item.typeLabel || 'EXPERIENCE');
-    const headlineText = (isIndo && item.headline_id) ? item.headline_id : item.headline;
-    const bgText = (isIndo && item.beginning_id) ? item.beginning_id : item.beginning;
-    const workText = (isIndo && item.work_id) ? item.work_id : item.work;
-    const probText = (isIndo && item.problem_id) ? item.problem_id : item.problem;
-    const impactText = (isIndo && item.impact_id) ? item.impact_id : item.impact;
+    const catText = getLoc(item, 'typeLabel') || 'EXPERIENCE';
+    const headlineText = getLoc(item, 'headline');
+    const bgText = getLoc(item, 'beginning');
+    const workText = getLoc(item, 'work');
+    const probText = getLoc(item, 'problem');
+    const impactText = getLoc(item, 'impact');
 
     modal.innerHTML = `
       <div class="exp-modal__dialog" role="document">
-        <button class="exp-modal__close-btn" id="expModalClose" aria-label="Close dossier">
+        <button class="exp-modal__close-btn" id="expModalClose" aria-label="${window.t('aria_modal_close')}">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
 
@@ -1698,30 +1710,30 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="exp-modal__dossier-grid">
             ${bgText ? `
               <div class="exp-dossier-card">
-                <h3 class="exp-dossier-card__title">${isIndo ? '01 · LATAR BELAKANG & AWAL MULA' : '01 · CONTEXT & ORIGIN'}</h3>
+                <h3 class="exp-dossier-card__title">${window.t('modal_exp_beginning')}</h3>
                 <p class="exp-dossier-card__text">${bgText}</p>
               </div>
             ` : ''}
 
             ${workText ? `
               <div class="exp-dossier-card">
-                <h3 class="exp-dossier-card__title">${isIndo ? '02 · LINGKUP TEKNIS & EKSEKUSI' : '02 · ENGINEERING SCOPE & EXECUTION'}</h3>
+                <h3 class="exp-dossier-card__title">${window.t('modal_exp_work')}</h3>
                 <p class="exp-dossier-card__text">${workText}</p>
               </div>
             ` : ''}
 
             ${(probText || impactText) ? `
               <div class="exp-dossier-card">
-                <h3 class="exp-dossier-card__title">${isIndo ? '03 · TANTANGAN & HASIL TERUKUR' : '03 · CHALLENGE & KEY OUTCOME'}</h3>
-                ${probText ? `<p class="exp-dossier-card__text"><strong>${isIndo ? 'Tantangan:' : 'Challenge:'}</strong> ${probText}</p>` : ''}
-                ${impactText ? `<p class="exp-dossier-card__text" style="margin-top:0.5rem"><strong>${isIndo ? 'Dampak:' : 'Outcome:'}</strong> ${impactText}</p>` : ''}
+                <h3 class="exp-dossier-card__title">${window.t('modal_exp_challenge_outcome')}</h3>
+                ${probText ? `<p class="exp-dossier-card__text"><strong>${window.t('modal_exp_problem_label')}</strong> ${probText}</p>` : ''}
+                ${impactText ? `<p class="exp-dossier-card__text" style="margin-top:0.5rem"><strong>${window.t('modal_exp_impact_label')}</strong> ${impactText}</p>` : ''}
               </div>
             ` : ''}
           </div>
 
           ${item.bullets && item.bullets.length ? `
             <div class="exp-modal__section">
-              <h3 class="exp-modal__sec-label">${isIndo ? 'SOROTAN UTAMA' : 'KEY HIGHLIGHTS'}</h3>
+              <h3 class="exp-modal__sec-label">${window.t('modal_exp_bullets')}</h3>
               <ul class="exp-modal__bullets">
                 ${item.bullets.map(b => `<li>${b}</li>`).join('')}
               </ul>
@@ -1730,7 +1742,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           ${item.technologies && item.technologies.length ? `
             <div class="exp-modal__section">
-              <h3 class="exp-modal__sec-label">${isIndo ? 'ALAT & TEKNOLOGI' : 'TOOLS & TECHNOLOGIES'}</h3>
+              <h3 class="exp-modal__sec-label">${window.t('modal_exp_tech')}</h3>
               <div class="exp-modal__tech-chips">
                 ${item.technologies.map(t => `<span class="exp-modal__chip">${t}</span>`).join('')}
               </div>
@@ -1741,10 +1753,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="exp-modal__footer">
           <button class="exp-modal__nav-btn" ${idx === 0 ? 'disabled' : ''} onclick="openExperienceModal(${idx - 1})">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-            <span>${isIndo ? 'Milestone Sebelumnya' : 'Previous Milestone'}</span>
+            <span>${window.t('modal_exp_prev_btn')}</span>
           </button>
           <button class="exp-modal__nav-btn" ${idx === total - 1 ? 'disabled' : ''} onclick="openExperienceModal(${idx + 1})">
-            <span>${isIndo ? 'Milestone Selanjutnya' : 'Next Milestone'}</span>
+            <span>${window.t('modal_exp_next_btn')}</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
         </div>
@@ -1758,6 +1770,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.openExperienceModal = openExperienceModal;
 
   function closeExperienceModal() {
+    activeExpModalIdx = null;
     const modal = document.getElementById('expModal');
     if (modal) {
       modal.classList.remove('active');
@@ -1767,14 +1780,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Interactive Cards List ── */
   function buildExperienceCards() {
-    const listWrap = el('div', { class: 'exp-cards-list', id: 'expCardsList' });
+    const existingList = document.getElementById('expCardsList');
+    if (existingList) existingList.remove();
+
     const fullWrap = document.getElementById('expFullMap');
     if (!fullWrap || !D.experience) return;
 
+    const listWrap = el('div', { class: 'exp-cards-list', id: 'expCardsList' });
+
     D.experience.forEach((item, idx) => {
-      const isIndo = window.currentLang === 'id';
-      const catText = (isIndo && item.typeLabel_id) ? item.typeLabel_id : (item.typeLabel || 'EXPERIENCE');
-      const headlineText = (isIndo && item.headline_id) ? item.headline_id : item.headline;
+      const catText = getLoc(item, 'typeLabel') || 'EXPERIENCE';
+      const headlineText = getLoc(item, 'headline');
 
       const card = el('article', {
         class: 'exp-detail-card',
@@ -1805,7 +1821,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="exp-card__footer-cta">
-          <span>${isIndo ? 'Buka Detail Dossier' : 'Open Full Dossier'}</span>
+          <span>${window.t('exp_view_cta')}</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </div>
       `;
@@ -1833,7 +1849,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!grid || !D.certifications) return;
 
     grid.innerHTML = '';
-    const isIndo = window.currentLang === 'id';
 
     D.certifications.forEach(cert => {
       const card = el('div', {
@@ -1841,7 +1856,7 @@ document.addEventListener('DOMContentLoaded', () => {
         role: 'listitem',
       });
 
-      const catText = (isIndo && cert.category_id) ? cert.category_id : (cert.category || 'CERTIFICATE');
+      const catText = getLoc(cert, 'category') || 'CERTIFICATE';
       const imgSrc = cert.image ? resolveAsset(cert.image) : '';
       const pdfTarget = cert.credential ? resolveAsset(cert.credential) : '';
 
@@ -1850,16 +1865,16 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="cert-card__cat">${catText.toUpperCase()}</span>
           <span class="cert-card__verified-tag">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>${isIndo ? 'TERVERIFIKASI' : 'VERIFIED CREDENTIAL'}</span>
+            <span>${window.t('cert_verify')}</span>
           </span>
         </div>
 
         ${imgSrc ? `
-          <div class="cert-card__visual-wrap" role="button" tabindex="0" aria-label="${isIndo ? 'Perbesar sertifikat' : 'Enlarge certificate'} ${cert.name}">
+          <div class="cert-card__visual-wrap" role="button" tabindex="0" aria-label="${window.t('aria_cert_expand')} ${cert.name}">
             <img src="${imgSrc}" alt="${cert.name}" loading="lazy" class="cert-card__img">
             <div class="cert-card__visual-overlay">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-              <span>${isIndo ? 'PERBESAR' : 'EXPAND'}</span>
+              <span>${window.t('cert_btn_expand')}</span>
             </div>
           </div>
         ` : ''}
@@ -1869,9 +1884,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="cert-card__meta-bottom">
           <span class="cert-card__year">${cert.year}</span>
           ${pdfTarget ? `
-            <a href="${pdfTarget}" target="_blank" rel="noopener noreferrer" class="cert-card__pdf-btn" aria-label="Open PDF document">
+            <a href="${pdfTarget}" target="_blank" rel="noopener noreferrer" class="cert-card__pdf-btn" aria-label="Open PDF document for ${cert.name}">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <span>PDF</span>
+              <span>${window.t('cert_btn_pdf')}</span>
             </a>
           ` : ''}
         </div>
@@ -1924,7 +1939,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     lb.innerHTML = `
       <div class="cert-lightbox__dialog">
-        <button class="cert-lightbox__close" id="certLightboxClose" aria-label="Close preview">
+        <button class="cert-lightbox__close" id="certLightboxClose" aria-label="${window.t('aria_modal_close')}">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
         <div class="cert-lightbox__img-wrap">
@@ -1943,18 +1958,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Listen for language change to update dynamic content ── */
   document.addEventListener('langchange', () => {
+    const isIndo = window.currentLang === 'id';
+
     if (IS.home) {
+      document.title = 'Erliandika Syahputra — Software Engineer';
       buildExpPreviewMap();
       buildHomeTrailer();
     }
     if (IS.projects) {
-      initProjectsArchive();
+      document.title = isIndo ? 'Proyek — Erliandika Syahputra' : 'Projects — Erliandika Syahputra';
+      if (typeof window.reRenderProjectRows === 'function') {
+        window.reRenderProjectRows();
+      }
+      if (activeModalProject && document.getElementById('projectModal')?.classList.contains('active')) {
+        if (typeof window.reOpenProjectModal === 'function') {
+          window.reOpenProjectModal();
+        }
+      }
     }
     if (IS.detail) {
       initProjectDetailPage();
     }
     if (IS.exp) {
-      initExperiencePage();
+      document.title = isIndo ? 'Pengalaman & Pendidikan — Erliandika Syahputra' : 'Experience & Education — Erliandika Syahputra';
+      buildFullSnakingMap();
+      buildExperienceCards();
+      buildCertifications();
+      if (activeExpModalIdx !== null && document.getElementById('expModal')?.classList.contains('active')) {
+        openExperienceModal(activeExpModalIdx);
+      }
     }
   });
 });

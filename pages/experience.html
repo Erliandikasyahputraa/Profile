@@ -26,7 +26,7 @@
 
 <!-- ═══ NAVBAR ══════════════════════════════════════════════ -->
 <nav class="navbar" role="navigation" aria-label="Main navigation">
-  <button class="navbar__lang-pill" id="langToggle" aria-label="Switch language" type="button">
+  <button class="navbar__lang-pill" id="langToggle" aria-label="Switch language" data-i18n-aria-label="aria_lang_switch" type="button">
     <span class="navbar__lang-pill__track">
       <span class="navbar__lang-pill__opt" data-lang="en">EN</span>
       <span class="navbar__lang-pill__opt" data-lang="id">ID</span>
@@ -39,30 +39,30 @@
     <li><a href="experience.html" class="navbar__link active" aria-current="page" data-i18n="nav_experience">Experience</a></li>
   </ul>
   <div class="navbar__divider" aria-hidden="true"></div>
-  <button class="navbar__toggle" id="themeToggle" aria-label="Toggle colour theme" type="button">
+  <button class="navbar__toggle" id="themeToggle" aria-label="Toggle colour theme" data-i18n-aria-label="aria_theme_toggle" type="button">
     <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
     <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
   </button>
-  <button class="navbar__menu-btn" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" type="button">
+  <button class="navbar__menu-btn" id="mobileMenuBtn" aria-label="Open menu" data-i18n-aria-label="aria_menu_open" aria-expanded="false" type="button">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
 </nav>
 
 <div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true">
-  <button class="mobile-nav__close" id="mobileNavClose" aria-label="Close menu" type="button">
+  <button class="mobile-nav__close" id="mobileNavClose" aria-label="Close menu" data-i18n-aria-label="aria_menu_close" type="button">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
   <a href="../index.html"   class="mobile-nav__link" data-mnav data-i18n="nav_home">Home</a>
   <a href="projects.html"   class="mobile-nav__link" data-mnav data-i18n="nav_projects">Projects</a>
   <a href="experience.html" class="mobile-nav__link" data-mnav data-i18n="nav_experience">Experience</a>
   <div class="mobile-nav__bottom">
-    <button class="navbar__lang-pill" id="langToggleMobile" aria-label="Switch language" type="button">
+    <button class="navbar__lang-pill" id="langToggleMobile" aria-label="Switch language" data-i18n-aria-label="aria_lang_switch" type="button">
       <span class="navbar__lang-pill__track">
         <span class="navbar__lang-pill__opt" data-lang="en">EN</span>
         <span class="navbar__lang-pill__opt" data-lang="id">ID</span>
       </span>
     </button>
-    <button class="navbar__toggle" id="themeToggleMobile" aria-label="Toggle theme" type="button">
+    <button class="navbar__toggle" id="themeToggleMobile" aria-label="Toggle theme" data-i18n-aria-label="aria_theme_toggle" type="button">
       <svg class="icon-sun"  width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg>
       <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
