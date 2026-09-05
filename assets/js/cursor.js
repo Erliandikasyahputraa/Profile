@@ -291,11 +291,7 @@
   let roarStartTime  = 0;
   const ROAR_DURATION = 750; // Refined duration
 
-  // Walking footstep trail marks
-  const footprints = [];
-  const MAX_FOOTPRINTS = 18;
-  let lastFootstepX = -999, lastFootstepY = -999;
-
+  // Walking state
   const dustParticles = [];
   const biteCrumbs    = [];
 
@@ -470,23 +466,6 @@
         }
       }
     }
-  }
-
-  /* ── Footprint Trail (appears when walking slowly) ── */
-  function spawnFootprint(x, y, fg) {
-    const dist = Math.hypot(x - lastFootstepX, y - lastFootstepY);
-    if (dist < 14) return; // Stamp every 14px of movement
-    lastFootstepX = x;
-    lastFootstepY = y;
-    footprints.push({
-      x: x + (Math.random() - 0.5) * 3,
-      y,
-      life: 1.0,
-      decay: 0.006,
-      color: fg,
-    });
-    if (footprints.length > MAX_FOOTPRINTS) footprints.shift();
-    playFootstepSound(false);
   }
 
   /* ── Dust Spawner ── */
@@ -1035,29 +1014,6 @@
       isFacingLeft = false;
     }
 
-    /* ── E. Footprint Trail (appears whenever walking) ── */
-    if (currentSpeed > 0.12 && currentState === STATES.LAZY_FOLLOW) {
-      const footX = dinoX + (isFacingLeft ? spriteW * 0.75 : spriteW * 0.25);
-      const footY = dinoY + spriteH - PX;
-      spawnFootprint(footX, footY, fg);
-    }
-
-    // Render fading 3-toed dinosaur footprints
-    for (let i = footprints.length - 1; i >= 0; i--) {
-      const fp = footprints[i];
-      fp.life -= fp.decay;
-      if (fp.life <= 0) { footprints.splice(i, 1); continue; }
-      ctx.fillStyle = fp.color;
-      ctx.globalAlpha = fp.life * 0.24;
-      const fx = Math.round(fp.x);
-      const fy = Math.round(fp.y);
-      // Realistic 3-toed pixel paw
-      ctx.fillRect(fx - PX, fy - PX, PX, PX);       // Left toe
-      ctx.fillRect(fx, fy - Math.round(PX * 1.5), PX, PX); // Middle claw
-      ctx.fillRect(fx + PX, fy - PX, PX, PX);       // Right toe
-      ctx.fillRect(fx - PX * 0.5, fy, PX * 2, PX);  // Heel pad
-    }
-
     /* ── E2. Sprint Dust & Sprint Sound ── */
     if (currentState === STATES.CHASING && currentSpeed > 2.8) {
       const trailingFootX = dinoX + (isFacingLeft ? spriteW * 0.8 : spriteW * 0.2);
@@ -1154,6 +1110,9 @@
 
     if (currentSpeed > 0.4 && walkTick % strideCadence === 0) {
       walkFrame = (walkFrame + 1) % 4;
+      if (currentState === STATES.LAZY_FOLLOW) {
+        playFootstepSound(false);
+      }
     } else if (currentSpeed <= 0.4 && currentState !== STATES.CHASING) {
       walkFrame = 0;
     }
