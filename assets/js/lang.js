@@ -27,12 +27,12 @@
 
       section_projects_label: 'Selected Projects',
       projects_view_all: 'View all projects',
-      projects_view_all_tag: 'ARCHIVE',
-      projects_view_all_card_title: 'EXPLORE THE ARCHIVE',
-      projects_view_all_card_desc: 'Dive into the full collection of software systems, web applications, and experiments.',
+      projects_view_all_tag: 'WORKS',
+      projects_view_all_card_title: 'EXPLORE ALL WORKS',
+      projects_view_all_card_desc: 'Explore the full collection of software systems, web applications, and digital products.',
 
-      projects_page_heading: 'THE PROJECT ARCHIVE',
-      projects_page_intro: "A collection of systems, products, experiments, and things I've built.",
+      projects_page_heading: 'SELECTED WORKS & SYSTEMS',
+      projects_page_intro: "A curated collection of production systems, software applications, and engineering projects.",
       projects_meta_suffix: 'PROJECTS',
       filter_all: 'ALL',
       filter_featured: 'FEATURED',
@@ -117,11 +117,11 @@
 
       section_projects_label: 'Proyek Pilihan',
       projects_view_all: 'Lihat semua proyek',
-      projects_view_all_tag: 'ARSIP',
-      projects_view_all_card_title: 'JELAJAHI ARSIP LENGKAP',
-      projects_view_all_card_desc: 'Koleksi lengkap seluruh sistem perangkat lunak, aplikasi web, dan eksplorasi teknis.',
+      projects_view_all_tag: 'KARYA',
+      projects_view_all_card_title: 'JELAJAHI SEMUA KARYA',
+      projects_view_all_card_desc: 'Koleksi lengkap seluruh sistem perangkat lunak, aplikasi web, dan rekayasa produk digital.',
 
-      projects_page_heading: 'ARSIP PROYEK',
+      projects_page_heading: 'KARYA & SISTEM PROYEK',
       projects_page_intro: 'Kumpulan sistem produksi, produk aplikasi, dan eksplorasi rekayasa perangkat lunak.',
       projects_meta_suffix: 'PROYEK',
       filter_all: 'SEMUA',

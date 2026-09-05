@@ -70,8 +70,8 @@
 
 <main>
   <div class="projects-page container">
-    <h1 class="projects-page__heading" data-i18n="projects_page_heading">THE PROJECT ARCHIVE</h1>
-    <p class="projects-page__intro" data-i18n="projects_page_intro">A collection of systems, products, experiments, and things I've built.</p>
+    <h1 class="projects-page__heading" data-i18n="projects_page_heading">SELECTED WORKS &amp; SYSTEMS</h1>
+    <p class="projects-page__intro" data-i18n="projects_page_intro">A curated collection of production systems, software applications, and engineering projects.</p>
 
     <div class="project-blocks" id="projectRows" role="list" aria-label="Project list" style="margin-top: 2.5rem;">
       <!-- Rendered dynamically by app.js -->
@@ -85,6 +85,18 @@
     </div>
   </div>
 </main>
+
+<!-- Project Interactive Dossier Modal -->
+<div class="project-modal-backdrop" id="projectModal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="project-modal__dialog">
+    <button class="project-modal__close-btn" id="projectModalClose" aria-label="Close project modal" type="button">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="project-modal__scroll" id="projectModalContent">
+      <!-- Injected dynamically by app.js -->
+    </div>
+  </div>
+</div>
 
 <div class="showcase-popup" id="showcasePopup" aria-hidden="true" role="tooltip"></div>
 

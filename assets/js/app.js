@@ -655,13 +655,13 @@ document.addEventListener('DOMContentLoaded', () => {
       href: `${PAGES_REL}projects.html`,
       class: 'projects-track__next-btn',
       role: 'button',
-      'aria-label': 'View all projects archive',
+      'aria-label': 'View all projects',
       title: window.t ? window.t('projects_view_all') : 'View all projects',
     });
 
     const isIndo = window.currentLang === 'id';
-    const tagText = isIndo ? 'ARSIP' : 'ARCHIVE';
-    const labelText = isIndo ? 'LIHAT SEMUA' : 'ALL PROJECTS';
+    const tagText = isIndo ? 'KARYA' : 'WORKS';
+    const labelText = isIndo ? 'SEMUA PROYEK' : 'ALL PROJECTS';
 
     nextArrowBtn.innerHTML = `
       <div class="projects-track__next-circle">
@@ -756,8 +756,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ════════════════════════════════════════════
-     3. PROJECTS ARCHIVE PAGE (projects.html)
-     ONE PROJECT = ONE ROW (No popups / modals)
+     3. PROJECTS PAGE (projects.html)
+     EDITORIAL ROWS WITH INTERACTIVE POPUP MODAL
   ════════════════════════════════════════════ */
   if (IS.projects) {
     initProjectsArchive();
@@ -767,9 +767,209 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('projectRows');
     const filterTabs = document.querySelectorAll('.archive-filter-btn');
     const countEl = document.getElementById('projectCount');
+    const modalBackdrop = document.getElementById('projectModal');
+    const modalContent = document.getElementById('projectModalContent');
+    const modalCloseBtn = document.getElementById('projectModalClose');
     if (!container || !D.projects) return;
 
     let activeFilter = 'all';
+    let currentFilteredList = D.projects;
+
+    function openProjectModal(p, list) {
+      if (!modalBackdrop || !modalContent) return;
+      const currentListRef = list || currentFilteredList || D.projects;
+      const currentIndex = currentListRef.findIndex(item => item.slug === p.slug);
+      const prevProject = currentIndex > 0 ? currentListRef[currentIndex - 1] : null;
+      const nextProject = currentIndex < currentListRef.length - 1 ? currentListRef[currentIndex + 1] : null;
+
+      const hasImages = p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0;
+      const rawImages = hasImages ? p.temporaryPreviewImages : ['assets/images/profile-primary.png'];
+      const images = rawImages.map(resolveAsset);
+
+      const catText = getLoc(p, 'category') || 'SOFTWARE';
+      const leadText = getLoc(p, 'shortDescription') || '';
+      const probText = getLoc(p, 'problem') || '';
+      const whyText = getLoc(p, 'why') || '';
+      const solText = getLoc(p, 'solution') || '';
+      const roleText = getLoc(p, 'role') || '';
+      const techDetailsText = getLoc(p, 'techDetails') || '';
+      const liveDemoTarget = resolveAsset(p.liveDemo || '404.html');
+      const fallbackSvg = getProjectSvgPlaceholder(p.name, catText);
+
+      modalContent.innerHTML = `
+        <div class="pmodal__header">
+          <div class="pmodal__meta-bar">
+            <div class="pmodal__tags">
+              <span class="pmodal__cat-badge">${catText.toUpperCase()}</span>
+              <span class="pmodal__year">${p.year || '2025'}</span>
+            </div>
+          </div>
+          <h2 class="pmodal__title">${p.name}</h2>
+          <p class="pmodal__role">${roleText || 'Software Engineer'}</p>
+          <div class="pmodal__actions">
+            <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="pmodal__action-btn pmodal__action-btn--primary">
+              <span>${window.t ? window.t('modal_btn_live_demo') : 'LIVE DEMO'}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </a>
+            ${p.github ? `
+              <a href="${p.github}" target="_blank" rel="noopener noreferrer" class="pmodal__action-btn pmodal__action-btn--secondary">
+                <span>${window.t ? window.t('modal_btn_github') : 'GITHUB'}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </a>
+            ` : ''}
+          </div>
+        </div>
+
+        <div class="pmodal__body">
+          <div class="pmodal__left-col">
+            <div class="pmodal__showcase-wrap" id="modalShowcaseWrap">
+              <img id="modalShowcaseImg" src="${images[0]}" alt="${p.name} showcase" loading="eager" class="pmodal__showcase-img" onerror="this.onerror=null;this.src='${fallbackSvg}'">
+            </div>
+
+            ${images.length > 1 ? `
+              <div class="pmodal__gallery-strip">
+                ${images.map((src, i) => `
+                  <button class="pmodal__thumb-btn ${i === 0 ? 'active' : ''}" data-src="${src}" aria-label="View preview ${i + 1}">
+                    <img src="${src}" alt="Thumbnail ${i + 1}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackSvg}'">
+                  </button>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <div class="pmodal__section">
+              <span class="pmodal__sec-label">${window.t ? window.t('modal_label_tech_stack') : 'TECH STACK'}</span>
+              <div class="pmodal__tech-chips">
+                ${(p.techStack || []).map(t => `<span class="pmodal__tech-chip">${t}</span>`).join('')}
+              </div>
+            </div>
+
+            ${techDetailsText ? `
+              <div class="pmodal__section">
+                <span class="pmodal__sec-label">${window.t ? window.t('architecture_label') : 'ARCHITECTURE & DECISIONS'}</span>
+                <p class="pmodal__sec-text">${techDetailsText}</p>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="pmodal__right-col">
+            <div class="pmodal__section">
+              <span class="pmodal__sec-label">${window.t ? window.t('modal_label_overview') : 'OVERVIEW'}</span>
+              <p class="pmodal__lead-text">${leadText}</p>
+            </div>
+
+            ${probText ? `
+              <div class="pmodal__section">
+                <span class="pmodal__sec-label">${window.t ? window.t('modal_label_problem') : 'THE PROBLEM'}</span>
+                <p class="pmodal__sec-text">${probText}</p>
+              </div>
+            ` : ''}
+
+            ${solText ? `
+              <div class="pmodal__section">
+                <span class="pmodal__sec-label">${window.t ? window.t('modal_label_solution') : 'THE SOLUTION'}</span>
+                <p class="pmodal__sec-text">${solText}</p>
+              </div>
+            ` : ''}
+
+            ${whyText ? `
+              <div class="pmodal__section">
+                <span class="pmodal__sec-label">${window.t ? window.t('modal_label_why') : 'WHY I BUILT IT'}</span>
+                <p class="pmodal__sec-text">${whyText}</p>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <div class="pmodal__footer">
+          <button class="pmodal__nav-btn" id="modalPrevBtn" ${!prevProject ? 'disabled' : ''}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>${prevProject ? prevProject.name : 'Start'}</span>
+          </button>
+          <button class="pmodal__nav-btn" id="modalNextBtn" ${!nextProject ? 'disabled' : ''}>
+            <span>${nextProject ? nextProject.name : 'End'}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      `;
+
+      // Interactive thumbnail switcher
+      const thumbs = modalContent.querySelectorAll('.pmodal__thumb-btn');
+      const mainImg = modalContent.querySelector('#modalShowcaseImg');
+      thumbs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          thumbs.forEach(t => t.classList.remove('active'));
+          btn.classList.add('active');
+          if (mainImg) {
+            mainImg.src = btn.getAttribute('data-src');
+          }
+        });
+      });
+
+      // Prev / Next button listeners
+      const prevBtn = modalContent.querySelector('#modalPrevBtn');
+      const nextBtn = modalContent.querySelector('#modalNextBtn');
+      if (prevBtn && prevProject) {
+        prevBtn.addEventListener('click', () => openProjectModal(prevProject, currentListRef));
+      }
+      if (nextBtn && nextProject) {
+        nextBtn.addEventListener('click', () => openProjectModal(nextProject, currentListRef));
+      }
+
+      modalBackdrop.classList.add('active');
+      modalBackdrop.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      // Update URL query parameter
+      try {
+        const url = new URL(window.location);
+        url.searchParams.set('slug', p.slug);
+        window.history.pushState({ slug: p.slug }, '', url.toString());
+      } catch (err) {}
+    }
+
+    function closeProjectModal() {
+      if (!modalBackdrop) return;
+      modalBackdrop.classList.remove('active');
+      modalBackdrop.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+
+      // Revert URL query parameter
+      try {
+        const url = new URL(window.location);
+        url.searchParams.delete('slug');
+        window.history.pushState({}, '', url.pathname + (url.hash || ''));
+      } catch (err) {}
+    }
+
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', closeProjectModal);
+    }
+    if (modalBackdrop) {
+      modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) {
+          closeProjectModal();
+        }
+      });
+    }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalBackdrop && modalBackdrop.classList.contains('active')) {
+        closeProjectModal();
+      }
+    });
+
+    window.addEventListener('popstate', (e) => {
+      const slug = new URLSearchParams(window.location.search).get('slug');
+      if (slug) {
+        const found = D.projects.find(p => p.slug === slug);
+        if (found) openProjectModal(found, D.projects);
+      } else {
+        if (modalBackdrop && modalBackdrop.classList.contains('active')) {
+          modalBackdrop.classList.remove('active');
+          modalBackdrop.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+        }
+      }
+    });
 
     function renderProjectRows(filter) {
       container.innerHTML = '';
@@ -796,6 +996,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return tags.includes(filter) || cat.includes(filter);
           });
 
+      currentFilteredList = list;
+
       if (countEl) {
         countEl.textContent = String(list.length).padStart(2, '0');
       }
@@ -811,14 +1013,11 @@ document.addEventListener('DOMContentLoaded', () => {
           ? p.temporaryPreviewImages
           : ['assets/images/profile-primary.png'];
         const imgSrc = resolveAsset(rawList[0]);
-        const fanImg1 = resolveAsset(rawList[1] || rawList[0]);
-        const fanImg2 = resolveAsset(rawList[2] || rawList[0]);
-        const fanImg3 = resolveAsset(rawList[3] || rawList[1] || rawList[0]);
 
         const catText = getLoc(p, 'category') || 'PROJECT';
         const descText = getLoc(p, 'shortDescription');
         const roleText = getLoc(p, 'role');
-        const ctaText = window.t ? window.t('project_row_cta') : 'Case Study';
+        const ctaText = window.t ? window.t('project_row_cta') : 'VIEW PROJECT';
         const fallbackSvg = getProjectSvgPlaceholder(p.name, catText);
         const liveDemoTarget = resolveAsset(p.liveDemo || '404.html');
 
@@ -827,14 +1026,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="parow__left">
             <div class="parow__cat">${catText.toUpperCase()}</div>
             <h2 class="parow__title">
-              <a href="project.html?slug=${p.slug}">${p.name}</a>
+              <a href="#view-${p.slug}" class="project-modal-trigger">${p.name}</a>
             </h2>
             <p class="parow__desc">${descText}</p>
             <div class="parow__year">${p.year || '2025'} · ${roleText ? roleText.split('—')[0].trim() : 'Software Engineer'}</div>
           </div>
 
           <div class="parow__center">
-            <a href="project.html?slug=${p.slug}" class="parow__img-link" tabindex="-1" aria-hidden="true">
+            <a href="#view-${p.slug}" class="parow__img-link project-modal-trigger" tabindex="-1" aria-hidden="true">
               <div class="parow__img-wrap">
                 <img src="${imgSrc}" alt="${p.name} screenshot" loading="lazy" class="parow__img" onerror="this.onerror=null;this.src='${fallbackSvg}'">
               </div>
@@ -850,11 +1049,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <div class="parow__links">
-              <a href="project.html?slug=${p.slug}" class="parow__cta-btn">
+              <button type="button" class="parow__cta-btn project-modal-trigger">
                 <span>${ctaText}</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </a>
-              <a href="${liveDemoTarget}" class="parow__ext-link" aria-label="Live demo for ${p.name}">
+              </button>
+              <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="parow__ext-link" aria-label="Live demo for ${p.name}">
                 <span>Live Demo</span>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
               </a>
@@ -868,10 +1067,11 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
 
-        // Direct navigation on row click (excluding external link clicks)
+        // Direct modal popup on row click (excluding external link clicks)
         row.addEventListener('click', (e) => {
-          if (e.target.closest('a')) return;
-          window.location.href = `project.html?slug=${p.slug}`;
+          if (e.target.closest('.parow__ext-link')) return;
+          e.preventDefault();
+          openProjectModal(p, list);
         });
 
         container.appendChild(row);
@@ -900,6 +1100,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     renderProjectRows('all');
+
+    // Auto-open modal if URL contains ?slug=...
+    const initialSlug = new URLSearchParams(window.location.search).get('slug');
+    if (initialSlug) {
+      const targetProject = D.projects.find(p => p.slug === initialSlug);
+      if (targetProject) {
+        setTimeout(() => {
+          openProjectModal(targetProject, D.projects);
+        }, 100);
+      }
+    }
   }
 
   /* ════════════════════════════════════════════
