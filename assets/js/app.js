@@ -153,15 +153,24 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ════════════════════════════════════════════
      2. HOME PAGE
   ════════════════════════════════════════════ */
+  let currentHomeExpMode = null;
+
   if (IS.home) {
     initProfileGlitch();
+    currentHomeExpMode = window.innerWidth < 900 ? 'mobile' : 'desktop';
     buildExpPreviewMap();
     buildHomeTrailer();
 
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(buildExpPreviewMap, 200);
+      resizeTimer = setTimeout(() => {
+        const newMode = window.innerWidth < 900 ? 'mobile' : 'desktop';
+        if (newMode !== currentHomeExpMode) {
+          currentHomeExpMode = newMode;
+          buildExpPreviewMap();
+        }
+      }, 200);
     }, { passive: true });
   }
 
@@ -182,12 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Prime Web Audio on any user gesture
-  ['click', 'pointerdown', 'mousedown', 'keydown', 'touchstart', 'mousemove', 'wheel'].forEach(evt => {
+  // Prime Web Audio on initial discrete user gesture
+  ['click', 'pointerdown', 'keydown', 'touchstart'].forEach(evt => {
     window.addEventListener(evt, () => {
       const ctx = getAppAudioCtx();
       if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
-    }, { passive: true });
+    }, { passive: true, once: true });
   });
 
   /* ── Dark Cyber Pixel Glitch Sound Synthesizer ── */
@@ -304,11 +313,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!wrap) return;
 
     const milestones = D.journeyMilestones || [];
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth < 900;
+    currentHomeExpMode = isMobile ? 'mobile' : 'desktop';
 
     wrap.innerHTML = '';
 
     if (!isMobile) {
+      // ══════════════════════════════════════════════════════════
+      // DESKTOP PANORAMIC EXPEDITION MAP (UNTOUCHED REFERENCE)
+      // ══════════════════════════════════════════════════════════
       const VW = 1000;
       const VH = 280;
 
@@ -561,31 +574,163 @@ document.addEventListener('DOMContentLoaded', () => {
 
       wrap.appendChild(svg);
     } else {
-      // Mobile preview list
-      const listWrap = el('div', { class: 'exp-mobile-preview-list' });
-      milestones.forEach((m, idx) => {
+      // ══════════════════════════════════════════════════════════
+      // MOBILE VERTICAL EXPEDITION TRAIL (< 900px)
+      // ══════════════════════════════════════════════════════════
+      const MVW = 380;
+      const MVH = 640;
+
+      const svg = mkSVG('svg', {
+        viewBox: `0 0 ${MVW} ${MVH}`,
+        width: '100%',
+        height: 'auto',
+        class: 'exp-mobile-map-svg',
+        'aria-label': 'Mobile Journey Expedition Trail',
+      });
+
+      const defs = mkSVG('defs');
+      const fogGlow = mkSVG('radialGradient', { id: 'mFogMysteryGlow', cx: '50%', cy: '50%', r: '50%' });
+      fogGlow.appendChild(mkSVG('stop', { offset: '0%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.35' }));
+      fogGlow.appendChild(mkSVG('stop', { offset: '100%', 'stop-color': 'var(--fg)', 'stop-opacity': '0' }));
+      defs.appendChild(fogGlow);
+      svg.appendChild(defs);
+
+      // Continuous vertical path curve with organic wander
+      const mobilePathD = `
+        M 50 40
+        C 50 75, 65 95, 65 125
+        C 65 170, 45 190, 45 235
+        C 45 280, 70 300, 70 345
+        C 70 390, 50 410, 50 455
+        C 50 500, 60 520, 60 555
+      `;
+
+      svg.appendChild(mkSVG('path', { d: mobilePathD, class: 'map-road-glow' }));
+      svg.appendChild(mkSVG('path', { d: mobilePathD, class: 'map-road-track' }));
+
+      // Origin dot
+      const startDot = mkSVG('circle', { cx: '50', cy: '40', r: '4', class: 'map-node-start' });
+      svg.appendChild(startDot);
+
+      const M_PREVIEW_POSITIONS = [
+        { x: 65, y: 125 },
+        { x: 45, y: 235 },
+        { x: 70, y: 345 },
+        { x: 50, y: 455 },
+      ];
+
+      milestones.forEach((m, i) => {
+        const pos = M_PREVIEW_POSITIONS[i];
+        if (!pos) return;
+
         const badgeText = getLoc(m, 'badge');
         const titleText = getLoc(m, 'title');
-        const reflectionText = getLoc(m, 'reflection');
+        const titleShort = titleText.length > 26 ? titleText.substring(0, 24) + '…' : titleText;
+        const locText = m.location ? m.location.split('—')[0].trim() : '';
 
-        const itemEl = el('a', {
-          href: PAGES_REL + 'experience.html',
-          class: 'exp-mobile-preview-item',
+        const g = mkSVG('g', {
+          class: 'map-node-group map-mobile-node',
+          tabindex: '0',
+          role: 'button',
+          'aria-label': `${badgeText} · ${titleText} (${m.year})`,
         });
-        itemEl.innerHTML = `
-          <div class="exp-mobile-preview-dot"></div>
-          <div class="exp-mobile-preview-body">
-            <div class="exp-mobile-preview-meta">
-              <span class="map-label-tag">${badgeText}</span>
-              <span class="map-label-year">${m.year}</span>
-            </div>
-            <div class="map-label-title">${titleText}</div>
-            <div class="exp-mobile-preview-desc">${reflectionText}</div>
-          </div>
-        `;
-        listWrap.appendChild(itemEl);
+
+        // Elevation line to label block
+        g.appendChild(mkSVG('line', {
+          x1: String(pos.x + 8),
+          y1: String(pos.y),
+          x2: '92',
+          y2: String(pos.y),
+          class: 'map-elevation-line',
+        }));
+
+        // Halo ring & core dot
+        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '10', class: 'map-node-ring' }));
+        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '4', class: 'map-node-core' }));
+
+        // Typography Stack beside node
+        const labelX = 104;
+        g.appendChild(mkSVGText(badgeText, labelX, pos.y - 14, 'map-label-tag', 'start'));
+        g.appendChild(mkSVGText(m.year, labelX, pos.y, 'map-label-year', 'start'));
+        g.appendChild(mkSVGText(titleShort, labelX, pos.y + 16, 'map-label-title', 'start'));
+        if (locText) {
+          const locShort = locText.length > 30 ? locText.substring(0, 28) + '…' : locText;
+          g.appendChild(mkSVGText(locShort, labelX, pos.y + 30, 'map-label-sub', 'start'));
+        }
+
+        // Tap/click navigates to experience page
+        g.addEventListener('click', () => {
+          window.location.href = PAGES_REL + 'experience.html';
+        });
+        g.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            window.location.href = PAGES_REL + 'experience.html';
+          }
+        });
+
+        svg.appendChild(g);
       });
-      wrap.appendChild(listWrap);
+
+      // Mobile Mystery Destination '?' at bottom
+      const mDestY = 555;
+      const mFogG = mkSVG('g', {
+        class: 'map-fog-clickable-zone',
+        tabindex: '0',
+        role: 'button',
+        'aria-label': window.t('journey_explore_cta'),
+      });
+
+      // Mystery aura & radar rings
+      mFogG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '28', fill: 'url(#mFogMysteryGlow)', class: 'map-fog-aura' }));
+      mFogG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '18', class: 'waypoint-radar-outer' }));
+      mFogG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '11', class: 'waypoint-radar' }));
+
+      // Mystery Question mark glyph
+      const mQGlyph = mkSVG('text', {
+        x: '60',
+        y: String(mDestY + 5),
+        class: 'map-mystery-glyph',
+        'text-anchor': 'middle',
+      });
+      mQGlyph.textContent = '?';
+      mFogG.appendChild(mQGlyph);
+
+      // Pill Button beside destination
+      const mPillG = mkSVG('g', { class: 'waypoint-pill-tooltip' });
+      const mPillBg = mkSVG('rect', {
+        x: '96',
+        y: String(mDestY - 14),
+        width: '240',
+        height: '28',
+        rx: '14',
+        class: 'wp-pill-bg',
+      });
+      mPillG.appendChild(mPillBg);
+
+      const mPillText = mkSVG('text', {
+        x: '216',
+        y: String(mDestY + 4),
+        class: 'wp-pill-text',
+        'text-anchor': 'middle',
+      });
+      mPillText.textContent = window.currentLang === 'id' ? 'JELAJAHI LINIMASA LENGKAP →' : 'EXPLORE FULL MAP →';
+      mPillG.appendChild(mPillText);
+      mFogG.appendChild(mPillG);
+
+      mFogG.addEventListener('click', () => {
+        window.location.href = PAGES_REL + 'experience.html';
+      });
+      mFogG.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          window.location.href = PAGES_REL + 'experience.html';
+        }
+      });
+
+      svg.appendChild(mFogG);
+
+      wrap.appendChild(svg);
     }
   }
 
@@ -611,7 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const rawList = (p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0)
         ? p.temporaryPreviewImages
-        : ['assets/images/profile-primary.png'];
+        : ['assets/images/profile-primary.webp'];
       const imgSrc = resolveAsset(rawList[0]);
       const fanImg1 = resolveAsset(rawList[1] || rawList[0]);
       const fanImg2 = resolveAsset(rawList[2] || rawList[0]);
@@ -790,7 +935,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const nextProject = currentIndex < currentListRef.length - 1 ? currentListRef[currentIndex + 1] : null;
 
       const hasImages = p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0;
-      const rawImages = hasImages ? p.temporaryPreviewImages : ['assets/images/profile-primary.png'];
+      const rawImages = hasImages ? p.temporaryPreviewImages : ['assets/images/profile-primary.webp'];
       const images = rawImages.map(resolveAsset);
 
       const catText = getLoc(p, 'category') || 'SOFTWARE';
@@ -833,14 +978,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="pmodal__body">
           <div class="pmodal__left-col">
             <div class="pmodal__showcase-wrap" id="modalShowcaseWrap">
-              <img id="modalShowcaseImg" src="${images[0]}" alt="${p.name} showcase" loading="eager" class="pmodal__showcase-img" onerror="this.onerror=null;this.src='${fallbackSvg}'">
+              <img id="modalShowcaseImg" src="${images[0]}" alt="${p.name} showcase" loading="eager" decoding="async" class="pmodal__showcase-img" onerror="this.onerror=null;this.src='${fallbackSvg}'">
             </div>
 
             ${images.length > 1 ? `
               <div class="pmodal__gallery-strip">
                 ${images.map((src, i) => `
                   <button class="pmodal__thumb-btn ${i === 0 ? 'active' : ''}" data-src="${src}" aria-label="View preview ${i + 1}">
-                    <img src="${src}" alt="Thumbnail ${i + 1}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackSvg}'">
+                    <img src="${src}" alt="Thumbnail ${i + 1}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fallbackSvg}'">
                   </button>
                 `).join('')}
               </div>
@@ -1039,7 +1184,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const rawList = (p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0)
           ? p.temporaryPreviewImages
-          : ['assets/images/profile-primary.png'];
+          : ['assets/images/profile-primary.webp'];
         const imgSrc = resolveAsset(rawList[0]);
 
         const catText = getLoc(p, 'category') || 'PROJECT';
@@ -1167,7 +1312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.title = `${project.name} — Erliandika Syahputra`;
 
     const hasImages = project.temporaryPreviewImages && project.temporaryPreviewImages.length > 0;
-    const rawImages = hasImages ? project.temporaryPreviewImages : ['assets/images/profile-primary.png'];
+    const rawImages = hasImages ? project.temporaryPreviewImages : ['assets/images/profile-primary.webp'];
     const images = rawImages.map(resolveAsset);
 
     const catText = getLoc(project, 'category') || 'SOFTWARE';
@@ -1320,15 +1465,29 @@ document.addEventListener('DOMContentLoaded', () => {
      SNAKING JOURNEY MAP, POPUP DOSSIER & CERTS
   ════════════════════════════════════════════ */
   let activeExpModalIdx = null;
+  let currentExpMode = null;
 
   if (IS.exp) {
     initExperiencePage();
   }
 
   function initExperiencePage() {
+    currentExpMode = window.innerWidth < 900 ? 'mobile' : 'desktop';
     buildFullSnakingMap();
     buildExperienceCards();
     buildCertifications();
+
+    let expResizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(expResizeTimer);
+      expResizeTimer = setTimeout(() => {
+        const newMode = window.innerWidth < 900 ? 'mobile' : 'desktop';
+        if (newMode !== currentExpMode) {
+          currentExpMode = newMode;
+          buildFullSnakingMap();
+        }
+      }, 200);
+    }, { passive: true });
   }
 
   /* ── 3-Zone Career Expedition Map (Organic Cartographic Journey) ── */
@@ -1339,7 +1498,7 @@ document.addEventListener('DOMContentLoaded', () => {
     wrap.innerHTML = '';
 
     const items = D.experience; // Exactly 8 items
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth < 900;
     const isIndo = window.currentLang === 'id';
 
     if (!isMobile) {
@@ -1960,7 +2119,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.innerHTML = `
         ${imgSrc ? `
           <div class="cert-card__visual-wrap" role="button" tabindex="0" aria-label="${window.t('aria_cert_expand')} ${cert.name}">
-            <img src="${imgSrc}" alt="${cert.name}" loading="lazy" class="cert-card__img">
+            <img src="${imgSrc}" alt="${cert.name}" loading="lazy" decoding="async" class="cert-card__img">
             <div class="cert-card__visual-overlay">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
               <span>${window.t('cert_btn_expand')}</span>
@@ -2051,6 +2210,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (IS.home) {
       document.title = 'Erliandika Syahputra — Software Engineer';
+      currentHomeExpMode = window.innerWidth < 900 ? 'mobile' : 'desktop';
       buildExpPreviewMap();
       buildHomeTrailer();
     }
@@ -2070,6 +2230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (IS.exp) {
       document.title = isIndo ? 'Pengalaman & Pendidikan — Erliandika Syahputra' : 'Experience & Education — Erliandika Syahputra';
+      currentExpMode = window.innerWidth < 900 ? 'mobile' : 'desktop';
       buildFullSnakingMap();
       buildExperienceCards();
       buildCertifications();

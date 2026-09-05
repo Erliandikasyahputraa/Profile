@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pdetail-title">Project — Erliandika Syahputra</title>
   <meta name="description" id="pdetail-desc" content="Project by Erliandika Syahputra — Software Engineer.">
-  <link rel="icon" href="../assets/images/web_logo-removebg-preview (1).png" type="image/png">
+  <link rel="icon" href="../assets/images/web_logo-removebg-preview (1).webp" type="image/webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;1,14..32,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
@@ -33,9 +36,24 @@
   </button>
   <div class="navbar__divider" aria-hidden="true"></div>
   <ul class="navbar__links" role="list">
-    <li><a href="../index.html"   class="navbar__link" data-i18n="nav_home">Home</a></li>
-    <li><a href="projects.html"   class="navbar__link active" aria-current="page" data-i18n="nav_projects">Projects</a></li>
-    <li><a href="experience.html" class="navbar__link" data-i18n="nav_experience">Experience</a></li>
+    <li>
+      <a href="../index.html" class="navbar__link" aria-label="Home" data-i18n-aria-label="nav_home">
+        <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label" data-i18n="nav_home">Home</span>
+      </a>
+    </li>
+    <li>
+      <a href="projects.html" class="navbar__link active" aria-current="page" aria-label="Projects" data-i18n-aria-label="nav_projects">
+        <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span class="nav-label" data-i18n="nav_projects">Projects</span>
+      </a>
+    </li>
+    <li>
+      <a href="experience.html" class="navbar__link" aria-label="Experience" data-i18n-aria-label="nav_experience">
+        <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span class="nav-label" data-i18n="nav_experience">Experience</span>
+      </a>
+    </li>
   </ul>
   <div class="navbar__divider" aria-hidden="true"></div>
   <button class="navbar__toggle" id="themeToggle" aria-label="Toggle colour theme" data-i18n-aria-label="aria_theme_toggle" type="button">

@@ -11,8 +11,8 @@ window.PORTFOLIO_DATA = {
     role:          'Software Engineer',
     location:      'Pekanbaru, Indonesia',
     email:         'syahputraerliandika@gmail.com',
-    photoPrimary:  'assets/images/profile-primary.png',
-    photoSecondary:'assets/images/profile-glitch.png',
+    photoPrimary:  'assets/images/profile-primary.webp',
+    photoSecondary:'assets/images/profile-glitch.webp',
     cv:            null, // add path when CV file is available
   },
 
@@ -327,7 +327,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Professional Competency',
       category_id: 'Kompetensi Profesi Nasional',
-      image: 'assets/images/certs/bnsp_certificate_erliandikasyahputra.png',
+      image: 'assets/images/certs/bnsp_certificate_erliandikasyahputra.webp',
       credential: '../BNSP-Certificate-ErliandikaSyahputra.pdf',
     },
     {
@@ -337,7 +337,7 @@ window.PORTFOLIO_DATA = {
       year: '2024 — 2025',
       category: 'Mobile & Cloud Engineering',
       category_id: 'Rekayasa Mobile & Cloud',
-      image: 'assets/images/certs/erliandika_syahputra_1.png',
+      image: 'assets/images/certs/erliandika_syahputra_1.webp',
       credential: '../Erliandika Syahputra (1).pdf',
     },
     {
@@ -347,7 +347,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Full-Stack Web Development',
       category_id: 'Pengembangan Web Full-Stack',
-      image: 'assets/images/certs/erliandika_syahputra_certificate___fc220d5y0389_1_1.png',
+      image: 'assets/images/certs/erliandika_syahputra_certificate___fc220d5y0389_1_1.webp',
       credential: '../Erliandika Syahputra Certificate - FC220D5Y0389-1 (1).pdf',
     },
     {
@@ -357,7 +357,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Product Design & AI/IoT',
       category_id: 'Desain Produk & AI/IoT',
-      image: 'assets/images/certs/sertifikat_design_thinking_workshop___samsung_solve_for_tomorrow_2025_1.png',
+      image: 'assets/images/certs/sertifikat_design_thinking_workshop___samsung_solve_for_tomorrow_2025_1.webp',
       credential: '../Sertifikat Design Thinking Workshop - Samsung Solve for Tomorrow 2025 (1).pdf',
     },
     {
@@ -367,7 +367,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Mentoring & Technical Education',
       category_id: 'Edukasi & Mentoring Teknis',
-      image: 'assets/images/certs/precision_10.png',
+      image: 'assets/images/certs/precision_10.webp',
       credential: '../Precision-10.pdf',
     },
     {
@@ -377,7 +377,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Data Mining & Public Speaking',
       category_id: 'Sains Data & Public Speaking',
-      image: 'assets/images/certs/sertifikat___erliandika_syahputra.png',
+      image: 'assets/images/certs/sertifikat___erliandika_syahputra.webp',
       credential: '../Sertifikat - Erliandika Syahputra.pdf',
     },
     {
@@ -387,7 +387,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Language Proficiency',
       category_id: 'Kemampuan Bahasa Inggris',
-      image: 'assets/images/certs/toefl_itp_1.png',
+      image: 'assets/images/certs/toefl_itp_1.webp',
       credential: '../Toefl ITP (1).pdf',
     },
     {
@@ -397,7 +397,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Vocational Web Development',
       category_id: 'Pelatihan Vokasi Web',
-      image: 'assets/images/certs/sertifikat_kelulusan_pelatihan___1808127501_f5abfe6a.png',
+      image: 'assets/images/certs/sertifikat_kelulusan_pelatihan___1808127501_f5abfe6a.webp',
       credential: '../SERTIFIKAT KELULUSAN PELATIHAN - 1808127501-F5ABFE6A.pdf',
     },
   ],
@@ -441,10 +441,10 @@ window.PORTFOLIO_DATA = {
       ],
       images: [],
       temporaryPreviewImages: [
-        'assets/images/projects/tekateki-logo.png',
-        'assets/images/projects/tekateki-iphone.png',
-        'assets/images/projects/tekateki-laptop.png',
-        'assets/images/projects/tekateki-android.png'
+        'assets/images/projects/tekateki-logo.webp',
+        'assets/images/projects/tekateki-iphone.webp',
+        'assets/images/projects/tekateki-laptop.webp',
+        'assets/images/projects/tekateki-android.webp'
       ],
       github: 'https://github.com/Erliandikasyahputraa/Scrabbleword-School',
       liveDemo: '404.html',
@@ -489,10 +489,10 @@ window.PORTFOLIO_DATA = {
       ],
       images: [],
       temporaryPreviewImages: [
-        'assets/images/projects/bincard-logo.png',
-        'assets/images/projects/bincard-iphone.png',
-        'assets/images/projects/bincard-laptop.png',
-        'assets/images/projects/bincard-android.png'
+        'assets/images/projects/bincard-logo.webp',
+        'assets/images/projects/bincard-iphone.webp',
+        'assets/images/projects/bincard-laptop.webp',
+        'assets/images/projects/bincard-android.webp'
       ],
       github: 'https://github.com/Erliandikasyahputraa/bincard-inventory',
       liveDemo: '404.html',
@@ -537,10 +537,10 @@ window.PORTFOLIO_DATA = {
       ],
       images: [],
       temporaryPreviewImages: [
-        'assets/images/projects/anti-nganggur-logo.png',
-        'assets/images/projects/anti-nganggur-iphone.png',
-        'assets/images/projects/anti-nganggur-laptop.png',
-        'assets/images/projects/anti-nganggur-android.png'
+        'assets/images/projects/anti-nganggur-logo.webp',
+        'assets/images/projects/anti-nganggur-iphone.webp',
+        'assets/images/projects/anti-nganggur-laptop.webp',
+        'assets/images/projects/anti-nganggur-android.webp'
       ],
       github: 'https://github.com/Erliandikasyahputraa/jobhunt',
       liveDemo: '404.html',
@@ -585,10 +585,10 @@ window.PORTFOLIO_DATA = {
       ],
       images: [],
       temporaryPreviewImages: [
-        'assets/images/projects/barakasir-logo.png',
-        'assets/images/projects/barakasir-iphone.png',
-        'assets/images/projects/barakasir-laptop.png',
-        'assets/images/projects/barakasir-android.png'
+        'assets/images/projects/barakasir-logo.webp',
+        'assets/images/projects/barakasir-iphone.webp',
+        'assets/images/projects/barakasir-laptop.webp',
+        'assets/images/projects/barakasir-android.webp'
       ],
       github: 'https://github.com/Erliandikasyahputraa/bara-kasir',
       liveDemo: '404.html',
@@ -631,10 +631,10 @@ window.PORTFOLIO_DATA = {
       ],
       images: [],
       temporaryPreviewImages: [
-        'assets/images/projects/pennypath-logo.png',
-        'assets/images/projects/pennypath-iphone.png',
-        'assets/images/projects/pennypath-laptop.png',
-        'assets/images/projects/pennypath-android.png'
+        'assets/images/projects/pennypath-logo.webp',
+        'assets/images/projects/pennypath-iphone.webp',
+        'assets/images/projects/pennypath-laptop.webp',
+        'assets/images/projects/pennypath-android.webp'
       ],
       github: 'https://github.com/Penny-Path-Bangkit',
       liveDemo: '404.html',
@@ -677,10 +677,10 @@ window.PORTFOLIO_DATA = {
       ],
       images: [],
       temporaryPreviewImages: [
-        'assets/images/projects/emotica-logo.png',
-        'assets/images/projects/emotica-iphone.png',
-        'assets/images/projects/emotica-laptop.png',
-        'assets/images/projects/emotica-android.png'
+        'assets/images/projects/emotica-logo.webp',
+        'assets/images/projects/emotica-iphone.webp',
+        'assets/images/projects/emotica-laptop.webp',
+        'assets/images/projects/emotica-android.webp'
       ],
       github: 'https://github.com/Emotica-DBS',
       liveDemo: '404.html',
@@ -723,10 +723,10 @@ window.PORTFOLIO_DATA = {
       ],
       images: [],
       temporaryPreviewImages: [
-        'assets/images/projects/desaairputih-logo.png',
-        'assets/images/projects/desaairputih-iphone.png',
-        'assets/images/projects/desaairputih-laptop.png',
-        'assets/images/projects/desaairputih-android.png'
+        'assets/images/projects/desaairputih-logo.webp',
+        'assets/images/projects/desaairputih-iphone.webp',
+        'assets/images/projects/desaairputih-laptop.webp',
+        'assets/images/projects/desaairputih-android.webp'
       ],
       github: 'https://github.com/Erliandikasyahputraa/web-profil-inhu-kkndesaputih',
       liveDemo: '404.html',

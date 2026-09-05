@@ -1,15 +1,16 @@
 /**
- * theme.js — Ultra-Smooth Organic Ink Splash Theme Transition (60-120 FPS)
+ * theme.js — Optimized Organic Ink Splash Theme Transition (60-120 FPS)
  *
  * Architecture:
- *   • Hardware-accelerated SVG organic ink wave + trailing satellite droplets.
- *   • Multi-lobed dynamic Bezier spline for natural fluid/liquid spreading.
- *   • Zero heavy raster filters (feDisplacement/feTurbulence) to prevent GPU/CPU bottleneck.
- *   • Crisp, snappy, buttery smooth transition across all devices.
+ *   • Hardware-accelerated SVG organic ink wave + satellite droplets expanding from the toggle button.
+ *   • Dynamic Catmull-Rom Bezier spline for natural fluid/liquid spreading.
+ *   • Pure vector math (zero heavy CPU filter bottlenecks) for buttery smooth performance.
+ *   • 680ms tactile duration for noticeable organic feel.
+ *   • Respects prefers-reduced-motion for instant switching when requested.
  */
 (function () {
   const KEY = 'portfolio-theme';
-  const DURATION = 720; // ms — lush, cinematic organic liquid bloom
+  const DURATION = 680; // ms — tactile, noticeable organic liquid bloom
 
   /* ── Apply theme ─────────────────────────── */
   function applyTheme(t) {
@@ -54,15 +55,21 @@
     const next = current === 'light' ? 'dark' : 'light';
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      current = next; applyTheme(current); localStorage.setItem(KEY, current); return;
+      current = next;
+      applyTheme(current);
+      try { localStorage.setItem(KEY, current); } catch (e) {}
+      return;
     }
     if (animating) {
-      current = next; applyTheme(current); localStorage.setItem(KEY, current); return;
+      current = next;
+      applyTheme(current);
+      try { localStorage.setItem(KEY, current); } catch (e) {}
+      return;
     }
     animating = true;
 
     /* Origin = button center */
-    const rect = btn.getBoundingClientRect();
+    const rect = btn && btn.getBoundingClientRect ? btn.getBoundingClientRect() : { left: window.innerWidth - 60, top: 30, width: 40, height: 40 };
     const ox = rect.left + rect.width / 2;
     const oy = rect.top + rect.height / 2;
 
@@ -71,7 +78,7 @@
       Math.max(ox, window.innerWidth - ox),
       Math.max(oy, window.innerHeight - oy)
     );
-    const R = Math.ceil(maxDist) * 1.25 + 60;
+    const R = Math.ceil(maxDist) * 1.22 + 50;
 
     const inkFill = next === 'dark' ? '#000000' : '#ffffff';
 
@@ -89,14 +96,13 @@
     ].join(';');
     svg.setAttribute('xmlns', NS);
 
-    // 14-lobe organic fluid blob parameters (varying radii and tendril reach)
-    const NUM_LOBES = 14;
+    // 12-lobe organic fluid blob parameters
+    const NUM_LOBES = 12;
     const lobeOffsets = [];
     for (let i = 0; i < NUM_LOBES; i++) {
-      // Create natural organic asymmetry (some lobes reach 1.18x, some 0.82x)
       const angle = (i / NUM_LOBES) * Math.PI * 2;
-      const reach = 0.85 + Math.sin(i * 1.9 + 0.4) * 0.16 + Math.cos(i * 3.1) * 0.12;
-      const speed = 0.95 + Math.sin(i * 2.3) * 0.22;
+      const reach = 0.88 + Math.sin(i * 1.8 + 0.3) * 0.15 + Math.cos(i * 3.0) * 0.10;
+      const speed = 0.95 + Math.sin(i * 2.2) * 0.18;
       lobeOffsets.push({ angle, reach, speed });
     }
 
@@ -105,14 +111,13 @@
     mainPath.setAttribute('fill', inkFill);
     svg.appendChild(mainPath);
 
-    // 6 Satellite organic droplets that surge forward like splashing ink
+    // 5 Satellite organic droplets
     const DROPLETS = [
-      { angle: -0.45, distMul: 0.85, rMul: 0.38, sp: 1.35 },
-      { angle:  0.85, distMul: 0.90, rMul: 0.42, sp: 1.45 },
-      { angle:  2.30, distMul: 0.78, rMul: 0.32, sp: 1.30 },
-      { angle: -2.10, distMul: 0.88, rMul: 0.36, sp: 1.40 },
-      { angle: -1.25, distMul: 0.92, rMul: 0.28, sp: 1.50 },
-      { angle:  1.65, distMul: 0.82, rMul: 0.34, sp: 1.35 },
+      { angle: -0.45, distMul: 0.85, rMul: 0.35, sp: 1.35 },
+      { angle:  0.85, distMul: 0.90, rMul: 0.38, sp: 1.40 },
+      { angle:  2.30, distMul: 0.78, rMul: 0.30, sp: 1.30 },
+      { angle: -2.10, distMul: 0.88, rMul: 0.34, sp: 1.38 },
+      { angle:  1.65, distMul: 0.82, rMul: 0.32, sp: 1.35 },
     ];
 
     const dropletEls = DROPLETS.map(d => {
@@ -164,7 +169,7 @@
         switched = true;
         current = next;
         applyTheme(current);
-        localStorage.setItem(KEY, current);
+        try { localStorage.setItem(KEY, current); } catch (e) {}
       }
 
       if (rawT < 1.0) {
@@ -189,6 +194,7 @@
       btn.addEventListener('click', () => runTransition(btn));
     });
   }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bindToggles);
   } else {
