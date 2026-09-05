@@ -346,14 +346,27 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   border:1.5px solid var(--border-mid);
   color:var(--fg); margin:0; flex-shrink:0;
   position:relative; overflow:hidden;
-  transition: border-color var(--theme-dur) var(--theme-ease), color var(--theme-dur) var(--theme-ease);
+  transition: border-color var(--theme-dur) var(--theme-ease), color var(--theme-dur) var(--theme-ease), transform 360ms var(--ease);
 }
 .navbar__toggle:hover { border-color:var(--border-str); }
+.navbar__toggle:active,
+.navbar__toggle.is-popping {
+  transform: scale(0.90) rotate(180deg);
+}
 .navbar__toggle svg { position:absolute; transition:transform 240ms var(--ease), opacity 240ms; }
 .navbar__toggle .icon-sun  { opacity:0; transform:rotate(-90deg) scale(.7); }
 .navbar__toggle .icon-moon { opacity:1; transform:none; }
 [data-theme="dark"] .navbar__toggle .icon-sun  { opacity:1; transform:none; }
 [data-theme="dark"] .navbar__toggle .icon-moon { opacity:0; transform:rotate(90deg) scale(.7); }
+
+/* Dynamic GPU layer promotion during theme ink transition */
+html.theme-transitioning,
+html.theme-transitioning body,
+html.theme-transitioning .navbar,
+html.theme-transitioning .card,
+html.theme-transitioning .project-card {
+  will-change: background-color, color, border-color;
+}
 .navbar__menu-btn {
   display:none; align-items:center; justify-content:center;
   width:34px; height:34px; border-radius:50%;

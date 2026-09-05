@@ -13,7 +13,7 @@ window.PORTFOLIO_DATA = {
     email:         'syahputraerliandika@gmail.com',
     photoPrimary:  'assets/images/profile-primary.webp',
     photoSecondary:'assets/images/profile-glitch.webp',
-    cv:            null, // add path when CV file is available
+    cv:            'assets/docs/Erliandika_Syahputra_General_Resume.pdf',
   },
 
   /* ── SOCIALS ─────────────────────────────── */
@@ -21,7 +21,7 @@ window.PORTFOLIO_DATA = {
     github:   'https://github.com/Erliandikasyahputraa',
     linkedin: 'https://www.linkedin.com/in/erliandika-syahputra/',
     email:    'syahputraerliandika@gmail.com',
-    cv:       null,
+    cv:       'assets/docs/Erliandika_Syahputra_General_Resume.pdf',
   },
 
   /* ── SNEAK PEEK JOURNEY MAP (Landing Page Treasure Map) ── */

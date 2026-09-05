@@ -22,7 +22,7 @@
 
       // Hero
       hero_role: 'Software Engineer',
-      hero_bio: 'Software Engineer focused on Web & Full-Stack Development, with a background in Information Systems and hands-on experience building and improving practical software solutions across web, mobile, and offline-first applications. My experience also includes software development leadership, IT support, and network infrastructure.',
+      hero_bio: 'Information Systems graduate focused on Software & Web Development, approaching technology through the lens of real-world business processes and problem-solving. Experienced in building and optimizing practical digital solutions—including warehouse inventory management, vocational digital learning platforms, and hybrid online/offline POS systems. Backed by proven technical leadership, system modernization, IT Support, and network infrastructure experience.',
       aria_download_cv: 'Download CV',
       aria_theme_toggle: 'Toggle colour theme',
       aria_menu_open: 'Open navigation menu',
@@ -133,7 +133,7 @@
 
       // Hero
       hero_role: 'Software Engineer',
-      hero_bio: 'Software Engineer yang berfokus pada Web & Full-Stack Development, dengan latar belakang Sistem Informasi dan pengalaman membangun serta mengembangkan solusi perangkat lunak untuk kebutuhan nyata, mulai dari aplikasi web, mobile, hingga sistem offline-first. Saya juga memiliki pengalaman dalam software development leadership, IT Support, dan network infrastructure.',
+      hero_bio: 'Lulusan S1 Sistem Informasi yang berfokus pada Software & Web Development, memandang teknologi bukan hanya dari baris kode tetapi dari masalah dan proses bisnis di baliknya. Berpengalaman membangun dan mengoptimalkan sistem digital untuk kebutuhan nyata—mulai dari sistem inventory pergudangan mandiri, platform edukasi vokasi, hingga solusi POS online/offline. Memiliki rekam jejak memimpin tim proyek perangkat lunak, merombak arsitektur sistem, serta berpengalaman di bidang IT Support & Network Infrastructure.',
       aria_download_cv: 'Unduh CV',
       aria_theme_toggle: 'Ganti tema warna',
       aria_menu_open: 'Buka menu navigasi',

@@ -63,6 +63,7 @@
     EATING:       'EATING',
     SATISFIED:    'SATISFIED',
     ROARING:      'ROARING',  // Cold predator growl on click
+    SLEEPING:     'SLEEPING', // Stuffed / fat sleep after 30s idle
   };
 
   /* ═══════════════════════════════════════════════════════════
@@ -229,6 +230,33 @@
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
+  /* ── Head: SLEEP (horizontal calm eye slit, sleeping peacefully) ── */
+  const HEAD_SLEEP = [
+    //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1], // closed eye slit (bg color)
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  /* ── Legs: SLEEP (Stuffed full chubby belly, legs resting flat on ground) ── */
+  const LEGS_SLEEP = [
+    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Stuffed bulging belly
+    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Full belly curve
+    [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Resting tucked paws
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
   /* ═══════════════════════════════════════════════════════════
      4. STATE & DYNAMICS
   ═══════════════════════════════════════════════════════════ */
@@ -258,7 +286,7 @@
 
   // Roar state
   let roarStartTime  = 0;
-  const ROAR_DURATION = 900; // Extended for more drama — 6 rings + swell
+  const ROAR_DURATION = 750; // Refined duration
 
   // Walking footstep trail marks
   const footprints = [];
@@ -267,6 +295,23 @@
 
   const dustParticles = [];
   const biteCrumbs    = [];
+
+  // Sleeping Zzz particles
+  const zzzParticles = [];
+  let lastZzzTime = 0;
+
+  function spawnZzz(x, y) {
+    zzzParticles.push({
+      x: x + (Math.random() - 0.5) * 6,
+      y: y,
+      vx: (isFacingLeft ? -0.25 : 0.25) + (Math.random() - 0.5) * 0.15,
+      vy: -0.45 - Math.random() * 0.2,
+      char: Math.random() > 0.55 ? 'Z' : 'z',
+      size: Math.random() > 0.5 ? 9 : 7,
+      life: 1.0,
+      decay: 0.012,
+    });
+  }
 
   /* ── Resize ── */
   function resize() {
@@ -323,8 +368,9 @@
       isHoveringClickable = false;
     }
 
-    if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING) {
+    if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING || currentState === STATES.SLEEPING) {
       currentState = STATES.LAZY_FOLLOW;
+      zzzParticles.length = 0;
     }
   });
 
@@ -473,7 +519,7 @@
     }
   }
 
-  /* ── Roar Shockwave — Godzilla-grade ── */
+  /* ── Roar Shockwave — Refined & Crisp ── */
   const roarRings = [];
   const roarDebris = [];
   let shakeIntensity = 0; // Canvas shake state
@@ -481,14 +527,11 @@
   function spawnRoarShockwave(x, y) {
     const now = performance.now();
 
-    // 6 staggered concentric rings — each larger and slower than the last
+    // 3 subtle, crisp concentric rings
     const ringConfig = [
-      { delay:  0, initR:  3, maxR: 40,  decay: 0.022, lw: 2.2 },
-      { delay: 70, initR:  5, maxR: 68,  decay: 0.018, lw: 1.8 },
-      { delay:140, initR:  8, maxR: 96,  decay: 0.015, lw: 1.4 },
-      { delay:220, initR: 10, maxR:125,  decay: 0.012, lw: 1.1 },
-      { delay:310, initR: 12, maxR:155,  decay: 0.010, lw: 0.8 },
-      { delay:420, initR: 15, maxR:185,  decay: 0.008, lw: 0.5 },
+      { delay:  0, initR:  3, maxR: 38,  decay: 0.024, lw: 1.4 },
+      { delay: 80, initR:  6, maxR: 62,  decay: 0.020, lw: 1.1 },
+      { delay:170, initR: 10, maxR: 88,  decay: 0.016, lw: 0.8 },
     ];
     for (const cfg of ringConfig) {
       roarRings.push({
@@ -502,43 +545,43 @@
       });
     }
 
-    // Cardinal pixel bursts — 8 directions, sharp pixel lines erupting outward
+    // Cardinal pixel bursts — 8 directions, minimal elegant bursts
     const directions = [
       [0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]
     ];
     for (const [dx, dy] of directions) {
-      const burstCount = Math.floor(Math.random() * 3) + 4;
+      const burstCount = 3;
       for (let j = 0; j < burstCount; j++) {
-        const speed = 2.5 + j * 1.4 + Math.random() * 1.2;
+        const speed = 2.2 + j * 1.0;
         roarDebris.push({
-          x: x + dx * (4 + j * 3),
-          y: y + dy * (4 + j * 3),
-          vx: dx * speed + (Math.random() - 0.5) * 0.8,
-          vy: dy * speed - 0.4 + (Math.random() - 0.5) * 0.8,
-          size: j === 0 ? PX * 2.5 : (j === 1 ? PX * 1.8 : PX),
+          x: x + dx * (3 + j * 2),
+          y: y + dy * (3 + j * 2),
+          vx: dx * speed + (Math.random() - 0.5) * 0.5,
+          vy: dy * speed - 0.3 + (Math.random() - 0.5) * 0.5,
+          size: j === 0 ? PX * 1.8 : PX,
           life: 1.0,
-          decay: 0.018 + Math.random() * 0.015,
+          decay: 0.022 + Math.random() * 0.012,
         });
       }
     }
 
-    // Additional random scatter debris
-    for (let i = 0; i < 18; i++) {
+    // Subtle random scatter debris
+    for (let i = 0; i < 8; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 5.5 + 1.5;
+      const speed = Math.random() * 3.5 + 1.2;
       roarDebris.push({
-        x: x + (Math.random() - 0.5) * 16,
-        y: y + (Math.random() - 0.5) * 16,
+        x: x + (Math.random() - 0.5) * 12,
+        y: y + (Math.random() - 0.5) * 12,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 2.0,
-        size: Math.random() > 0.6 ? PX * 2 : PX,
+        vy: Math.sin(angle) * speed - 1.2,
+        size: PX,
         life: 1.0,
-        decay: 0.020 + Math.random() * 0.018,
+        decay: 0.024 + Math.random() * 0.015,
       });
     }
 
-    // Trigger canvas shake
-    shakeIntensity = 7;
+    // Subtle canvas shake
+    shakeIntensity = 2.4;
   }
 
   /* ── Shared Web Audio Synthesizer ── */
@@ -718,53 +761,54 @@
     } catch (e) {}
   }
 
-  /* ── Roar Sound: 4-oscillator Godzilla growl ── */
+  /* ── Roar Sound: Softened, Crisp Predator Growl ── */
   function playRoarSound() {
     try {
       const actx = getAudioContext();
       if (!actx) return;
       const master = actx.createGain();
-      master.gain.setValueAtTime(1.0, actx.currentTime);
+      // Reduced volume: 0.32 (down from 1.0) for a polite, refined sound
+      master.gain.setValueAtTime(0.32, actx.currentTime);
       master.connect(actx.destination);
       const t = actx.currentTime;
 
-      // 1. Sub-bass body rumble (sawtooth, very low, long)
+      // 1. Sub-bass body rumble (sawtooth, warm low)
       const sub = actx.createOscillator();
       const subG = actx.createGain();
       sub.type = 'sawtooth';
-      sub.frequency.setValueAtTime(48, t);
-      sub.frequency.exponentialRampToValueAtTime(22, t + 0.9);
+      sub.frequency.setValueAtTime(45, t);
+      sub.frequency.exponentialRampToValueAtTime(24, t + 0.7);
       subG.gain.setValueAtTime(0, t);
-      subG.gain.linearRampToValueAtTime(0.12, t + 0.04);
-      subG.gain.setValueAtTime(0.10, t + 0.5);
-      subG.gain.linearRampToValueAtTime(0, t + 1.0);
+      subG.gain.linearRampToValueAtTime(0.06, t + 0.04);
+      subG.gain.setValueAtTime(0.05, t + 0.4);
+      subG.gain.linearRampToValueAtTime(0, t + 0.8);
       sub.connect(subG); subG.connect(master);
-      sub.start(t); sub.stop(t + 1.05);
+      sub.start(t); sub.stop(t + 0.85);
 
-      // 2. Mid growl (square wave, 2nd harmonic, drops fast)
+      // 2. Mid growl (square wave, controlled harmonic)
       const mid = actx.createOscillator();
       const midG = actx.createGain();
       mid.type = 'square';
-      mid.frequency.setValueAtTime(120, t);
-      mid.frequency.exponentialRampToValueAtTime(52, t + 0.6);
+      mid.frequency.setValueAtTime(110, t);
+      mid.frequency.exponentialRampToValueAtTime(50, t + 0.5);
       midG.gain.setValueAtTime(0, t);
-      midG.gain.linearRampToValueAtTime(0.07, t + 0.05);
-      midG.gain.linearRampToValueAtTime(0.03, t + 0.4);
-      midG.gain.linearRampToValueAtTime(0, t + 0.7);
+      midG.gain.linearRampToValueAtTime(0.04, t + 0.04);
+      midG.gain.linearRampToValueAtTime(0.02, t + 0.3);
+      midG.gain.linearRampToValueAtTime(0, t + 0.55);
       mid.connect(midG); midG.connect(master);
-      mid.start(t); mid.stop(t + 0.75);
+      mid.start(t); mid.stop(t + 0.6);
 
-      // 3. High roar attack (triangle, sharp transient punch)
+      // 3. High roar attack (triangle, soft transient snap)
       const hi = actx.createOscillator();
       const hiG = actx.createGain();
       hi.type = 'triangle';
-      hi.frequency.setValueAtTime(340, t);
-      hi.frequency.exponentialRampToValueAtTime(80, t + 0.25);
+      hi.frequency.setValueAtTime(280, t);
+      hi.frequency.exponentialRampToValueAtTime(75, t + 0.2);
       hiG.gain.setValueAtTime(0, t);
-      hiG.gain.linearRampToValueAtTime(0.09, t + 0.025);
-      hiG.gain.linearRampToValueAtTime(0, t + 0.30);
+      hiG.gain.linearRampToValueAtTime(0.05, t + 0.02);
+      hiG.gain.linearRampToValueAtTime(0, t + 0.22);
       hi.connect(hiG); hiG.connect(master);
-      hi.start(t); hi.stop(t + 0.35);
+      hi.start(t); hi.stop(t + 0.25);
 
       // 4. Tremolo growl texture (LFO-modulated noise feel)
       const tremOsc = actx.createOscillator();
@@ -834,21 +878,30 @@
     /* ── C2. FSM ── */
     switch (currentState) {
       case STATES.LAZY_FOLLOW:
-        if (timeSinceMouseMove >= IDLE_MS) {
+        if (timeSinceMouseMove >= 30000) {
+          currentState = STATES.SLEEPING;
+          stateTimer   = now;
+        } else if (timeSinceMouseMove >= IDLE_MS) {
           currentState = STATES.WAITING;
           stateTimer   = now;
         }
         break;
 
       case STATES.WAITING:
-        if (now - stateTimer > 120) {
+        if (timeSinceMouseMove >= 30000) {
+          currentState = STATES.SLEEPING;
+          stateTimer   = now;
+        } else if (now - stateTimer > 120) {
           currentState = STATES.ANTICIPATING;
           stateTimer   = now;
         }
         break;
 
       case STATES.ANTICIPATING:
-        if (now - stateTimer >= ANTICIPATE_MS) {
+        if (timeSinceMouseMove >= 30000) {
+          currentState = STATES.SLEEPING;
+          stateTimer   = now;
+        } else if (now - stateTimer >= ANTICIPATE_MS) {
           currentState = STATES.CHASING;
         }
         break;
@@ -882,10 +935,26 @@
       }
 
       case STATES.SATISFIED:
-        if (now - stateTimer >= SATISFIED_PAUSE) {
+        if (timeSinceMouseMove >= 30000) {
+          currentState = STATES.SLEEPING;
+          stateTimer   = now;
+          foodVisible  = true;
+          foodScale    = 1.0;
+        } else if (now - stateTimer >= SATISFIED_PAUSE) {
           currentState = STATES.LAZY_FOLLOW;
           foodVisible  = true;
           foodScale    = 1.0;
+        }
+        break;
+
+      case STATES.SLEEPING:
+        // Stuffed sleeping state when cursor idle > 30s
+        // Periodic floating Zzz particle drifting from snout
+        if (now - lastZzzTime > 950) {
+          lastZzzTime = now;
+          const zX = isFacingLeft ? dinoX + 4 : dinoX + spriteW - 4;
+          const zY = dinoY + 6;
+          spawnZzz(zX, zY);
         }
         break;
 
@@ -1080,7 +1149,10 @@
     let activeLegs = LEGS_STAND;
     let verticalBob = 0;
 
-    if (currentState === STATES.ROARING) {
+    if (currentState === STATES.SLEEPING) {
+      activeLegs = LEGS_SLEEP;
+      verticalBob = 2; // Resting flat on ground
+    } else if (currentState === STATES.ROARING) {
       activeLegs = LEGS_STAND;
       verticalBob = -1; // Slight lift — chest puff
     } else if (currentState === STATES.ANTICIPATING) {
@@ -1094,7 +1166,9 @@
     }
 
     let activeHead = HEAD_NORMAL;
-    if (currentState === STATES.ROARING) {
+    if (currentState === STATES.SLEEPING) {
+      activeHead = HEAD_SLEEP;
+    } else if (currentState === STATES.ROARING) {
       // Roar: head oscillates between ROAR and CHOMP for angry snapping effect
       const roarT = (now - roarStartTime) / ROAR_DURATION;
       const snapPhase = Math.floor(roarT * 5) % 2;
@@ -1115,6 +1189,19 @@
     }
 
     const fullDinoMatrix = [...activeHead, ...activeLegs];
+
+    /* ── E7. Sleeping Zzz Particles ── */
+    for (let i = zzzParticles.length - 1; i >= 0; i--) {
+      const z = zzzParticles[i];
+      z.x += z.vx;
+      z.y += z.vy;
+      z.life -= z.decay;
+      if (z.life <= 0) { zzzParticles.splice(i, 1); continue; }
+      ctx.font = `700 ${Math.round(z.size)}px 'JetBrains Mono', monospace`;
+      ctx.fillStyle = fg;
+      ctx.globalAlpha = z.life * 0.70;
+      ctx.fillText(z.char, Math.round(z.x), Math.round(z.y));
+    }
 
     /* ── G. Draw Dino ──
        During ROARING: scale the sprite up slightly (Godzilla chest-puff)

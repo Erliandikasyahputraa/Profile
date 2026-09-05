@@ -68,6 +68,20 @@
     }
     animating = true;
 
+    // 1. Mobile Haptic Feedback (crisp 12ms tactile pulse)
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      try { navigator.vibrate(12); } catch (e) {}
+    }
+
+    // 2. Micro-Interaction: Button icon rotation & tactile pop
+    document.querySelectorAll('#themeToggle, #themeToggleMobile').forEach(b => {
+      b.classList.add('is-popping');
+      setTimeout(() => b.classList.remove('is-popping'), 400);
+    });
+
+    // 3. Dynamic GPU Layer Promotion (smooth 60-120 FPS compositing)
+    document.documentElement.classList.add('theme-transitioning');
+
     /* Origin = button center */
     const rect = btn && btn.getBoundingClientRect ? btn.getBoundingClientRect() : { left: window.innerWidth - 60, top: 30, width: 40, height: 40 };
     const ox = rect.left + rect.width / 2;
@@ -181,6 +195,7 @@
         setTimeout(() => {
           svg.remove();
           animating = false;
+          document.documentElement.classList.remove('theme-transitioning');
         }, 240);
       }
     }
