@@ -57,14 +57,15 @@
      2. FSM
   ═══════════════════════════════════════════════════════════ */
   const STATES = {
-    LAZY_FOLLOW:  'LAZY_FOLLOW',
-    WAITING:      'WAITING',
-    ANTICIPATING: 'ANTICIPATING',
-    CHASING:      'CHASING',
-    EATING:       'EATING',
-    SATISFIED:    'SATISFIED',
-    ROARING:      'ROARING',  // Cold predator growl on click
-    SLEEPING:     'SLEEPING', // Stuffed / gemoy sleep after 15s idle or 10 drumsticks
+    LAZY_FOLLOW:      'LAZY_FOLLOW',
+    WALKING_TO_FOOD:  'WALKING_TO_FOOD', // 3 times normal walking pursuit
+    WAITING:          'WAITING',         // 4th time: hunter wait
+    ANTICIPATING:     'ANTICIPATING',    // 4th time: hunter crouch
+    CHASING:          'CHASING',         // 4th time: hunter sprint
+    EATING:           'EATING',
+    SATISFIED:        'SATISFIED',
+    ROARING:          'ROARING',  // Cold predator growl on click
+    SLEEPING:         'SLEEPING', // Stuffed / gemoy sleep after 15s idle or 10 drumsticks
   };
 
   /* ═══════════════════════════════════════════════════════════
@@ -231,9 +232,31 @@
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
-  /* ── Sleep Sprite: Classic Normal Dino (no weird bloat / distortion) ── */
-  const HEAD_SLEEP = HEAD_NORMAL;
-  const LEGS_SLEEP = LEGS_STAND;
+  /* ── Chubby Sitting Dino (Sleep State) ──
+     Dino sits down flat on its haunches, tummy is plump & round,
+     peaceful closed eye slit, paws resting forward on the ground.
+  ── */
+  const DINO_SITTING_CHUBBY = [
+    //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], // r0 skull top
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], // r1 forehead
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 0], // r2 calm closed sleeping eye slit
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // r3 snout
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], // r4 upper jaw
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 0, 0], // r5 closed teeth line
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r6 lower jaw
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r7 neck
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r8 upper back
+    [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r9 curled tail tip & chest
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0], // r10 tail into back & little arms
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], // r11 plump round back & belly
+    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], // r12 sitting haunch & round tummy
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r13 round bottom & bulging tummy
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r14 haunches resting flat & belly
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], // r15 tucked knees & paws forward
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0], // r16 bottom flat on ground & paws
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r17 ground line
+  ];
 
 
   /* ═══════════════════════════════════════════════════════════
@@ -257,6 +280,7 @@
   let foodScale       = 1.0;
   let foodVisible     = true;
   let consecutiveEats = 0;
+  let idleChaseCount  = 0; // 0, 1, 2 = normal walk, 3 = hunter sprint
 
   // Smoothed velocity for jitter-free direction (Exponential Moving Average)
   // Prevents rapid left-right flip when dino oscillates around cursor.
@@ -278,14 +302,14 @@
 
   function spawnZzz(x, y) {
     zzzParticles.push({
-      x: x + (Math.random() - 0.5) * 6,
+      x: x + (Math.random() - 0.5) * 4,
       y: y,
-      vx: (isFacingLeft ? -0.25 : 0.25) + (Math.random() - 0.5) * 0.15,
-      vy: -0.45 - Math.random() * 0.2,
-      char: Math.random() > 0.55 ? 'Z' : 'z',
-      size: Math.random() > 0.5 ? 9 : 7,
+      vx: (isFacingLeft ? -0.28 : 0.28) + (Math.random() - 0.5) * 0.1,
+      vy: -0.45 - Math.random() * 0.15,
+      char: 'Zzz',
+      size: 9,
       life: 1.0,
-      decay: 0.012,
+      decay: 0.011,
     });
   }
 
@@ -344,7 +368,7 @@
       isHoveringClickable = false;
     }
 
-    if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING || currentState === STATES.SLEEPING) {
+    if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING || currentState === STATES.WALKING_TO_FOOD || currentState === STATES.SLEEPING) {
       currentState = STATES.LAZY_FOLLOW;
       consecutiveEats = 0;
       zzzParticles.length = 0;
@@ -844,7 +868,7 @@
     /* ── C2. FSM ── */
     switch (currentState) {
       case STATES.LAZY_FOLLOW:
-        if (timeSinceMouseMove >= IDLE_SLEEP_MS || (timeSinceMouseMove >= 4000 && isCursorOnDino)) {
+        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
           currentState = STATES.SLEEPING;
           stateTimer   = now;
         } else if (timeSinceMouseMove >= IDLE_MS) {
@@ -854,10 +878,28 @@
             stateTimer   = now;
             spawnBiteCrumbs(foodX, foodY);
             playEatSound();
+          } else if (idleChaseCount < 3) {
+            // 3 times: normal walking approach to drumstick
+            currentState = STATES.WALKING_TO_FOOD;
+            stateTimer   = now;
           } else {
+            // 4th time: hunter sprint mode
             currentState = STATES.WAITING;
             stateTimer   = now;
           }
+        }
+        break;
+
+      case STATES.WALKING_TO_FOOD:
+        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
+          currentState = STATES.SLEEPING;
+          stateTimer   = now;
+        } else if (distToFood <= 25 || distFromCenter <= 30 || isCursorOnDino) {
+          currentState = STATES.EATING;
+          stateTimer   = now;
+          spawnBiteCrumbs(foodX, foodY);
+          playEatSound();
+          idleChaseCount++;
         }
         break;
 
@@ -889,6 +931,7 @@
           stateTimer   = now;
           spawnBiteCrumbs(foodX, foodY);
           playEatSound();
+          idleChaseCount = 0; // Reset cycle: next 3 will be normal walking again!
         }
         break;
 
@@ -927,25 +970,18 @@
           foodVisible  = true;
           foodScale    = 1.0;
         } else if (now - stateTimer >= SATISFIED_PAUSE) {
-          if (timeSinceMouseMove >= 3500 && isCursorOnDino) {
-            // Cursor was left sitting on dino -> peaceful sleep
-            currentState = STATES.SLEEPING;
-            stateTimer   = now;
-          } else {
-            currentState = STATES.LAZY_FOLLOW;
-          }
+          currentState = STATES.LAZY_FOLLOW;
           foodVisible  = true;
           foodScale    = 1.0;
         }
         break;
 
       case STATES.SLEEPING:
-        // Stuffed sleeping state when cursor idle > 15s OR eaten >= 10 drumsticks
-        // Periodic floating Zzz particle drifting from snout
+        // Stuffed sleeping state: periodic floating 'Zzz' particles drifting from head
         if (now - lastZzzTime > 900) {
           lastZzzTime = now;
-          const zX = isFacingLeft ? dinoX + 4 : dinoX + spriteW - 4;
-          const zY = dinoY + 6;
+          const zX = isFacingLeft ? dinoX + 4 : dinoX + spriteW - 14;
+          const zY = dinoY + 4;
           spawnZzz(zX, zY);
         }
         break;
@@ -974,6 +1010,15 @@
           velX = (velX / spd) * MAX_CHASE_SPEED;
           velY = (velY / spd) * MAX_CHASE_SPEED;
         }
+      }
+    } else if (currentState === STATES.WALKING_TO_FOOD) {
+      // Jalan biasa: melangkah santai menuju drumstick
+      velX += centerDeltaX * DINO_LAZY_ACCEL * 1.5;
+      velY += centerDeltaY * DINO_LAZY_ACCEL * 1.5;
+      const spd = Math.hypot(velX, velY);
+      if (spd > MAX_LAZY_SPEED * 1.25) {
+        velX = (velX / spd) * (MAX_LAZY_SPEED * 1.25);
+        velY = (velY / spd) * (MAX_LAZY_SPEED * 1.25);
       }
     } else if (currentState === STATES.LAZY_FOLLOW) {
       // If cursor is resting on or near dino, come to an absolute complete stop
@@ -1125,20 +1170,17 @@
 
     if (currentSpeed > 0.4 && walkTick % strideCadence === 0) {
       walkFrame = (walkFrame + 1) % 4;
-      if (currentState === STATES.LAZY_FOLLOW) {
+      if (currentState === STATES.LAZY_FOLLOW || currentState === STATES.WALKING_TO_FOOD) {
         playFootstepSound(false);
       }
-    } else if (currentSpeed <= 0.4 && currentState !== STATES.CHASING) {
+    } else if (currentSpeed <= 0.4 && currentState !== STATES.CHASING && currentState !== STATES.WALKING_TO_FOOD) {
       walkFrame = 0;
     }
 
     let activeLegs = LEGS_STAND;
     let verticalBob = 0;
 
-    if (currentState === STATES.SLEEPING) {
-      activeLegs = LEGS_STAND;
-      verticalBob = 0;
-    } else if (currentState === STATES.ROARING) {
+    if (currentState === STATES.ROARING) {
       activeLegs = LEGS_STAND;
       verticalBob = -1; // Slight lift — chest puff
     } else if (currentState === STATES.ANTICIPATING) {
@@ -1152,9 +1194,7 @@
     }
 
     let activeHead = HEAD_NORMAL;
-    if (currentState === STATES.SLEEPING) {
-      activeHead = HEAD_NORMAL;
-    } else if (currentState === STATES.ROARING) {
+    if (currentState === STATES.ROARING) {
       // Roar: head oscillates between ROAR and CHOMP for angry snapping effect
       const roarT = (now - roarStartTime) / ROAR_DURATION;
       const snapPhase = Math.floor(roarT * 5) % 2;
@@ -1174,7 +1214,14 @@
       }
     }
 
-    const fullDinoMatrix = [...activeHead, ...activeLegs];
+    // Chubby sitting pose when sleeping, normal standing/walking otherwise
+    let fullDinoMatrix;
+    if (currentState === STATES.SLEEPING) {
+      fullDinoMatrix = DINO_SITTING_CHUBBY;
+      verticalBob = 0;
+    } else {
+      fullDinoMatrix = [...activeHead, ...activeLegs];
+    }
 
     /* ── E7. Sleeping Zzz Particles ── */
     for (let i = zzzParticles.length - 1; i >= 0; i--) {
