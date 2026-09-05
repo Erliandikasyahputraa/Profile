@@ -246,19 +246,19 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   display:flex; flex-direction:column; align-items:center;
   justify-content:center; text-align:center;
   min-height:100dvh;
-  padding-top:clamp(9rem, 18vh, 13rem);
+  padding-top:clamp(10rem, 20vh, 14rem);
   padding-bottom:4rem;
 }
 
 .exp-page,
 .projects-page {
-  padding-top:clamp(9rem, 18vh, 13rem);
-  padding-bottom:5rem;
+  padding-top:clamp(10rem, 20vh, 14rem);
+  padding-bottom:2.5rem;
 }
 
 .pdetail {
-  padding-top:clamp(8rem, 15vh, 11rem);
-  padding-bottom:5rem;
+  padding-top:clamp(9rem, 18vh, 12rem);
+  padding-bottom:4rem;
 }
 
 .pdetail__header {
@@ -1271,7 +1271,7 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 }
 
 /* ── 13. PROJECTS PAGE (Editorial Rows) ── */
-.projects-page { padding-top:calc(var(--nav-h)+56px); padding-bottom:6rem; }
+.projects-page { padding-top:clamp(10rem, 20vh, 14rem); padding-bottom:4rem; }
 .projects-page__heading { font-size:clamp(2rem,4vw,3.25rem); font-weight:700; letter-spacing:-.04em; line-height:1; margin-bottom:.375rem; text-transform:uppercase; }
 .projects-page__intro { font-size:.875rem; color:var(--muted); margin-bottom:1.5rem; max-width:60ch; }
 .projects-page__meta { font-family:var(--font-mono); font-size:.6875rem; font-weight:600; letter-spacing:.08em; color:var(--fg); margin-bottom:2.5rem; border-top: 1px solid var(--border); padding-top: .75rem; }
@@ -1700,7 +1700,7 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 }
 
 /* ── 15. EXPERIENCE PAGE ────────────────────── */
-.exp-page { padding-top:calc(var(--nav-h)+56px); padding-bottom:6rem; }
+.exp-page { padding-top:clamp(10rem, 20vh, 14rem); padding-bottom:2rem; }
 .exp-page__heading { font-size:clamp(2rem,4vw,3.25rem); font-weight:700; letter-spacing:-.04em; line-height:1; margin-bottom:.375rem; }
 .exp-page__sub { font-size:.875rem; color:var(--muted); margin-bottom:3rem; }
 
@@ -2236,20 +2236,33 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   cursor: pointer;
   outline: none;
 }
+.map-snaking-node .map-node-core {
+  fill: var(--fg);
+  stroke: var(--bg);
+  stroke-width: 1.5px;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 200ms var(--ease), stroke-width 200ms ease, fill 200ms ease;
+}
 .map-snaking-node .map-node-ring {
   fill: none;
   stroke: var(--fg);
   stroke-width: 1.5px;
   opacity: 0;
-  transition: all 200ms var(--ease);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 200ms var(--ease), stroke-width 200ms ease, transform 200ms var(--ease);
 }
 .map-snaking-node:hover .map-node-ring,
 .map-snaking-node:focus-visible .map-node-ring {
-  opacity: 0.45;
-  transform: scale(1.2);
+  opacity: 0.6;
+  stroke-width: 2px;
+  transform: scale(1.25);
 }
-.map-snaking-node:hover .map-node-core {
-  transform: scale(1.3);
+.map-snaking-node:hover .map-node-core,
+.map-snaking-node:focus-visible .map-node-core {
+  transform: scale(1.25);
+  stroke-width: 2px;
 }
 
 /* Destination Collaboration Hook */
@@ -2833,12 +2846,12 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   margin-top: 0.2rem;
 }
 
-/* ── Global Site Footer ── */
+/* ── Site Footer (Compact, Experience Page only) ── */
 .site-footer {
   border-top: 1px solid var(--border);
   background: var(--bg);
-  padding: 2.25rem 0;
-  margin-top: 5rem;
+  padding: 1.15rem 0;
+  margin-top: 2rem;
   position: relative;
   z-index: 10;
 }
