@@ -903,7 +903,9 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 /* ── 11. HOME PROJECT TRAILER (horizontal scroll) ── */
 .projects-trailer {
   border-top: 1px solid var(--border);
-  padding-block: clamp(3.5rem, 6vw, 5.5rem);
+  padding-top: clamp(2.5rem, 5vw, 4rem);
+  padding-bottom: 0;
+  margin-bottom: 0;
   width: 100%;
 }
 .projects-trailer-sticky {
@@ -916,7 +918,7 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   max-width: 100%;
   margin-inline: 0;
   padding-inline: clamp(1rem, 2.5vw, 2.25rem);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -942,7 +944,8 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  padding-block: 1rem 1.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.25rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
@@ -967,7 +970,8 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 }
 .projects-progress {
   padding-inline: clamp(1rem, 2.5vw, 2.25rem);
-  margin-top: 1.25rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
   max-width: 100%;
   margin-inline: 0;
   width: 100%;

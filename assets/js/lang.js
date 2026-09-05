@@ -86,7 +86,7 @@
       exp_closing_quote: '"Building systems that solve real operational problems with craft and precision."',
       exp_closing_sig: '— Erliandika Syahputra',
       exp_back: 'Back to home',
-      exp_view_cta: 'OPEN FULL DOSSIER',
+      exp_view_cta: 'VIEW FULL DETAILS',
 
       modal_exp_beginning: '01 · CONTEXT & ORIGIN',
       modal_exp_work: '02 · ENGINEERING SCOPE & EXECUTION',
@@ -196,7 +196,7 @@
       exp_closing_quote: '"Membangun perangkat lunak yang memecahkan masalah operasional secara nyata dan teruji."',
       exp_closing_sig: '— Erliandika Syahputra',
       exp_back: 'Kembali ke beranda',
-      exp_view_cta: 'BUKA DOSSIER LENGKAP',
+      exp_view_cta: 'LIHAT DETAIL LENGKAP',
 
       modal_exp_beginning: '01 · LATAR BELAKANG & AWAL MULA',
       modal_exp_work: '02 · LINGKUP TEKNIS & EKSEKUSI',

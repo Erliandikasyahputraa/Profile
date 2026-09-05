@@ -1757,7 +1757,7 @@ document.addEventListener('DOMContentLoaded', () => {
         class: 'exp-modal-backdrop',
         role: 'dialog',
         'aria-modal': 'true',
-        'aria-label': 'Experience Dossier Details',
+        'aria-label': 'Experience Details',
       });
       document.body.appendChild(modal);
 
