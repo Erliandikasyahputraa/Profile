@@ -853,6 +853,12 @@
     const dinoCenterX = dinoX + spriteW * 0.5;
     const dinoCenterY = dinoY + spriteH * 0.5;
     const distFromCenter = Math.hypot(foodX - dinoCenterX, foodY - dinoCenterY);
+    const isCursorOnDino = (
+      foodX >= dinoX - 8 &&
+      foodX <= dinoX + spriteW + 8 &&
+      foodY >= dinoY - 8 &&
+      foodY <= dinoY + spriteH + 8
+    );
 
     // Update smoothed velocity EMA each frame
     smoothVelX = smoothVelX * (1 - VEL_SMOOTH) + velX * VEL_SMOOTH;
@@ -861,12 +867,20 @@
     /* ── C2. FSM ── */
     switch (currentState) {
       case STATES.LAZY_FOLLOW:
-        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
+        if (timeSinceMouseMove >= IDLE_SLEEP_MS || (timeSinceMouseMove >= 4000 && isCursorOnDino)) {
           currentState = STATES.SLEEPING;
           stateTimer   = now;
         } else if (timeSinceMouseMove >= IDLE_MS) {
-          currentState = STATES.WAITING;
-          stateTimer   = now;
+          if (isCursorOnDino || distToFood <= 25) {
+            // Cursor is resting right on dino's body: calm bite without frantic chasing
+            currentState = STATES.EATING;
+            stateTimer   = now;
+            spawnBiteCrumbs(foodX, foodY);
+            playEatSound();
+          } else {
+            currentState = STATES.WAITING;
+            stateTimer   = now;
+          }
         }
         break;
 
@@ -890,7 +904,10 @@
         break;
 
       case STATES.CHASING:
-        if (distToFood <= EAT_DISTANCE) {
+        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
+          currentState = STATES.SLEEPING;
+          stateTimer   = now;
+        } else if (distToFood <= 25 || distFromCenter <= 30 || isCursorOnDino) {
           currentState = STATES.EATING;
           stateTimer   = now;
           spawnBiteCrumbs(foodX, foodY);
@@ -933,7 +950,13 @@
           foodVisible  = true;
           foodScale    = 1.0;
         } else if (now - stateTimer >= SATISFIED_PAUSE) {
-          currentState = STATES.LAZY_FOLLOW;
+          if (timeSinceMouseMove >= 3500 && isCursorOnDino) {
+            // Cursor was left sitting on dino -> peaceful sleep
+            currentState = STATES.SLEEPING;
+            stateTimer   = now;
+          } else {
+            currentState = STATES.LAZY_FOLLOW;
+          }
           foodVisible  = true;
           foodScale    = 1.0;
         }
@@ -962,18 +985,28 @@
     const centerDeltaY = foodY - dinoCenterY;
 
     if (currentState === STATES.CHASING) {
-      velX += centerDeltaX * DINO_CHASE_ACCEL;
-      velY += centerDeltaY * DINO_CHASE_ACCEL;
-      const spd = Math.hypot(velX, velY);
-      if (spd > MAX_CHASE_SPEED) {
-        velX = (velX / spd) * MAX_CHASE_SPEED;
-        velY = (velY / spd) * MAX_CHASE_SPEED;
+      if (distFromCenter < 25) {
+        // Approaching target: smooth deceleration, zero overshoot
+        velX *= 0.7;
+        velY *= 0.7;
+      } else {
+        velX += centerDeltaX * DINO_CHASE_ACCEL;
+        velY += centerDeltaY * DINO_CHASE_ACCEL;
+        const spd = Math.hypot(velX, velY);
+        if (spd > MAX_CHASE_SPEED) {
+          velX = (velX / spd) * MAX_CHASE_SPEED;
+          velY = (velY / spd) * MAX_CHASE_SPEED;
+        }
       }
     } else if (currentState === STATES.LAZY_FOLLOW) {
-      // If cursor is resting near dino's center, gently damp velocity without hunting
-      if (distFromCenter < 35) {
-        velX *= 0.6;
-        velY *= 0.6;
+      // If cursor is resting on or near dino, come to an absolute complete stop
+      if (distFromCenter < 40 || isCursorOnDino) {
+        velX *= 0.45;
+        velY *= 0.45;
+        if (Math.hypot(velX, velY) < 0.05) {
+          velX = 0;
+          velY = 0;
+        }
       } else {
         velX += centerDeltaX * DINO_LAZY_ACCEL;
         velY += centerDeltaY * DINO_LAZY_ACCEL;
@@ -987,12 +1020,15 @@
       velX *= 0.5;
       velY *= 0.5;
     } else if (currentState === STATES.ROARING) {
-      // Very slow drifting stop — predator stance
       velX *= 0.3;
       velY *= 0.3;
     } else {
-      velX *= 0.7;
-      velY *= 0.7;
+      velX *= 0.6;
+      velY *= 0.6;
+      if (Math.hypot(velX, velY) < 0.05) {
+        velX = 0;
+        velY = 0;
+      }
     }
 
     velX *= DAMPING;
@@ -1004,13 +1040,15 @@
 
     const currentSpeed = Math.hypot(velX, velY);
 
-    // Direction update: Stable hysteresis deadzone based on cursor relative to dino center (±18px).
-    // This completely eliminates rapid left-right flipping (linglung) when cursor is near the dino.
+    // Direction update: Stable hysteresis deadzone based on cursor relative to dino center (±30px).
+    // If cursor is on or near dino's body, lock facing completely to eliminate any rapid flip jitter (linglung).
     if (currentState === STATES.SLEEPING || currentState === STATES.EATING || currentState === STATES.ROARING) {
       // Keep facing locked during static / bite / sleep animations
-    } else if (centerDeltaX < -18) {
+    } else if (distFromCenter < 35 || Math.abs(centerDeltaX) < 30 || isCursorOnDino) {
+      // Cursor is on or right next to dino's body -> LOCK FACING, DO NOT FLIP!
+    } else if (centerDeltaX < -30) {
       isFacingLeft = true;
-    } else if (centerDeltaX > 18) {
+    } else if (centerDeltaX > 30) {
       isFacingLeft = false;
     }
 
