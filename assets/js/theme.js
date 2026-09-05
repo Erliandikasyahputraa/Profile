@@ -17,9 +17,9 @@
     document.documentElement.setAttribute('data-theme', t);
   }
 
-  /* ── Read initial theme before paint (Default: light) ── */
+  /* ── Read initial theme before paint (Default: dark) ── */
   const stored = localStorage.getItem(KEY);
-  const initial = (stored === 'dark' || stored === 'light') ? stored : 'light';
+  const initial = (stored === 'dark' || stored === 'light') ? stored : 'dark';
   applyTheme(initial);
 
   /* ── Runtime ─────────────────────────────── */

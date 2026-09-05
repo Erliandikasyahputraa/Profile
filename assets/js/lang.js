@@ -22,7 +22,7 @@
 
       // Hero
       hero_role: 'Software Engineer',
-      hero_bio: 'Information Systems graduate focused on Software and Web Development. Experienced in building practical applications including warehouse inventory systems, vocational learning platforms, and hybrid POS solutions. Skilled in system optimization, technical leadership, and IT support and networking.',
+      hero_bio: 'Software engineer who builds with intent, precision, and a craftsman’s obsession for reliability. I turn complex operational workflows into fast, resilient digital tools that feel effortless to use.',
       aria_download_cv: 'Download CV',
       aria_theme_toggle: 'Toggle colour theme',
       aria_menu_open: 'Open navigation menu',
@@ -133,7 +133,7 @@
 
       // Hero
       hero_role: 'Software Engineer',
-      hero_bio: 'Lulusan S1 Sistem Informasi dengan fokus utama pada Software dan Web Development. Berpengalaman merancang serta membangun aplikasi untuk kebutuhan nyata seperti sistem inventory pergudangan, platform edukasi vokasi, dan aplikasi POS online maupun offline. Memiliki pengalaman merombak sistem, memimpin tim proyek perangkat lunak, serta latar belakang di bidang IT Support dan jaringan.',
+      hero_bio: 'Software engineer dengan dedikasi tinggi pada arsitektur yang bersih, ketahanan sistem, dan estetika yang terarah. Saya merancang perangkat lunak yang tidak hanya bekerja cepat, tetapi juga menyelesaikan masalah operasional nyata secara presisi.',
       aria_download_cv: 'Unduh CV',
       aria_theme_toggle: 'Ganti tema warna',
       aria_menu_open: 'Buka menu navigasi',
