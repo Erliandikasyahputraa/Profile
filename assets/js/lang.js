@@ -22,6 +22,7 @@
 
       // Hero
       hero_role: 'Software Engineer',
+      hero_bio: 'Software Engineer focused on Web & Full-Stack Development, with a background in Information Systems and hands-on experience building and improving practical software solutions across web, mobile, and offline-first applications. My experience also includes software development leadership, IT support, and network infrastructure.',
       aria_download_cv: 'Download CV',
       aria_theme_toggle: 'Toggle colour theme',
       aria_menu_open: 'Open navigation menu',
@@ -132,6 +133,7 @@
 
       // Hero
       hero_role: 'Software Engineer',
+      hero_bio: 'Software Engineer yang berfokus pada Web & Full-Stack Development, dengan latar belakang Sistem Informasi dan pengalaman membangun serta mengembangkan solusi perangkat lunak untuk kebutuhan nyata, mulai dari aplikasi web, mobile, hingga sistem offline-first. Saya juga memiliki pengalaman dalam software development leadership, IT Support, dan network infrastructure.',
       aria_download_cv: 'Unduh CV',
       aria_theme_toggle: 'Ganti tema warna',
       aria_menu_open: 'Buka menu navigasi',

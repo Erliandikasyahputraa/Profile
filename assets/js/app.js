@@ -27,13 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const pathLower = (window.location.pathname || '').toLowerCase();
-  const IS_PAGES = pathLower.includes('/pages/') || pathLower.includes('\\pages\\') || document.querySelector('link[href*="../assets/"]') !== null;
-  const ROOT_REL = IS_PAGES ? '../' : './';
-  const PAGES_REL = IS_PAGES ? '' : 'pages/';
+  const isNestedSub = document.querySelector('link[href*="../../assets/"]') !== null || pathLower.includes('/pages/projects/') || (pathLower.includes('/projects/') && !pathLower.endsWith('projects.html') && !pathLower.endsWith('/projects'));
+  const IS_PAGES = isNestedSub ? false : (pathLower.includes('/pages/') || pathLower.includes('\\pages\\') || document.querySelector('link[href*="../assets/"]') !== null);
+  const ROOT_REL = isNestedSub ? '../../' : (IS_PAGES ? '../' : './');
+  const PAGES_REL = isNestedSub ? '../' : (IS_PAGES ? '' : 'pages/');
 
   function resolveAsset(p) {
     if (!p || typeof p !== 'string' || p.startsWith('http') || p.startsWith('//') || p.startsWith('data:')) return p;
-    return IS_PAGES ? '../' + p.replace(/^\.\//, '') : p;
+    return ROOT_REL + p.replace(/^\.\//, '');
   }
 
   /* ── Minimalist Vector Image Fallback ── */
@@ -1199,14 +1200,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="parow__left">
             <div class="parow__cat">${catText.toUpperCase()}</div>
             <h2 class="parow__title">
-              <a href="#view-${p.slug}" class="project-modal-trigger">${p.name}</a>
+              <a href="projects/${p.slug}.html" class="project-modal-trigger">${p.name}</a>
             </h2>
             <p class="parow__desc">${descText}</p>
             <div class="parow__year">${p.year || '2025'} · ${roleText ? roleText.split('—')[0].trim() : 'Software Engineer'}</div>
           </div>
 
           <div class="parow__center">
-            <a href="#view-${p.slug}" class="parow__img-link project-modal-trigger" tabindex="-1" aria-hidden="true">
+            <a href="projects/${p.slug}.html" class="parow__img-link project-modal-trigger" tabindex="-1" aria-hidden="true">
               <div class="parow__img-wrap">
                 <img src="${imgSrc}" alt="${p.name} screenshot" loading="lazy" class="parow__img" onerror="this.onerror=null;this.src='${fallbackSvg}'">
               </div>
@@ -1301,7 +1302,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!root || !D.projects) return;
 
     const urlParams = new URLSearchParams(window.location.search);
-    const slug = urlParams.get('slug') || 'emotica';
+    let slug = urlParams.get('slug');
+    if (!slug) {
+      const fn = (window.location.pathname || '').split('/').pop() || '';
+      if (fn.endsWith('.html') && fn !== 'project.html' && fn !== 'projects.html') {
+        slug = fn.replace('.html', '');
+      }
+    }
+    if (!slug) slug = 'tekateki';
     const project = D.projects.find(p => p.slug === slug) || D.projects[0];
 
     if (!project) {
@@ -1326,10 +1334,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isIndo = window.currentLang === 'id';
     const rationaleList = (isIndo && project.techRationale_id) ? project.techRationale_id : (project.techRationale || []);
+    const backHref = isNestedSub ? '../projects.html' : 'projects.html';
 
     root.innerHTML = `
       <div class="pdetail__header">
-        <a href="projects.html" class="pdetail__back-link">
+        <a href="${backHref}" class="pdetail__back-link">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           <span data-i18n="pdetail_back">${window.t('pdetail_back')}</span>
         </a>

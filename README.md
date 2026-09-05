@@ -1,84 +1,99 @@
-# ⚡ Erliandika Syahputra — Official Portfolio Website
+# Erliandika Syahputra — Portfolio & Systems Archive
 
-> *"Not your basic portfolio. Built with pure craft, zero bloated framework drama, and high aesthetic vibes."* 💅✨
+> **Software Engineer** specializing in **Web & Full-Stack Development**, with a solid background in Information Systems and hands-on experience engineering scalable web platforms, offline-first applications, and mobile systems.
 
-Selamat datang di repo portofolio resmi **Erliandika Syahputra**! Website ini dirancang khusus buat *showcase* karya, eksplorasi *software engineering*, *mobile development* (Android/Kotlin), hingga *system architecture* dengan gaya **Minimalist Editorial & Monochromatic Ink Aesthetics**. 
-
-Literally no template, pure handcrafted code, and high-performance. 🚀
-
----
-
-## 🕶️ The Vibe & Core Features
-
-Gak cuma sekadar pajang proyek, *user experience* di sini beneran dipikirin sampai ke *micro-interactions*:
-
-- **🖤 Editorial Monochrome & Organic Ink Theme**: Transisi dark/light mode yang *smooth* banget pake efek *organic ink splash* SVG filter (`theme.js`). Bukan cuma toggle biasa, *it’s an experience!*
-- **✨ Interactive Canvas Particle Trail**: Kursor interaktif yang ngikutin gerakan mouse secara dinamis dan responsif (`cursor.js`).
-- **🗺️ The Unfinished Journey (Interactive SVG Map)**: Visualisasi peta perjalanan karir dan edukasi dari 2022 sampai sekarang yang *winding* dan bisa diklik buat baca cerita mendalam di baliknya.
-- **🎞️ Horizontal Project Trailer**: *Sneak peek* 5 proyek unggulan di homepage dengan format *carousel card* horizontal yang *clean*.
-- **📂 Dedicated Project Detail & Case Study**: Setiap proyek punya *dedicated dynamic page* (`project.html?id=slug`) dengan breakdown arsitektur 3-kolom (*Overview*, *Tech Stack*, *Problem & Solution*).
-- **🌐 Bilingual on the Fly (EN / ID)**: Gonta-ganti bahasa instan tanpa reload halaman, preferensi otomatis kesimpan rapi di `localStorage` (`lang.js`).
-- **💎 Single Source of Truth**: Semua data profil, riwayat karir, sertifikasi, dan katalog proyek terpusat rapi di satu file (`data.js`). Mau update konten? Cukup edit 1 file, *done deal!*
+[![Live Site](https://img.shields.io/badge/Live_Portfolio-erliandikasyahputra.vercel.app-black?style=flat&logo=vercel)](https://erliandikasyahputra.vercel.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-Erliandikasyahputraa-181717?style=flat&logo=github)](https://github.com/Erliandikasyahputraa)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Erliandika_Syahputra-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/erliandika-syahputra/)
+[![BNSP Certified](https://img.shields.io/badge/Certified-BNSP_Web_Developer-007ACC?style=flat)](https://erliandikasyahputra.vercel.app/pages/experience.html)
 
 ---
 
-## 🛠️ Tech Stack & Philosophy
+## 👨‍💻 About & Engineering Focus
 
-Kita penganut aliran *"vanilla craft with high precision"*:
-
-- **Frontend Core**: Semantic HTML5 & Vanilla CSS3 (Custom Design Tokens, Fluid Typography, Modern CSS Variables)
-- **Logic & Interactions**: Modern JavaScript (ES6+), HTML5 Canvas API, SVG DOM Manipulation
-- **Fonts**: *Plus Jakarta Sans*, *Space Grotesk*, *Fira Code*
-- **Architecture**: Zero bulky npm packages, super lightweight, *blazing fast load time* ⚡
-
----
-
-## 🗂️ Project Structure
-
-```text
-├── assets/
-│   ├── css/
-│   │   └── style.css       # Master stylesheet (tokens, layout, responsive, dark/light)
-│   ├── images/             # Profile photos, brand logos & certificate assets
-│   └── js/
-│       ├── app.js          # Master dynamic renderer & page logic
-│       ├── cursor.js       # Dynamic canvas cursor trail
-│       ├── data.js         # Single source of truth (Projects, Experience, Profile)
-│       ├── lang.js         # EN / ID i18n localization engine
-│       └── theme.js        # Theme toggle with SVG ink displacement effect
-├── pages/
-│   ├── projects.html       # Project Archive & Category Filters
-│   ├── project.html        # Dynamic Project Detail Case Study
-│   └── experience.html     # Full Interactive Journey Map & Certifications
-├── index.html              # Landing Page (Hero, Sneak Peek Map, Project Trailer)
-└── 404.html                # Custom Not Found Page
-```
+- **Name**: Erliandika Syahputra
+- **Primary Role**: Software Engineer / Full-Stack Web Developer
+- **Education**: S1 Sistem Informasi (Information Systems) — Universitas Islam Negeri Sultan Syarif Kasim Riau (UIN Suska Riau)
+- **Location**: Pekanbaru, Riau, Indonesia
+- **Core Focus**:
+  - **Full-Stack Web Development**: Modern responsive applications with React, Next.js, TypeScript, Laravel, and PHP.
+  - **Offline-First & Systems Architecture**: Resilient client-side persistence (IndexedDB/Dexie.js), PWA caching, and transactional consistency.
+  - **Database & Cloud Infrastructure**: Normalized relational schema design with MySQL, PostgreSQL, and Supabase Row-Level Security.
+  - **Secondary Disciplines**: Mobile development (Android Native/Kotlin), IT Support & Lab infrastructure, and campus WLAN network deployments.
 
 ---
 
-## 💻 Cara Run Secara Lokal
+## 🛠️ Verified Technology Stack
 
-Gak perlu `npm install` ribet-ribet yang menuhin storage `node_modules` kamu:
-
-1. Clone repo ini:
-   ```bash
-   git clone https://github.com/Erliandikasyahputraa/porto.git
-   ```
-2. Buka folder proyek di VS Code / editor favorit kamu.
-3. Klik kanan pada `index.html` terus pilih **Open with Live Server** (atau tinggal double-click `index.html` di browser).
-4. *Enjoy the smoothness!* 🎉
+| Domain | Technologies |
+| :--- | :--- |
+| **Frontend** | React 18/19, Next.js 14, TypeScript, JavaScript (ES6+), Tailwind CSS 4, shadcn/ui, HTML5 Canvas, SVG |
+| **Backend & APIs** | Laravel 11, Livewire 3, PHP, FastAPI, Flask, RESTful API Design, Sanctum Auth |
+| **Databases & State** | PostgreSQL, MySQL, Supabase (RLS), IndexedDB (Dexie.js), TanStack Query, Alpine.js |
+| **Mobile & ML** | Kotlin, Android SDK, Jetpack Compose, TensorFlow, Keras, Python (Pandas/NLP) |
+| **Tooling & Infrastructure** | Vite, Git/GitHub, Docker, Linux/Windows mass OS imaging, Ruijie AP WLAN, structured cabling |
 
 ---
 
-## 📬 Let's Connect & Collab!
+## 📂 Featured Software Projects & Case Studies
 
-Lagi nyari engineer buat bangun produk keren atau sekadar mau ngobrol seputar software & tech? *Hit me up:*
+1. **[TekaTeki — Active-Recall Learning Platform](https://erliandikasyahputra.vercel.app/pages/projects/tekateki.html)**
+   *React 19, TypeScript, Laravel 11, Sanctum, PDF.js, MySQL*
+   API-first interactive learning platform transforming PDF documents into active-recall crossword puzzles with custom client-side grid generation and classroom analytics.
+   📁 [GitHub Repository](https://github.com/Erliandikasyahputraa/Scrabbleword-School)
 
-- **GitHub**: [@Erliandikasyahputraa](https://github.com/Erliandikasyahputraa)
-- **LinkedIn**: [Erliandika Syahputra](https://www.linkedin.com/in/erliandika-syahputra/)
+2. **[Bincard Inventory — Digital Warehouse System](https://erliandikasyahputra.vercel.app/pages/projects/bincard.html)**
+   *Laravel 11, Livewire 3, Alpine.js, Tailwind CSS, MySQL, ECharts 5, DomPDF*
+   Full-stack web inventory system replacing manual physical bincards with real-time QR/barcode camera scanning, stock opname reconciliation, and automated PDF Surat Jalan.
+   📁 [GitHub Repository](https://github.com/Erliandikasyahputraa/bincard-inventory)
+
+3. **[Anti-Nganggur — Job Hunt & Career Tracker](https://erliandikasyahputra.vercel.app/pages/projects/anti-nganggur.html)**
+   *Next.js 14 App Router, React, TypeScript, Supabase, PostgreSQL (RLS), Tailwind CSS*
+   Multi-tenant career management platform featuring drag-and-drop Kanban workflow, dynamic resume builder, interview calendar, and sub-second SSR performance.
+   📁 [GitHub Repository](https://github.com/Erliandikasyahputraa/jobhunt)
+
+4. **[Bara Kasir — Offline-First POS PWA](https://erliandikasyahputra.vercel.app/pages/projects/bara-kasir.html)**
+   *React 18, TypeScript, Vite, IndexedDB, Dexie.js, PWA, Web Bluetooth API*
+   Zero-server, 100% offline Point of Sale application for Indonesian MSMEs with automatic weighted-average COGS calculations and ESC/POS Bluetooth receipt printing.
+   📁 [GitHub Repository](https://github.com/Erliandikasyahputraa/bara-kasir)
+
+5. **[Penny Path — Mobile Financial Literacy Assistant](https://erliandikasyahputra.vercel.app/pages/projects/penny-path.html)**
+   *Kotlin, Android SDK, Jetpack Compose, FastAPI, TensorFlow, Cloud Backend*
+   Bangkit Academy Capstone product delivering native Android financial management, transaction categorization, and Machine Learning anomaly detection.
+   📁 [GitHub Repository](https://github.com/Penny-Path-Bangkit)
+
+6. **[Emotica — Indonesian Sentiment Analysis Platform](https://erliandikasyahputra.vercel.app/pages/projects/emotica.html)**
+   *Next.js, Flask, Python, TensorFlow, Bi-LSTM + BERT, MongoDB*
+   NLP sentiment analysis web application productizing deep learning models for unstructured Indonesian text into interactive visual charts.
+   📁 [GitHub Repository](https://github.com/Emotica-DBS)
+
+7. **[Desa Air Putih — Public Information Portal](https://erliandikasyahputra.vercel.app/pages/projects/desa-air-putih.html)**
+   *React 19, TypeScript, Vite, Tailwind CSS 4, React Router 7, JSON-LD*
+   Editorial digital governance portal delivering public administration guides, documentary photo lightbox, and responsive WebP image optimization.
+   📁 [GitHub Repository](https://github.com/Erliandikasyahputraa/web-profil-inhu-kkndesaputih)
+
+---
+
+## 🏛️ Education & Professional Milestones
+
+- **S1 Sistem Informasi** — Universitas Islam Negeri Sultan Syarif Kasim Riau (*GPA 3.73/4.00*, Sep 2022 – Jun 2026)
+- **Certified Web Information System Developer** — BNSP / LSP BBPVP Medan (*Valid 2025–2028*)
+- **Head of Software Development Division** — Predatech Research Group (Mar 2025 – Jan 2026)
+- **Coding Camp DBS Foundation** — Front-End & Back-End Developer Track (Feb 2025 – Jul 2025)
+- **Bangkit Academy Mobile Development** — Google, GoTo, Traveloka (Sep 2024 – Jan 2025)
+- **Network Infrastructure Deployment** — 256 Ruijie Wireless APs in 14 Campus Buildings (2024)
+- **IT Support & Laboratory Assistant** — UIN Suska Riau (83 Workstations across 3 Labs, 2022 – 2024)
+
+---
+
+## 📬 Contact & Verified Profiles
+
+- **Canonical Portfolio**: [https://erliandikasyahputra.vercel.app/](https://erliandikasyahputra.vercel.app/)
+- **GitHub**: [github.com/Erliandikasyahputraa](https://github.com/Erliandikasyahputraa)
+- **LinkedIn**: [linkedin.com/in/erliandika-syahputra](https://www.linkedin.com/in/erliandika-syahputra/)
 - **Email**: [syahputraerliandika@gmail.com](mailto:syahputraerliandika@gmail.com)
-- **WhatsApp**: [+62 821-6934-9265](https://wa.me/6282169349265)
 
 ---
-<p align="center">Crafted with precision & passion by <b>Erliandika Syahputra</b> 🚀</p>
+
+<p align="center">Crafted with precision &amp; dedication by <b>Erliandika Syahputra</b>.</p>
 

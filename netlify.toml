@@ -7,6 +7,11 @@
   status = 200
 
 [[redirects]]
+  from = "/projects/*"
+  to = "/pages/projects/:splat.html"
+  status = 200
+
+[[redirects]]
   from = "/experience"
   to = "/pages/experience.html"
   status = 200
