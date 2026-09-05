@@ -2179,6 +2179,11 @@ h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 }
 
 /* ── Topographic Expedition Snaking Map Styles ── */
+.exp-full-map-wrap {
+  position: relative;
+  width: 100%;
+  margin: 1.5rem 0 3.5rem;
+}
 .exp-snaking-svg {
   display: block;
   width: 100%;

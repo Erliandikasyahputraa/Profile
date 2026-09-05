@@ -1322,7 +1322,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!isMobile) {
       const VW = 1000;
-      const VH = 620;
+      const VH = 680;
 
       const svg = mkSVG('svg', {
         viewBox: `0 0 ${VW} ${VH}`,
@@ -1342,49 +1342,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
       svg.appendChild(defs);
 
-      // Topographic background elevation contour waves (True Treasure Map Atmosphere)
+      // Subtle atmospheric topographic contour lines echoing natural terrain
       const topoContours = [
-        'M 30 50 C 180 30, 320 80, 500 45 C 680 10, 820 60, 970 40',
-        'M 50 160 C 240 180, 420 130, 600 170 C 780 210, 880 140, 960 180',
-        'M 40 330 C 200 360, 380 310, 580 350 C 780 390, 880 320, 970 340',
-        'M 50 560 C 240 530, 440 580, 650 540 C 800 510, 900 560, 970 530'
+        'M 30 70 C 200 40, 360 110, 520 70 C 680 30, 820 90, 970 60',
+        'M 40 240 C 220 280, 420 220, 620 270 C 800 320, 900 230, 970 260',
+        'M 30 450 C 200 480, 400 420, 600 470 C 780 520, 880 440, 970 470',
       ];
       topoContours.forEach(d => {
         svg.appendChild(mkSVG('path', { d, class: 'map-path-contour' }));
       });
 
-      // Coordinate Markers / Crosshairs
-      svg.appendChild(mkSVGText('+ 00°31\'40" N', 50, 40, 'map-grid-coord', 'start'));
-      svg.appendChild(mkSVGText('+ 101°27\'05" E', 950, 40, 'map-grid-coord', 'end'));
-      svg.appendChild(mkSVGText('EXPEDITION LOG · 2022—2026', 500, 40, 'map-grid-coord', 'middle'));
+      // Subtle Corner Coordinate Markers (Far from nodes, non-intrusive)
+      svg.appendChild(mkSVGText('+ 00°31\'40" N', 40, 30, 'map-grid-coord', 'start'));
+      svg.appendChild(mkSVGText('+ 101°27\'05" E', 960, 30, 'map-grid-coord', 'end'));
 
-      // Coordinates for 8 milestones in real zig-zag treasure trail:
-      // Row 1 (y = 110, Left to Right): 0, 1, 2 (Text ABOVE at y = 60)
-      // Row 2 (y = 280, Right to Left): 3, 4, 5 (Text ABOVE at y = 230)
-      // Row 3 (y = 450, Left to Right): 6, 7, Destination (Text BELOW at y = 488 - NO CLIPPING!)
-      const NODE_POSITIONS = [
-        { x: 190, y: 110, side: 'above', textY: 60,  align: 'middle' }, // 0: S1 Sistem Informasi
-        { x: 480, y: 110, side: 'above', textY: 60,  align: 'middle' }, // 1: IT Support 83 Workstations
-        { x: 770, y: 110, side: 'above', textY: 60,  align: 'middle' }, // 2: Event & Leadership
-        { x: 790, y: 280, side: 'above', textY: 230, align: 'middle' }, // 3: Network Infrastructure 256 AP
-        { x: 490, y: 280, side: 'above', textY: 230, align: 'middle' }, // 4: Bangkit Mobile Dev Lead
-        { x: 190, y: 280, side: 'above', textY: 230, align: 'middle' }, // 5: Coding Camp Full-Stack
-        { x: 230, y: 450, side: 'below', textY: 488, align: 'middle' }, // 6: Head of Software Dev (TEXT BELOW!)
-        { x: 530, y: 450, side: 'below', textY: 488, align: 'middle' }, // 7: Sertifikasi BNSP Web (TEXT BELOW!)
-      ];
-
-      // Organic curved zig-zag expedition path
+      // ── Organic Winding Expedition Route (No stiff straight lines) ──
+      // Row 1 (L->R): Basecamp (50, 105) -> Node 0 (190, 75) -> Node 1 (470, 140) -> Node 2 (750, 75)
+      // Loop 1: Sweeps around (940, 180) into Row 2
+      // Row 2 (R->L): Node 3 (780, 315) -> Node 4 (480, 255) -> Node 5 (190, 315)
+      // Loop 2: Sweeps around (60, 420) into Row 3
+      // Row 3 (L->R): Node 6 (250, 515) -> Node 7 (530, 485) -> Destination (820, 520)
       const pathD = `
-        M 50 110
-        C 100 110, 140 110, 190 110
-        C 280 110, 390 110, 480 110
-        C 570 110, 680 110, 770 110
-        C 910 110, 940 280, 790 280
-        C 690 280, 590 280, 490 280
-        C 390 280, 280 280, 190 280
-        C 60 280, 60 450, 230 450
-        C 330 450, 430 450, 530 450
-        C 630 450, 730 450, 830 450
+        M 50 105
+        C 95 95, 140 75, 190 75
+        C 270 75, 340 140, 410 140
+        C 440 140, 455 140, 470 140
+        C 530 140, 610 75, 680 75
+        C 710 75, 730 75, 750 75
+        C 860 75, 945 120, 945 195
+        C 945 270, 875 315, 780 315
+        C 710 315, 630 255, 560 255
+        C 525 255, 500 255, 480 255
+        C 400 255, 320 315, 250 315
+        C 220 315, 200 315, 190 315
+        C 85 315, 55 375, 55 435
+        C 55 495, 125 515, 200 515
+        C 220 515, 235 515, 250 515
+        C 330 515, 420 485, 480 485
+        C 505 485, 518 485, 530 485
+        C 620 485, 720 520, 820 520
       `;
 
       // Soft glow aura path
@@ -1403,15 +1399,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Basecamp Origin Pin
       const startG = mkSVG('g', { class: 'map-start-basecamp' });
-      startG.appendChild(mkSVG('circle', { cx: '50', cy: '110', r: '7', class: 'map-start-ring' }));
-      startG.appendChild(mkSVG('circle', { cx: '50', cy: '110', r: '4', class: 'map-node-start' }));
-      startG.appendChild(mkSVGText('BASECAMP', 50, 134, 'map-start-label', 'middle'));
+      startG.appendChild(mkSVG('circle', { cx: '50', cy: '105', r: '7', class: 'map-start-ring' }));
+      startG.appendChild(mkSVG('circle', { cx: '50', cy: '105', r: '4', class: 'map-node-start' }));
+      startG.appendChild(mkSVGText('BASECAMP', 50, 130, 'map-start-label', 'middle'));
       svg.appendChild(startG);
+
+      // Node Positions along the natural undulating curve with perfect clearance
+      const NODE_POSITIONS = [
+        { x: 190, y: 75,  side: 'above', textY: 44,  align: 'middle' }, // 0: S1 Sistem Informasi (Peak)
+        { x: 470, y: 140, side: 'below', textY: 172, align: 'middle' }, // 1: IT Support 83 Workstations (Valley)
+        { x: 750, y: 75,  side: 'above', textY: 44,  align: 'middle' }, // 2: Event & Leadership (Peak)
+        { x: 780, y: 315, side: 'below', textY: 348, align: 'middle' }, // 3: Network Infrastructure (Valley)
+        { x: 480, y: 255, side: 'above', textY: 224, align: 'middle' }, // 4: Bangkit Mobile Dev Lead (Peak)
+        { x: 190, y: 315, side: 'below', textY: 348, align: 'middle' }, // 5: Coding Camp Full-Stack (Valley)
+        { x: 250, y: 515, side: 'below', textY: 552, align: 'middle' }, // 6: Head of Software Dev (Below line)
+        { x: 530, y: 485, side: 'below', textY: 522, align: 'middle' }, // 7: Sertifikasi BNSP Web (Below line)
+      ];
 
       // Destination Endpoint: The Next Chapter / Collaboration Hook
       const isIndo = window.currentLang === 'id';
-      const destX = 830;
-      const destY = 450;
+      const destX = 820;
+      const destY = 520;
 
       const destG = mkSVG('g', {
         class: 'map-destination-hook',
@@ -1482,6 +1490,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       svg.appendChild(destG);
 
+      // Floating Sneak Peek Card Container (anchored inside wrap)
+      const peekCard = el('div', { class: 'map-sneak-peek', 'aria-hidden': 'true' });
+      wrap.appendChild(peekCard);
+
       // Render 8 Milestones with exact centered coordinates
       items.forEach((item, i) => {
         const pos = NODE_POSITIONS[i];
@@ -1495,11 +1507,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Altitude elevation guide dot
+        const isAbove = pos.side === 'above';
         const guideDot = mkSVG('line', {
           x1: String(pos.x),
           y1: String(pos.y),
           x2: String(pos.x),
-          y2: pos.side === 'above' ? String(pos.y - 18) : String(pos.y + 18),
+          y2: isAbove ? String(pos.y - 14) : String(pos.y + 14),
           class: 'map-elevation-line',
         });
         g.appendChild(guideDot);
@@ -1508,7 +1521,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const halo = mkSVG('circle', {
           cx: String(pos.x),
           cy: String(pos.y),
-          r: '13',
+          r: '12',
           class: 'map-node-ring',
         });
         g.appendChild(halo);
@@ -1517,13 +1530,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const core = mkSVG('circle', {
           cx: String(pos.x),
           cy: String(pos.y),
-          r: '5.5',
+          r: '5',
           class: 'map-node-core',
         });
         g.appendChild(core);
 
         // Step index tag
-        const isAbove = pos.side === 'above';
         const tagText = (isIndo && item.typeLabel_id) ? item.typeLabel_id : (item.typeLabel || 'MILESTONE');
         const roleShort = item.role.length > 28 ? item.role.substring(0, 26) + '…' : item.role;
 
@@ -1554,19 +1566,67 @@ document.addEventListener('DOMContentLoaded', () => {
           pos.align
         ));
 
+        // Exact Hover Sneak Peek Trigger on Experience Map
+        g.addEventListener('mouseenter', () => {
+          const badgeText = (isIndo && item.typeLabel_id) ? item.typeLabel_id : item.typeLabel;
+          const roleText = item.role || '';
+          const orgText = item.org ? `<span class="msp-loc"> · ${item.org}</span>` : '';
+          const descText = (isIndo && item.beginning_id) ? item.beginning_id : (item.beginning || item.headline || '');
+
+          peekCard.innerHTML = `
+            <div class="msp-header">
+              <span class="msp-badge">${badgeText}</span>
+              <span class="msp-year">${item.period || item.year}</span>
+            </div>
+            <div class="msp-title">${roleText}</div>
+            <div class="msp-meta">${orgText}</div>
+            <p class="msp-desc">${descText}</p>
+            <div class="msp-hint">
+              <span>${isIndo ? 'BUKA DOSSIER LENGKAP' : 'OPEN FULL DOSSIER'}</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+          `;
+
+          const dotRect = core.getBoundingClientRect();
+          const wrapRect = wrap.getBoundingClientRect();
+
+          const relX = (dotRect.left + dotRect.width / 2) - wrapRect.left + wrap.scrollLeft;
+          const relY = (dotRect.top + dotRect.height / 2) - wrapRect.top;
+
+          peekCard.style.left = `${relX}px`;
+          if (pos.side === 'above') {
+            peekCard.style.top = `${relY + 16}px`;
+            peekCard.style.transform = 'translate(-50%, 0)';
+          } else {
+            peekCard.style.top = `${relY - 16}px`;
+            peekCard.style.transform = 'translate(-50%, -100%)';
+          }
+          peekCard.classList.add('active');
+        });
+
+        g.addEventListener('mouseleave', () => {
+          peekCard.classList.remove('active');
+        });
+
         // Click opens Experience Dossier Popup
         g.addEventListener('click', () => {
+          peekCard.classList.remove('active');
           openExperienceModal(i);
         });
 
         g.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
+            peekCard.classList.remove('active');
             openExperienceModal(i);
           }
         });
 
         svg.appendChild(g);
+      });
+
+      wrap.addEventListener('mouseleave', () => {
+        peekCard.classList.remove('active');
       });
 
       wrap.appendChild(svg);
