@@ -232,29 +232,29 @@
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
-  /* ── Chubby Sitting Dino (Sleep State) ──
-     Dino sits down flat on its haunches, tummy is plump & round,
-     peaceful closed eye slit, paws resting forward on the ground.
+  /* ── Sleeping Cat Curled Pose (Dino Sleeping Like a Cat Loaf) ──
+     Head nestled down resting on front paws, smooth curved sleeping cat back,
+     peaceful closed eye slit (^_^), tail curled around front embracing body.
   ── */
-  const DINO_SITTING_CHUBBY = [
+  const DINO_CAT_SLEEP = [
     //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], // r0 skull top
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], // r1 forehead
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 0], // r2 calm closed sleeping eye slit
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // r3 snout
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], // r4 upper jaw
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 0, 0], // r5 closed teeth line
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r6 lower jaw
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r7 neck
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r8 upper back
-    [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r9 curled tail tip & chest
-    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0], // r10 tail into back & little arms
-    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], // r11 plump round back & belly
-    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], // r12 sitting haunch & round tummy
-    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r13 round bottom & bulging tummy
-    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r14 haunches resting flat & belly
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], // r15 tucked knees & paws forward
-    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0], // r16 bottom flat on ground & paws
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r1
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r2
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r3 smooth sleeping cat arch
+    [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0], // r4 arched back & upper head
+    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r5 head resting cozy & low
+    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], // r6 forehead & resting snout
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 0], // r7 sleeping eye slit (^_^)
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], // r8 snout resting on paws
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 0, 0, 0], // r9 mouth nestled
+    [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], // r10 tail curving around side
+    [1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r11 chin on tucked paws
+    [1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], // r12 tail wrapping around front
+    [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], // r13 cat loaf front tuck
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], // r14 belly & tail tip hugging paws
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r15 bottom resting on ground
+    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], // r16 flat ground level
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r17 ground line
   ];
 
@@ -291,6 +291,26 @@
   // Roar state
   let roarStartTime  = 0;
   const ROAR_DURATION = 750; // Refined duration
+
+  // Walking footstep trail marks
+  const footprints = [];
+  const MAX_FOOTPRINTS = 16;
+  let lastFootstepX = -999, lastFootstepY = -999;
+
+  function spawnFootprint(x, y, fg) {
+    const dist = Math.hypot(x - lastFootstepX, y - lastFootstepY);
+    if (dist < 22) return; // Drop footprint only after moving at least 22px
+    lastFootstepX = x;
+    lastFootstepY = y;
+    footprints.push({
+      x: x + (Math.random() - 0.5) * 2,
+      y,
+      life: 1.0,
+      decay: 0.012,
+      color: fg,
+    });
+    if (footprints.length > MAX_FOOTPRINTS) footprints.shift();
+  }
 
   // Walking state
   const dustParticles = [];
@@ -814,6 +834,51 @@
     } catch (e) {}
   }
 
+  /* ── Cute Soft Snore Synthesizer (Ngorok Kecil saat Tidur) ── */
+  function playSnoreSound() {
+    try {
+      const actx = getAudioContext();
+      if (!actx) return;
+      if (actx.state === 'suspended') actx.resume().catch(() => {});
+      const now = actx.currentTime;
+      const t = now;
+
+      const master = actx.createGain();
+      master.gain.setValueAtTime(0.12, t);
+      master.connect(actx.destination);
+
+      // 1. Soft breath hum (sine wave rising then falling softly)
+      const osc = actx.createOscillator();
+      const oscGain = actx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(60, t);
+      osc.frequency.exponentialRampToValueAtTime(84, t + 0.35);
+      osc.frequency.exponentialRampToValueAtTime(52, t + 0.72);
+
+      // 2. Gentle purr / snore flutter LFO (~11Hz flutter)
+      const lfo = actx.createOscillator();
+      const lfoGain = actx.createGain();
+      lfo.type = 'sine';
+      lfo.frequency.setValueAtTime(11.5, t);
+      lfoGain.gain.setValueAtTime(0.045, t);
+      lfo.connect(lfoGain);
+      lfoGain.connect(oscGain.gain);
+
+      // Smooth envelope: soft rise, gentle flutter, soft exhale fadeout
+      oscGain.gain.setValueAtTime(0.001, t);
+      oscGain.gain.linearRampToValueAtTime(0.09, t + 0.28);
+      oscGain.gain.linearRampToValueAtTime(0.001, t + 0.75);
+
+      osc.connect(oscGain);
+      oscGain.connect(master);
+
+      osc.start(t);
+      lfo.start(t);
+      osc.stop(t + 0.78);
+      lfo.stop(t + 0.78);
+    } catch (e) {}
+  }
+
   /* ═══════════════════════════════════════════════════════════
      5. MAIN LOOP
   ═══════════════════════════════════════════════════════════ */
@@ -977,12 +1042,13 @@
         break;
 
       case STATES.SLEEPING:
-        // Stuffed sleeping state: periodic floating 'Zzz' particles drifting from head
-        if (now - lastZzzTime > 900) {
+        // Stuffed sleeping state: periodic floating 'Zzz' particles drifting from head + soft cute snore
+        if (now - lastZzzTime > 1100) {
           lastZzzTime = now;
-          const zX = isFacingLeft ? dinoX + 4 : dinoX + spriteW - 14;
+          const zX = isFacingLeft ? dinoX + 6 : dinoX + spriteW - 14;
           const zY = dinoY + 4;
           spawnZzz(zX, zY);
+          playSnoreSound();
         }
         break;
 
@@ -1074,8 +1140,30 @@
       isFacingLeft = false;
     }
 
+    /* ── E. Footprint Trail (appears when walking/running across screen) ── */
+    if (currentSpeed > 0.4 && (currentState === STATES.LAZY_FOLLOW || currentState === STATES.WALKING_TO_FOOD || currentState === STATES.CHASING)) {
+      const footX = dinoX + (isFacingLeft ? spriteW * 0.72 : spriteW * 0.28);
+      const footY = dinoY + spriteH - PX;
+      spawnFootprint(footX, footY, fg);
+    }
+
+    // Render fading minimalist 3-claw footprint marks
+    for (let i = footprints.length - 1; i >= 0; i--) {
+      const fp = footprints[i];
+      fp.life -= fp.decay;
+      if (fp.life <= 0) { footprints.splice(i, 1); continue; }
+      ctx.fillStyle = fp.color;
+      ctx.globalAlpha = fp.life * 0.22;
+      const fx = Math.round(fp.x);
+      const fy = Math.round(fp.y);
+      ctx.fillRect(fx - PX, fy - PX, PX, PX);               // Left claw
+      ctx.fillRect(fx, fy - Math.round(PX * 1.5), PX, PX); // Middle claw
+      ctx.fillRect(fx + PX, fy - PX, PX, PX);               // Right claw
+      ctx.fillRect(fx - PX * 0.5, fy, PX * 2, PX);          // Heel pad
+    }
+
     /* ── E2. Sprint Dust & Sprint Sound ── */
-    if (currentState === STATES.CHASING && currentSpeed > 2.8) {
+    if (currentState === STATES.CHASING && currentSpeed > 2.6) {
       const trailingFootX = dinoX + (isFacingLeft ? spriteW * 0.8 : spriteW * 0.2);
       const trailingFootY = dinoY + spriteH - 2 * PX;
       const moveDir = velX !== 0 ? Math.sign(velX) : (isFacingLeft ? -1 : 1);
@@ -1214,10 +1302,10 @@
       }
     }
 
-    // Chubby sitting pose when sleeping, normal standing/walking otherwise
+    // Curled cat pose when sleeping, normal standing/walking otherwise
     let fullDinoMatrix;
     if (currentState === STATES.SLEEPING) {
-      fullDinoMatrix = DINO_SITTING_CHUBBY;
+      fullDinoMatrix = DINO_CAT_SLEEP;
       verticalBob = 0;
     } else {
       fullDinoMatrix = [...activeHead, ...activeLegs];
