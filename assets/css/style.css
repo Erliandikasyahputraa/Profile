@@ -83,6 +83,43 @@ button { font:inherit; background:none; border:none; }
 ul,ol { list-style:none; }
 h1,h2,h3,h4,h5 { font-family:var(--font-display); }
 
+/* ── CUSTOM SLIM EXPEDITION SCROLLBAR (All Pages & Containers) ── */
+/* Standard Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted) var(--bg);
+}
+
+/* WebKit (Chrome, Edge, Safari, Opera) */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 999px;
+  border: 1.5px solid var(--bg);
+  transition: background 180ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fg);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--fg);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--bg);
+}
+
 /* ── 3. GRAIN ───────────────────────────────── */
 .grain {
   position:fixed; inset:0; pointer-events:none; z-index:9995;
