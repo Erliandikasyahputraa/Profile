@@ -28,7 +28,7 @@
      1. TUNING PARAMETERS
   ═══════════════════════════════════════════════════════════ */
   const PX               = 2;       // Smaller pixel blocks — cursor-sized
-  const IDLE_MS          = 1800;    // ms before hunt starts
+  const IDLE_MS          = 1200;    // ms before hunt starts (1.2 detik, cepat & responsif!)
   const IDLE_SLEEP_MS    = 15000;   // ms idle before stuffed sleep (15 seconds)
   const ANTICIPATE_MS    = 200;
 
@@ -1031,13 +1031,13 @@
             stateTimer   = now;
             spawnBiteCrumbs(foodX, foodY);
             playEatSound();
-          } else if (idleChaseCount < 3) {
-            // 3 times: normal walking approach to drumstick
-            currentState = STATES.WALKING_TO_FOOD;
+          } else if (distToFood > 120 || idleChaseCount >= 1) {
+            // Jarak cukup jauh (> 120px) ATAU bergantian: LANGSUNG Mode Hunter Sprint!
+            currentState = STATES.WAITING;
             stateTimer   = now;
           } else {
-            // 4th time: hunter sprint mode
-            currentState = STATES.WAITING;
+            // Jarak sangat dekat: jalan santai biasa
+            currentState = STATES.WALKING_TO_FOOD;
             stateTimer   = now;
           }
         }
