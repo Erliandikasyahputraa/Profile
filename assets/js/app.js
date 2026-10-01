@@ -319,197 +319,179 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isIndo = window.currentLang === 'id';
 
-    const gitCommits = isIndo ? [
+    const milestones = isIndo ? [
       {
-        hash: '7f01c2',
-        tag: 'v2026.1-AIML',
-        branch: 'feat/data-mining-eda',
-        commitMsg: 'feat(sains-data): bimbing praktikum data mining & algoritma pemodelan prediktif',
+        category: 'Akademik & Pengajaran',
+        period: 'Maret 2026',
         role: 'Instruktur Praktikum & Pemateri Data Mining',
         org: 'Fakultas Sains dan Teknologi, UIN Suska Riau',
-        period: 'Mar 2026',
-        telemetry: 'Pra-pemrosesan Data · EDA · Klasifikasi & Clustering',
-        hook: 'Bagaimana menyederhanakan pra-pemrosesan dataset dan algoritma prediktif agar mudah diimplementasikan mahasiswa?',
-        tech: ['Python', 'Pandas & NumPy', 'Scikit-Learn', 'EDA & Modeling', 'Data Preprocessing'],
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Membimbing mahasiswa dalam pra-pemrosesan dataset, analisis data eksploratif (EDA), dan penerapan algoritma machine learning.',
+        responsibilities: 'Mengampu sesi praktikum laboratorium data mining dan workshop teknis. Membimbing 60+ mahasiswa dalam tahapan pra-pemrosesan dataset, eksplorasi fitur (EDA), pemodelan prediktif, serta penelusuran kesalahan kode (debugging) algoritma klasifikasi dan klasterisasi.',
+        highlights: 'Pra-pemrosesan Dataset · EDA · Algoritma Klasifikasi & Klasterisasi',
+        tech: ['Python', 'Pandas & NumPy', 'Scikit-Learn', 'EDA', 'Google Colab'],
         expIndex: 0,
       },
       {
-        hash: '4e92d8',
-        tag: 'v2025.4-LEAD',
-        branch: 'core/git-workflows-sop',
-        commitMsg: 'feat(rekayasa): standardisasi protokol branching Git & alur review kode',
+        category: 'Kepemimpinan Rekayasa',
+        period: 'Nov 2024 – Des 2025',
         role: 'Ketua Divisi Rekayasa Perangkat Lunak',
         org: 'Puzzle Research Data Technology (Predatech)',
-        period: 'Nov 2024 – Des 2025',
-        telemetry: 'Protokol Percabangan · Alur Review Kode · SOP Teknis',
-        hook: 'Bagaimana mengoordinasikan tim pengembang multi-disiplin melalui alur branching Git terstruktur, review kode, dan SOP arsitektur?',
-        tech: ['Git & GitHub', 'Code Review Workflows', 'Systems Analysis', 'Technical Documentation', 'Branching SOPs'],
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Memimpin tim pengembang perangkat lunak, standardisasi alur kerja Git/GitHub, dan penyusunan SOP teknis.',
+        responsibilities: 'Memimpin sesi analisis sistem dan pemecahan masalah teknis lintas tim pengembang. Menstandarisasi alur version control, protokol branching, dan peninjauan kode (code review) menggunakan Git dan GitHub, serta menyusun dokumentasi teknis dan Standar Operasional Prosedur (SOP) divisi.',
+        highlights: 'Standarisasi Alur Git · Review Kode · Penyusunan SOP Teknis',
+        tech: ['Git & GitHub', 'Code Review Workflows', 'Systems Analysis', 'Technical SOPs', 'Team Leadership'],
         expIndex: 1,
       },
       {
-        hash: '9c3b12',
-        tag: 'v2024.4-DIRECTOR',
-        branch: 'lead/institutional-milad',
-        commitMsg: 'lead(tata-kelola): koordinasi 6 divisi operasional perhelatan 500+ peserta',
+        category: 'Kepemimpinan Operasional',
+        period: 'Sep 2024 – Nov 2024',
         role: 'Project Director Acara',
         org: 'Milad Sistem Informasi ke-22, UIN Suska Riau',
-        period: 'Sep 2024 – Nov 2024',
-        telemetry: '500+ Peserta · 6 Divisi Kerja · Manajemen Kontinjensi',
-        hook: 'Bagaimana menjaga kelancaran alur operasional acara institusional dan mitigasi krisis lapangan di bawah tenggat waktu yang ketat?',
-        tech: ['Project Management', 'Operational Governance', 'Crisis Resolution', 'Resource Allocation'],
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Memimpin tata kelola operasional acara perhelatan 500+ peserta dengan koordinasi 6 divisi kerja.',
+        responsibilities: 'Memimpin perencanaan strategis dan eksekusi operasional acara perhelatan institusional dengan 500+ peserta. Mengoordinasikan 6 divisi operasional lintas fungsi di bawah tenggat waktu ketat, serta mengelola mitigasi kendala teknis audio-visual dan logistik di lapangan.',
+        highlights: '500+ Peserta · 6 Divisi Kerja · Manajemen Kontinjensi Lapangan',
+        tech: ['Project Management', 'Operational Leadership', 'Logistics & Budgeting', 'Contingency Planning'],
         expIndex: 4,
       },
       {
-        hash: 'd2c18f',
-        tag: 'v2024.3-INFRA',
-        branch: 'infra/campus-wlan-rollout',
-        commitMsg: 'deploy(jaringan): instalasi & konfigurasi 256 Ruijie access point di 14 gedung',
+        category: 'Infrastruktur Jaringan',
+        period: 'Jun 2024 – Agu 2024',
         role: 'Teknisi Implementasi Infrastruktur Jaringan',
         org: 'Tim Infrastruktur Jaringan, UIN Sultan Syarif Kasim Riau',
-        period: 'Jun 2024 – Agu 2024',
-        telemetry: '256 Titik Ruijie AP · 14 Gedung Kampus · Terminasi Patch Panel',
-        hook: 'Bagaimana menggelar jaringan WLAN kampus di 14 gedung bertingkat dengan redaman beton tebal dan memastikan konektivitas 100% stabil?',
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Penggelaran dan konfigurasi 256 wireless access point Ruijie di 14 gedung kampus bertingkat.',
+        responsibilities: 'Memasang dan mengonfigurasi 256 Ruijie wireless access point di 14 gedung fakultas bertingkat bersama tim infrastruktur 13 orang. Melakukan penarikan kabel UTP terstruktur, perutean pipa conduit, terminasi konektor RJ45 dan patch panel, serta pengujian konektivitas LAN/WLAN secara sistematis.',
+        highlights: '256 Access Point Ruijie · 14 Gedung Kampus · Pengkabelan UTP & Patch Panel',
         tech: ['Ruijie Wireless APs', 'UTP Structured Cabling', 'Patch Panels & RJ45', 'Cable Continuity Testing', 'WLAN Setup'],
         expIndex: 5,
       },
       {
-        hash: 'c8d34a',
-        tag: 'v2024.2-MOBILE',
-        branch: 'mobile/compose-mvvm',
-        commitMsg: 'feat(mobile-native): bangun aplikasi Android Penny Path & pimpin tim capstone',
+        category: 'Pengembangan Mobile',
+        period: 'Feb 2024 – Jul 2024',
         role: 'Lulusan Mobile Development & Leader Tim Capstone',
         org: 'Google Bangkit Academy (Google, GoTo, Traveloka)',
-        period: 'Feb 2024 – Jul 2024',
-        telemetry: 'Jetpack Compose · Arsitektur MVVM · Integrasi Model ML',
-        hook: 'Bagaimana mengintegrasikan model rekomendasi Machine Learning dan endpoint Cloud ke dalam aplikasi Android native dengan performa 60 FPS?',
+        location: 'Program Nasional (Remote)',
+        shortDesc: 'Pengembangan aplikasi Android native Penny Path dengan Kotlin Jetpack Compose dan arsitektur MVVM.',
+        responsibilities: 'Menuntaskan kurikulum intensif rekayasa Android native: Kotlin, Android SDK, Jetpack Compose, arsitektur MVVM, Coroutines, Room Database, dan Retrofit. Memimpin tim mobile development pada proyek capstone Penny Path, mengintegrasikan REST API cloud dan model rekomendasi machine learning.',
+        highlights: 'Android Native Kotlin · Jetpack Compose · Arsitektur MVVM · Integrasi ML',
         tech: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'MVVM', 'Retrofit', 'Coroutines & Flow'],
         expIndex: 6,
       },
       {
-        hash: 'e9a47b',
-        tag: 'v2023.1-SYS',
-        branch: 'sys/lab-infrastructure',
-        commitMsg: 'ops(workstation): pelihara 83 unit PC & pastikan nol downtime ujian praktikum',
+        category: 'Dukungan Sistem & Laboratorium',
+        period: 'Sep 2023 – Jun 2024',
         role: 'Asisten Laboratorium & IT Support',
         org: 'Fakultas Sains dan Teknologi, UIN Suska Riau',
-        period: 'Sep 2023 – Jun 2024',
-        telemetry: '83 Workstation · 3 Lab Komputasi · Kesiapan Operasional 100%',
-        hook: 'Bagaimana menjaga kesiapan operasional 83 workstation komputer di 3 laboratorium selama periode ujian praktikum tanpa gangguan sistem?',
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Pemeliharaan 83 workstation komputer di 3 laboratorium, penataan switch LAN, dan instalasi OS massal.',
+        responsibilities: 'Menjaga kesiapan operasional 83 workstation komputer di 3 laboratorium komputasi melalui diagnostik preventif, pemeliharaan perangkat keras, dan isolasi kerusakan komponen. Mengonfigurasi lingkungan sistem operasi Windows, perangkat lunak akademik, koneksi switch LAN, dan pengkabelan patch cord tanpa insiden downtime saat ujian praktikum.',
+        highlights: '83 Workstation Komputer · 3 Laboratorium Komputasi · Pemeliharaan Hardware & LAN',
         tech: ['Hardware Diagnostics', 'Windows OS Deployment', 'IPv4 & Subnetting', 'LAN Switch Patching', 'Cisco Packet Tracer'],
         expIndex: 7,
       },
     ] : [
       {
-        hash: '7f01c2',
-        tag: 'v2026.1-AIML',
-        branch: 'feat/data-mining-eda',
-        commitMsg: 'feat(ai-edu): instruct data mining practicum & predictive modeling algorithms',
+        category: 'Academic & Instruction',
+        period: 'March 2026',
         role: 'Data Mining Practicum Instructor & Workshop Speaker',
         org: 'Faculty of Science and Technology, UIN Suska Riau',
-        period: 'Mar 2026',
-        telemetry: 'Data Preprocessing · EDA · Classification & Clustering',
-        hook: 'How do you systematically bridge data science theory into robust preprocessing pipelines and predictive models?',
-        tech: ['Python', 'Pandas & NumPy', 'Scikit-Learn', 'EDA & Modeling', 'Data Preprocessing'],
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Instructed lab sessions on dataset preprocessing, exploratory data analysis (EDA), and machine learning algorithms.',
+        responsibilities: 'Instructed data mining practicum sessions and technical workshops for undergraduate engineering students. Guided 60+ students through dataset preprocessing, exploratory data analysis (EDA), predictive modeling concepts, and practical implementations of classification and clustering algorithms.',
+        highlights: 'Dataset Preprocessing · EDA · Classification & Clustering Algorithms',
+        tech: ['Python', 'Pandas & NumPy', 'Scikit-Learn', 'EDA', 'Google Colab'],
         expIndex: 0,
       },
       {
-        hash: '4e92d8',
-        tag: 'v2025.4-LEAD',
-        branch: 'core/git-workflows-sop',
-        commitMsg: 'feat(eng-core): govern version control workflows & standard operating procedures',
+        category: 'Engineering Leadership',
+        period: 'Nov 2024 – Dec 2025',
         role: 'Head of Software Engineering Division',
         org: 'Puzzle Research Data Technology (Predatech)',
-        period: 'Nov 2024 – Dec 2025',
-        telemetry: 'Branching Protocols · Code Review Workflows · Technical SOPs',
-        hook: 'How do you coordinate multidisciplinary developer teams through structured Git branching protocols, code reviews, and architectural SOPs?',
-        tech: ['Git & GitHub', 'Code Review Workflows', 'Systems Analysis', 'Technical Documentation', 'Branching SOPs'],
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Led software development teams, standardized Git/GitHub workflows, and authored technical SOPs.',
+        responsibilities: 'Led technical problem-solving sessions and structured systems analysis across multidisciplinary teams. Standardized collaborative version control and code review workflows using Git and GitHub, establishing branch protocols and authoring engineering Standard Operating Procedures (SOPs).',
+        highlights: 'Git Branching Protocols · Code Review Standards · Engineering SOPs',
+        tech: ['Git & GitHub', 'Code Review Workflows', 'Systems Analysis', 'Technical SOPs', 'Team Leadership'],
         expIndex: 1,
       },
       {
-        hash: '9c3b12',
-        tag: 'v2024.4-DIRECTOR',
-        branch: 'lead/institutional-milad',
-        commitMsg: 'lead(ops-governance): govern 6 operational divisions for 500+ participant institutional event',
+        category: 'Operational Leadership',
+        period: 'Sep 2024 – Nov 2024',
         role: 'Event Project Director',
         org: 'The 22nd Information Systems Anniversary, UIN Suska Riau',
-        period: 'Sep 2024 – Nov 2024',
-        telemetry: '500+ Participants · 6 Operating Divisions · Zero Critical Blocker',
-        hook: 'How do you maintain strict operational continuity and rapid contingency resolution under live high-stakes event pressure?',
-        tech: ['Project Management', 'Operational Governance', 'Crisis Resolution', 'Resource Allocation'],
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Directed operational execution for an institutional event with 500+ participants across 6 divisions.',
+        responsibilities: 'Directed operational planning and execution for an institutional event with 500+ participants, governing 6 cross-functional operational divisions under strict deadlines. Managed live contingency resolution, addressing audio-visual technical disruptions and vendor logistics under high pressure.',
+        highlights: '500+ Participants · 6 Operating Divisions · Live Crisis Resolution',
+        tech: ['Project Management', 'Operational Leadership', 'Logistics & Budgeting', 'Contingency Planning'],
         expIndex: 4,
       },
       {
-        hash: 'd2c18f',
-        tag: 'v2024.3-INFRA',
-        branch: 'infra/campus-wlan-rollout',
-        commitMsg: 'deploy(wlan): provision 256 enterprise Ruijie APs across 14 multi-story campus buildings',
+        category: 'Network Infrastructure',
+        period: 'Jun 2024 – Aug 2024',
         role: 'Network Infrastructure Deployment Technician',
         org: 'Network Infrastructure Team, UIN Sultan Syarif Kasim Riau',
-        period: 'Jun 2024 – Aug 2024',
-        telemetry: '256 Ruijie AP Nodes · 14 Multi-Story Buildings · Patch Panel Terminations',
-        hook: 'How do you deploy 256 enterprise access points across 14 multi-story concrete buildings with zero link failures?',
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Deployed and configured 256 Ruijie wireless access points across 14 multi-story campus buildings.',
+        responsibilities: 'Deployed and configured 256 Ruijie wireless access points across 14 multi-story campus buildings collaborating within a 13-person infrastructure team. Executed structured UTP cable pulling, conduit routing, patch panel terminations, and systematic LAN/WLAN connectivity testing prior to handover.',
+        highlights: '256 Ruijie Wireless APs · 14 Campus Buildings · Structured UTP & Patch Panels',
         tech: ['Ruijie Wireless APs', 'UTP Structured Cabling', 'Patch Panels & RJ45', 'Cable Continuity Testing', 'WLAN Setup'],
         expIndex: 5,
       },
       {
-        hash: 'c8d34a',
-        tag: 'v2024.2-MOBILE',
-        branch: 'mobile/compose-mvvm',
-        commitMsg: 'feat(android-arch): engineer Penny Path native app & coordinate capstone integration',
+        category: 'Mobile Development',
+        period: 'Feb 2024 – Jul 2024',
         role: 'Mobile Development Cohort Graduate & Capstone Lead',
         org: 'Google Bangkit Academy (Google, GoTo, Traveloka)',
-        period: 'Feb 2024 – Jul 2024',
-        telemetry: 'Jetpack Compose · MVVM Clean Architecture · 60 FPS Native UI',
-        hook: 'How do you coordinate mobile, cloud, and machine learning tracks to build an AI-integrated personal finance Android application?',
+        location: 'National Cohort (Remote)',
+        shortDesc: 'Engineered native Android app Penny Path using Kotlin, Jetpack Compose, and Clean MVVM architecture.',
+        responsibilities: 'Completed rigorous Android native engineering curriculum: Kotlin, Android SDK, Jetpack Compose, MVVM Clean Architecture, Coroutines, Room Database, and Retrofit. Led the mobile development track for capstone product Penny Path, integrating cloud REST APIs and machine learning recommendation models.',
+        highlights: 'Native Android Kotlin · Jetpack Compose · MVVM Clean Architecture · ML Integration',
         tech: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'MVVM', 'Retrofit', 'Coroutines & Flow'],
         expIndex: 6,
       },
       {
-        hash: 'e9a47b',
-        tag: 'v2023.1-SYS',
-        branch: 'sys/lab-infrastructure',
-        commitMsg: 'ops(workstations): maintain 83 computing nodes & zero-downtime exam infrastructure',
+        category: 'IT Systems & Lab Support',
+        period: 'Sep 2023 – Jun 2024',
         role: 'IT Support & Laboratory Assistant',
         org: 'Faculty of Science and Technology, UIN Suska Riau',
-        period: 'Sep 2023 – Jun 2024',
-        telemetry: '83 Computing Workstations · 3 Laboratories · 0 Exam Downtime',
-        hook: 'How do you maintain 100% workstation operational readiness across 3 computing laboratories during consecutive exam sessions?',
+        location: 'Pekanbaru, Riau',
+        shortDesc: 'Maintained 83 computer workstations across 3 labs, LAN switch configurations, and OS deployments.',
+        responsibilities: 'Maintained operational readiness for 83 computer workstations across 3 computing laboratories through preventive diagnostics, corrective maintenance, and hardware fault isolation. Standardized computing environments through clean Windows OS installations, academic toolchains, LAN switch patching, and IPv4 configurations with zero downtime during examinations.',
+        highlights: '83 Computer Workstations · 3 Laboratories · Zero Exam Downtime',
         tech: ['Hardware Diagnostics', 'Windows OS Deployment', 'IPv4 & Subnetting', 'LAN Switch Patching', 'Cisco Packet Tracer'],
         expIndex: 7,
       },
     ];
 
     const hudLabels = {
-      headerId: isIndo ? 'TELEMETRI_SISTEM' : 'TELEMETRY_HUD',
-      status: isIndo ? 'TERVERIFIKASI' : 'COMMITTED',
-      hookLabel: isIndo ? 'TANTANGAN REKAYASA SISTEM:' : 'THE ENGINEERING CHALLENGE:',
-      actionBtn: isIndo ? 'LIHAT DETAIL PENGALAMAN' : 'INSPECT DEEP-DIVE IN EXPERIENCE',
+      responsibilitiesLabel: isIndo ? 'Tanggung Jawab Utama:' : 'Key Responsibilities:',
+      highlightsLabel: isIndo ? 'Fokus & Capaian:' : 'Key Focus & Deliverables:',
+      actionBtn: isIndo ? 'Lihat Detail Pengalaman' : 'View Full Experience Details',
     };
 
     function renderHud(c) {
       gitHud.innerHTML = `
         <div class="git-hud-card">
           <div class="git-hud-header">
-            <span class="git-hud-terminal-id">${hudLabels.headerId} // ${c.hash}</span>
-            <span class="git-hud-status">${hudLabels.status}</span>
+            <span class="git-hud-cat">${c.category}</span>
+            <span class="git-hud-period">${c.period}</span>
           </div>
 
-          <div class="git-hud-meta">
-            <span class="git-hud-branch">${c.branch}</span>
-            <span class="git-hud-dot">·</span>
-            <span class="git-hud-org">${c.org}</span>
+          <h3 class="git-hud-role">${c.role}</h3>
+          <div class="git-hud-org">${c.org} · <span class="git-hud-loc">${c.location}</span></div>
+
+          <div class="git-hud-summary-box">
+            <span class="git-hud-summary-label">${hudLabels.responsibilitiesLabel}</span>
+            <p class="git-hud-summary-text">${c.responsibilities}</p>
           </div>
 
-          <h4 class="git-hud-role">${c.role}</h4>
-
-          <div class="git-hud-hook-box">
-            <span class="git-hud-hook-label">${hudLabels.hookLabel}</span>
-            <p class="git-hud-hook-text">"${c.hook}"</p>
-          </div>
-
-          <div class="git-hud-telemetry-badge">
-            <span class="git-hud-telemetry-icon">⚡</span>
-            <span class="git-hud-telemetry-val">${c.telemetry}</span>
+          <div class="git-hud-highlights-box">
+            <span class="git-hud-highlights-label">${hudLabels.highlightsLabel}</span>
+            <span class="git-hud-highlights-val">${c.highlights}</span>
           </div>
 
           <div class="git-hud-tech-row">
@@ -519,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="git-hud-footer">
             <a href="pages/experience.html" class="git-hud-action-btn" data-exp="${c.expIndex}">
               <span>${hudLabels.actionBtn}</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
           </div>
         </div>
@@ -531,12 +513,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    gitCommits.forEach((c, idx) => {
+    milestones.forEach((c, idx) => {
       const item = el('div', {
         class: `git-commit-node ${idx === 0 ? 'active' : ''}`,
         tabindex: '0',
         role: 'button',
-        'aria-label': `${c.tag}: ${c.role}`,
+        'aria-label': `${c.category}: ${c.role}`,
       });
 
       item.innerHTML = `
@@ -545,11 +527,12 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="git-commit-content">
           <div class="git-commit-header">
-            <span class="git-commit-hash">${c.hash}</span>
-            <span class="git-commit-tag">${c.tag}</span>
+            <span class="git-node-badge">${c.category}</span>
             <span class="git-commit-period">${c.period}</span>
           </div>
-          <p class="git-commit-msg">${c.commitMsg}</p>
+          <h4 class="git-node-role">${c.role}</h4>
+          <p class="git-node-org">${c.org}</p>
+          <p class="git-node-desc">${c.shortDesc}</p>
         </div>
       `;
 
@@ -572,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial render
-    renderHud(gitCommits[0]);
+    renderHud(milestones[0]);
   }
 
 

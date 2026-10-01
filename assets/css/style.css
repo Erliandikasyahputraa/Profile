@@ -4430,40 +4430,48 @@ html.theme-transitioning .project-card {
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.25rem;
 }
-.git-commit-hash {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  font-weight: 700;
-  color: var(--muted);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 1px 6px;
-  border-radius: 3px;
-}
-.git-commit-tag {
+.git-node-badge {
   font-family: var(--font-mono);
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--fg);
+  color: var(--muted);
+  text-transform: uppercase;
 }
 .git-commit-period {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   color: var(--muted-soft);
   margin-left: auto;
 }
-.git-commit-msg {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
+.git-node-role {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: var(--fg);
+  margin: 0.2rem 0 0.15rem;
+  line-height: 1.35;
+}
+.git-node-org {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0 0 0.35rem;
+  line-height: 1.4;
+}
+.git-node-desc {
+  font-size: 0.75rem;
+  color: var(--muted-soft, var(--muted));
   line-height: 1.45;
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* Right: Telemetry HUD Inspector */
+/* Right: Detail Inspector Card */
 .git-graph-hud {
   position: sticky;
   top: 6rem;
@@ -4484,81 +4492,86 @@ html.theme-transitioning .project-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 0.875rem;
   padding-bottom: 0.625rem;
   border-bottom: 1px solid var(--border);
 }
-.git-hud-terminal-id {
+.git-hud-cat {
   font-family: var(--font-mono);
   font-size: 0.625rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--muted);
+  text-transform: uppercase;
 }
-.git-hud-status {
-  font-family: var(--font-mono);
-  font-size: 0.5625rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  background: #10b98122;
-  color: #10b981;
-  border: 1px solid #10b98144;
-  padding: 2px 6px;
-  border-radius: 3px;
-}
-.git-hud-meta {
+.git-hud-period {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   color: var(--muted);
-  margin-bottom: 0.35rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
 }
 .git-hud-role {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--fg);
-  margin-bottom: 1.15rem;
+  margin: 0 0 0.35rem;
   line-height: 1.3;
 }
-.git-hud-hook-box {
+.git-hud-org {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  line-height: 1.4;
+}
+.git-hud-loc {
+  color: var(--muted-soft);
+}
+.git-hud-summary-box {
   background: var(--bg);
-  border-left: 3px solid var(--fg);
-  padding: 0.875rem 1rem;
+  border-left: 2px solid var(--fg);
+  padding: 0.875rem 1.15rem;
   margin-bottom: 1.25rem;
   border-radius: 0 4px 4px 0;
 }
-.git-hud-hook-label {
+.git-hud-summary-label {
   display: block;
   font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  font-size: 0.625rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--muted);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
 }
-.git-hud-hook-text {
+.git-hud-summary-text {
   font-size: 0.8125rem;
   color: var(--fg);
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
-  font-style: italic;
 }
-.git-hud-telemetry-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+.git-hud-highlights-box {
+  margin-bottom: 1.25rem;
+}
+.git-hud-highlights-label {
+  display: block;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+.git-hud-highlights-val {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: var(--fg);
   background: var(--border);
   padding: 6px 12px;
   border-radius: 4px;
-  margin-bottom: 1.25rem;
+  line-height: 1.4;
 }
 .git-hud-tech-row {
   display: flex;
@@ -4568,11 +4581,12 @@ html.theme-transitioning .project-card {
 }
 .git-hud-tech-pill {
   font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  font-size: 0.625rem;
   color: var(--muted);
   border: 1px solid var(--border);
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 999px;
+  background: var(--bg);
 }
 .git-hud-footer {
   border-top: 1px solid var(--border);
@@ -4582,10 +4596,8 @@ html.theme-transitioning .project-card {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--fg);
   text-decoration: none;
   background: transparent;

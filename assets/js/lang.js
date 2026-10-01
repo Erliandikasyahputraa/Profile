@@ -33,9 +33,9 @@
 
       // Section Labels
       section_journey_label: 'Career Journey',
-      journey_sub: 'Developer commit topology, enterprise network deployment, and system evolution milestones.',
+      journey_sub: 'A timeline of roles, leadership, infrastructure deployments, and software engineering work.',
       journey_explore_cta: 'Explore the full journey',
-      exp_view_all: 'Full Dossier (8)',
+      exp_view_all: 'View All Experience',
       section_projects_label: 'Selected Projects',
 
       // Projects Trailer & Archive
@@ -103,13 +103,13 @@
 
       // Map Labels
       map_basecamp: 'BASECAMP',
-      map_dest_badge: '✦ THE NEXT CHAPTER',
+      map_dest_badge: 'THE NEXT CHAPTER',
       map_dest_title: 'Our Collaboration?',
       map_dest_cta: "Let's build together →",
 
       // Certifications
-      certs_heading: 'Certifications & Professional Credentials',
-      cert_verify: 'VERIFIED CREDENTIAL',
+      certs_heading: 'Certifications & Qualifications',
+      cert_verify: 'OFFICIAL CERTIFICATE',
       cert_btn_expand: 'EXPAND',
       cert_btn_pdf: 'PDF',
 
@@ -146,9 +146,9 @@
 
       // Section Labels
       section_journey_label: 'Perjalanan Karier',
-      journey_sub: 'Topologi rekayasa sistem, deployment infrastruktur, dan evolusi teknis.',
+      journey_sub: 'Linimasa peran, kepemimpinan, deployment infrastruktur, dan rekayasa perangkat lunak.',
       journey_explore_cta: 'Jelajahi linimasa lengkap',
-      exp_view_all: 'Lihat Semua (8)',
+      exp_view_all: 'Lihat Semua Pengalaman',
       section_projects_label: 'Proyek Pilihan',
 
       // Projects Trailer & Archive
@@ -216,13 +216,13 @@
 
       // Map Labels
       map_basecamp: 'BASECAMP',
-      map_dest_badge: '✦ LANGKAH BERIKUTNYA',
+      map_dest_badge: 'LANGKAH BERIKUTNYA',
       map_dest_title: 'Kolaborasi Kita?',
       map_dest_cta: 'Mari Membangun Bersama →',
 
       // Certifications
-      certs_heading: 'Sertifikasi & Kredensial Profesi',
-      cert_verify: 'KREDENSIAL TERVERIFIKASI',
+      certs_heading: 'Sertifikasi & Kualifikasi',
+      cert_verify: 'SERTIFIKAT RESMI',
       cert_btn_expand: 'PERBESAR',
       cert_btn_pdf: 'PDF',
 
