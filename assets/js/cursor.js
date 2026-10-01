@@ -500,43 +500,27 @@
     isTouchActive = false;
     mouseX = e.clientX;
     mouseY = e.clientY;
+    foodX  = mouseX;
+    foodY  = mouseY;
     lastMouseMoveTime = performance.now();
+    mouseInside = true;
 
     if (!hasMoved) {
       hasMoved = true;
-      foodX    = mouseX;
-      foodY    = mouseY;
       if (isManualResting) {
         const bed = getBedPos();
         dinoX = bed.x;
         dinoY = bed.y;
         currentState = STATES.SLEEPING;
         isFacingLeft = true;
-        foodVisible = false;
       } else {
         dinoX = Math.max(10, Math.min(W - 80, mouseX - INIT_OFFSET_X));
         dinoY = Math.max(10, Math.min(H - 60, mouseY + INIT_OFFSET_Y));
-        document.documentElement.classList.add('custom-cursor-active');
       }
     }
-    mouseInside = true;
-    if (!isManualResting && currentState !== STATES.GOING_TO_BED && currentState !== STATES.SLEEPING) {
-      document.documentElement.classList.add('custom-cursor-active');
-    }
 
-    // Check if hovering over clickable / interactive elements
-    const target = e.target;
-    if (target && target.closest) {
-      isHoveringClickable = !!target.closest(
-        'a, button, [role="button"], [role="tab"], input, select, textarea, label, ' +
-        '.project-card, .parow, .hero__photo, .fan-card, [tabindex], .map-waypoint-group, ' +
-        '.map-mystery-group, .pdetail__thumb-btn, .navbar__lang-pill, .navbar__toggle, .dino-toggle-btn'
-      );
-    } else {
-      isHoveringClickable = false;
-    }
-
-    if (isManualResting || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
+    if (isManualResting) {
+      // Dino is manually parked in corner -> Keep native browser cursor
       document.documentElement.classList.remove('custom-cursor-active');
       foodVisible = false;
       const spriteW = 26 * PX;
@@ -548,24 +532,36 @@
         e.clientY <= dinoY + spriteH + 10
       );
       document.body.style.cursor = isOverDino ? 'pointer' : '';
+      return;
+    }
+
+    // T-Rex is ACTIVE: Always show custom cursor
+    document.body.style.cursor = '';
+    foodVisible = true;
+    document.documentElement.classList.add('custom-cursor-active');
+
+    // Check if hovering over clickable / interactive elements
+    const target = e.target;
+    if (target && target.closest) {
+      isHoveringClickable = !!target.closest(
+        'a, button, [role="button"], [role="tab"], input, select, textarea, label, ' +
+        '.project-card, .parow, .hero__photo, .fan-card, [tabindex], .map-waypoint-group, ' +
+        '.map-mystery-group, .pdetail__thumb-btn, .navbar__lang-pill, .navbar__toggle, .navbar__dino-btn'
+      );
     } else {
-      document.body.style.cursor = '';
+      isHoveringClickable = false;
     }
 
     if (currentState === STATES.SLEEPING) {
-      if (!isManualResting) {
-        // Waking up: start cute morning cat stretch & yawn transition!
-        currentState = STATES.WAKING;
-        stateTimer   = performance.now();
-        consecutiveEats = 0;
-        zzzParticles.length = 0;
-        playYawnSound();
-      }
+      // Waking up: start cute morning cat stretch & yawn transition!
+      currentState = STATES.WAKING;
+      stateTimer   = performance.now();
+      consecutiveEats = 0;
+      zzzParticles.length = 0;
+      playYawnSound();
     } else if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING || currentState === STATES.WALKING_TO_FOOD) {
-      if (!isManualResting) {
-        currentState = STATES.LAZY_FOLLOW;
-        consecutiveEats = 0;
-      }
+      currentState = STATES.LAZY_FOLLOW;
+      consecutiveEats = 0;
     }
   });
 
@@ -1150,10 +1146,8 @@
     const bg = getBG();
 
     /* ── A. Food tracking ── */
-    if (currentState !== STATES.EATING) {
-      foodX = mouseX;
-      foodY = mouseY;
-    }
+    foodX = mouseX;
+    foodY = mouseY;
 
     const timeSinceMouseMove = now - lastMouseMoveTime;
 
@@ -1245,8 +1239,9 @@
         const eatElapsed = now - stateTimer;
         const progress = Math.min(1.0, eatElapsed / EAT_DURATION);
 
-        foodScale = Math.max(0, 1.0 - progress * 1.8);
-        if (progress > 0.4) foodVisible = false;
+        // Playful chew reaction: gentle squeeze without ever vanishing!
+        foodScale = 1.0 - Math.sin(progress * Math.PI) * 0.16;
+        foodVisible = !isManualResting;
 
         if (progress > 0.30 && progress < 0.36 && biteCrumbs.length < 4) {
           spawnBiteCrumbs(snoutWorldX, snoutWorldY);
@@ -1254,26 +1249,25 @@
 
         if (progress >= 1.0) {
           consecutiveEats++;
+          foodScale = 1.0;
           if (consecutiveEats >= 5) {
             // Eaten 5 times consecutively -> stuffed full, fall asleep!
             currentState = STATES.SLEEPING;
             stateTimer   = now;
-            foodVisible  = true;
-            foodScale    = 1.0;
+            lastZzzTime  = now;
           } else {
             currentState = STATES.SATISFIED;
             stateTimer   = now;
-            foodVisible  = false;
           }
         }
         break;
       }
 
       case STATES.SATISFIED:
+        foodScale = 1.0;
+        foodVisible = !isManualResting;
         if (now - stateTimer >= SATISFIED_PAUSE) {
           currentState = STATES.LAZY_FOLLOW;
-          foodVisible  = true;
-          foodScale    = 1.0;
         }
         break;
 
