@@ -33,9 +33,9 @@
 
       // Section Labels
       section_journey_label: 'Career Journey',
-      journey_sub: 'Milestones from academic foundations to full-stack & cloud systems.',
+      journey_sub: 'Developer commit topology, enterprise network deployment, and system evolution milestones.',
       journey_explore_cta: 'Explore the full journey',
-      exp_view_all: 'View All (8)',
+      exp_view_all: 'Full Dossier (8)',
       section_projects_label: 'Selected Projects',
 
       // Projects Trailer & Archive
@@ -146,7 +146,7 @@
 
       // Section Labels
       section_journey_label: 'Perjalanan Karier',
-      journey_sub: 'Linimasa milestone dari fondasi komputasi hingga sistem cloud & full-stack.',
+      journey_sub: 'Topologi rekayasa sistem, deployment infrastruktur, dan evolusi teknis.',
       journey_explore_cta: 'Jelajahi linimasa lengkap',
       exp_view_all: 'Lihat Semua (8)',
       section_projects_label: 'Proyek Pilihan',

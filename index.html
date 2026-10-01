@@ -193,28 +193,21 @@
       <a href="mailto:syahputraerliandika@gmail.com" class="hero__icon-btn" aria-label="Email">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
       </a>
-      <a href="assets/docs/Global_Master-ENG.pdf" id="cvBtn" target="_blank" rel="noopener noreferrer" download="Global_Master-ENG.pdf" class="hero__cv-btn" aria-label="Download CV" data-i18n-aria-label="aria_download_cv">
+      <a href="assets/docs/ErliandikaSyahputra-CV.pdf" id="cvBtn" target="_blank" rel="noopener noreferrer" download="ErliandikaSyahputra-CV.pdf" class="hero__cv-btn" aria-label="Download CV" data-i18n-aria-label="aria_download_cv">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         CV
       </a>
     </div>
   </section>
 
-  <!-- ═══ CAREER JOURNEY SHOWCASE (3 NON-SLOP EDITORIAL CONCEPTS) ═══ -->
+  <!-- ═══ CAREER JOURNEY SHOWCASE (GIT GRAPH TREE & TELEMETRY HUD) ═══ -->
   <section class="exp-preview container" id="exp-preview" aria-label="Career journey preview">
     <div class="exp-preview__header">
       <div class="exp-preview__header-left">
         <div class="section-label" style="margin-bottom:0.25rem"><span data-i18n="section_journey_label">Career Journey</span></div>
-        <p class="exp-preview__sub">Executive teaser comparing 3 authentic engineering presentations.</p>
+        <p class="exp-preview__sub" data-i18n="journey_sub">Topologi rekayasa sistem, deployment infrastruktur, dan evolusi teknis.</p>
       </div>
       <div class="exp-preview__header-right">
-        <!-- Interactive Concept Filter -->
-        <div class="concept-switcher" role="tablist" aria-label="Concept switcher">
-          <button class="concept-pill active" id="btnConceptAll" type="button">All 3 Concepts</button>
-          <button class="concept-pill" id="btnConcept1" type="button">1. Git Graph Tree</button>
-          <button class="concept-pill" id="btnConcept2" type="button">2. Hardware Console</button>
-          <button class="concept-pill" id="btnConcept3" type="button">3. Capability Matrix</button>
-        </div>
         <a href="pages/experience.html" class="exp-preview__view-all-pill">
           <span data-i18n="exp_view_all">Full Dossier (8)</span>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -222,41 +215,11 @@
       </div>
     </div>
 
-    <!-- ── CONCEPT 1: Git Graph / System Evolution Tree ── -->
+    <!-- Git Graph Tree & Telemetry HUD Layout -->
     <div class="concept-block" id="conceptBlock1">
-      <div class="concept-tagline">
-        <span class="concept-badge">CONCEPT 1 · GIT GRAPH &amp; TELEMETRY HUD</span>
-        <span class="concept-desc">Developer-native commit topology · Live telemetry inspector · Zero fluff curiosity hooks</span>
-      </div>
       <div class="git-graph-layout" id="gitGraphLayout">
         <div class="git-graph-tree" id="gitGraphTree" role="list"></div>
         <div class="git-graph-hud" id="gitGraphHud" role="region" aria-live="polite"></div>
-      </div>
-    </div>
-
-    <!-- ── CONCEPT 2: Hardware Console & Precision Spec Sheet ── -->
-    <div class="concept-block" id="conceptBlock2" style="margin-top: 3.5rem;">
-      <div class="concept-tagline">
-        <span class="concept-badge">CONCEPT 2 · HARDWARE CONSOLE SPEC SHEET</span>
-        <span class="concept-desc">Dieter Rams / Teenage Engineering · Precision rotary era bank · Architectural spec sheet</span>
-      </div>
-      <div class="hw-console" id="hwConsole">
-        <div class="hw-console__deck">
-          <div class="hw-console__led-group" id="hwConsoleBank" role="tablist"></div>
-        </div>
-        <div class="hw-console__screen" id="hwConsoleScreen" role="region" aria-live="polite"></div>
-      </div>
-    </div>
-
-    <!-- ── CONCEPT 3: Capability Radar / T-Shaped Capability Matrix ── -->
-    <div class="concept-block" id="conceptBlock3" style="margin-top: 3.5rem;">
-      <div class="concept-tagline">
-        <span class="concept-badge">CONCEPT 3 · T-SHAPED CAPABILITY MATRIX</span>
-        <span class="concept-desc">Executive engineering matrix · 4 core technological pillars · Depth &amp; cross-disciplinary proof</span>
-      </div>
-      <div class="radar-matrix" id="radarMatrix">
-        <div class="radar-matrix__tabs" id="radarMatrixTabs" role="tablist"></div>
-        <div class="radar-matrix__content" id="radarMatrixContent" role="region" aria-live="polite"></div>
       </div>
     </div>
   </section>

@@ -308,479 +308,273 @@ document.addEventListener('DOMContentLoaded', () => {
     photoContainer.addEventListener('pointerleave', triggerGlitchExit);
   }
 
-  /* ── Upgraded Career Journey Showcase (3 Bespoke Non-Slop Concepts) ── */
+  /* ── Upgraded Career Journey Showcase (Git Graph Tree & Telemetry HUD) ── */
   function buildExpPreviewMap() {
-    const block1 = document.getElementById('conceptBlock1');
-    const block2 = document.getElementById('conceptBlock2');
-    const block3 = document.getElementById('conceptBlock3');
-    if (!block1 && !block2 && !block3) return;
-
-    /* ── CONCEPT FILTER SWITCHER ── */
-    const btnAll = document.getElementById('btnConceptAll');
-    const btn1 = document.getElementById('btnConcept1');
-    const btn2 = document.getElementById('btnConcept2');
-    const btn3 = document.getElementById('btnConcept3');
-
-    function setActiveFilter(activeBtn, show1, show2, show3) {
-      [btnAll, btn1, btn2, btn3].forEach(b => b?.classList.remove('active'));
-      activeBtn?.classList.add('active');
-      if (block1) block1.style.display = show1 ? 'block' : 'none';
-      if (block2) block2.style.display = show2 ? 'block' : 'none';
-      if (block3) block3.style.display = show3 ? 'block' : 'none';
-    }
-
-    btnAll?.addEventListener('click', () => setActiveFilter(btnAll, true, true, true));
-    btn1?.addEventListener('click', () => setActiveFilter(btn1, true, false, false));
-    btn2?.addEventListener('click', () => setActiveFilter(btn2, false, true, false));
-    btn3?.addEventListener('click', () => setActiveFilter(btn3, false, false, true));
-
-    /* ===============================================================
-       CONCEPT 1: GIT GRAPH TREE & TELEMETRY HUD (Developer-Native)
-       =============================================================== */
     const gitTree = document.getElementById('gitGraphTree');
     const gitHud = document.getElementById('gitGraphHud');
+    if (!gitTree || !gitHud) return;
 
-    if (gitTree && gitHud) {
-      gitTree.innerHTML = '';
-      gitHud.innerHTML = '';
+    gitTree.innerHTML = '';
+    gitHud.innerHTML = '';
 
-      const gitCommits = [
-        {
-          hash: 'a7f01c',
-          tag: 'v2026.1-PROD',
-          branch: 'release/gov-tech',
-          commitMsg: 'feat(portal): architect offline-resilient public information portal',
-          role: 'Frontend Architect & Info Systems',
-          org: 'Desa Air Putih',
-          period: 'Jan 2026 – Feb 2026',
-          telemetry: '70% Payload Slashed · <90kB Mobile Bundle',
-          hook: 'How do you guarantee critical civic services remain functional under unstable rural 3G networks?',
-          tech: ['React 19', 'TypeScript', 'Vite 6', 'Tailwind 4', 'JSON-LD'],
-          expIndex: 7,
-        },
-        {
-          hash: 'b4e92d',
-          tag: 'v2025.2-NLP',
-          branch: 'feat/emotica-ai',
-          commitMsg: 'feat(nlp-core): productize Indonesian slang Bi-LSTM + Attention inference',
-          role: 'Front-End Lead & Model Integration',
-          org: 'MBKM DBS Coding Camp (Emotica)',
-          period: 'Feb 2025 – Jun 2025',
-          telemetry: '<120ms Latency · 3-Tier Client/Flask Stack',
-          hook: 'How do you translate deep learning NLP models into sub-120ms real-time sentiment visualizations for end-users?',
-          tech: ['Next.js', 'Bi-LSTM', 'Flask API', 'Chart.js', 'Attention'],
-          expIndex: 5,
-        },
-        {
-          hash: 'c8d34a',
-          tag: 'v2024.3-CLOUD',
-          branch: 'release/penny-path',
-          commitMsg: 'feat(mobile-cloud): coordinate 3-tier capstone & Compose native client',
-          role: 'Mobile Dev & Capstone Team Lead',
-          org: 'Bangkit Academy (Google, GoTo, Traveloka)',
-          period: 'Feb 2024 – Jul 2024',
-          telemetry: 'Top Capstone Project · 3 Cross-Disciplinary Teams',
-          hook: 'How do you seamlessly synchronize Kotlin Jetpack Compose clients with asynchronous FastAPI microservices under strict grading?',
-          tech: ['Kotlin', 'Compose', 'FastAPI', 'TensorFlow', 'Android SDK'],
-          expIndex: 4,
-        },
-        {
-          hash: 'd2c18f',
-          tag: 'v2024.1-INFRA',
-          branch: 'infra/campus-wlan',
-          commitMsg: 'deploy(wlan): provision 256 enterprise Ruijie APs across 14 sites',
-          role: 'Network Infrastructure Technician',
-          org: 'Campus Network Operations — UIN Suska',
-          period: 'Feb 2024 – Mar 2024',
-          telemetry: '256 Enterprise APs · 100% Pass Rate',
-          hook: 'How do you eliminate co-channel RF collisions and dead zones across 14 multi-story reinforced concrete buildings?',
-          tech: ['Structured Cat6', 'Ruijie WLAN', 'RF Site Plan', 'Patch Panels'],
-          expIndex: 3,
-        },
-        {
-          hash: 'e9a47b',
-          tag: 'v2022.0-INIT',
-          branch: 'core/systems-lab',
-          commitMsg: 'init(sys-lab): maintain 83 physical workstations & zero-crash exam triage',
-          role: 'IT Support & Systems Administrator',
-          org: 'Faculty of Science & Technology',
-          period: 'Aug 2022 – Aug 2023',
-          telemetry: '83 Physical Units · Zero Downtime',
-          hook: 'How do you maintain 100% workstation uptime across 3 computer laboratories during high-stakes campus practical exams?',
-          tech: ['Hardware Triage', 'OS Mass Imaging', 'IPv4 & LAN', 'Database Systems'],
-          expIndex: 1,
-        },
-      ];
+    const isIndo = window.currentLang === 'id';
 
-      function renderHud(c) {
-        gitHud.innerHTML = `
-          <div class="git-hud-card">
-            <div class="git-hud-header">
-              <span class="git-hud-terminal-id">TELEMETRY_HUD // ${c.hash}</span>
-              <span class="git-hud-status">COMMITTED</span>
-            </div>
+    const gitCommits = isIndo ? [
+      {
+        hash: '7f01c2',
+        tag: 'v2026.1-AIML',
+        branch: 'feat/data-mining-eda',
+        commitMsg: 'feat(sains-data): bimbing praktikum data mining & algoritma pemodelan prediktif',
+        role: 'Instruktur Praktikum & Pemateri Data Mining',
+        org: 'Fakultas Sains dan Teknologi, UIN Suska Riau',
+        period: 'Mar 2026',
+        telemetry: 'Pra-pemrosesan Data · EDA · Klasifikasi & Clustering',
+        hook: 'Bagaimana menyederhanakan pra-pemrosesan dataset dan algoritma prediktif agar mudah diimplementasikan mahasiswa?',
+        tech: ['Python', 'Pandas & NumPy', 'Scikit-Learn', 'EDA & Modeling', 'Data Preprocessing'],
+        expIndex: 0,
+      },
+      {
+        hash: '4e92d8',
+        tag: 'v2025.4-LEAD',
+        branch: 'core/git-workflows-sop',
+        commitMsg: 'feat(rekayasa): standardisasi protokol branching Git & alur review kode',
+        role: 'Ketua Divisi Rekayasa Perangkat Lunak',
+        org: 'Puzzle Research Data Technology (Predatech)',
+        period: 'Nov 2024 – Des 2025',
+        telemetry: 'Protokol Percabangan · Alur Review Kode · SOP Teknis',
+        hook: 'Bagaimana mengoordinasikan tim pengembang multi-disiplin melalui alur branching Git terstruktur, review kode, dan SOP arsitektur?',
+        tech: ['Git & GitHub', 'Code Review Workflows', 'Systems Analysis', 'Technical Documentation', 'Branching SOPs'],
+        expIndex: 1,
+      },
+      {
+        hash: '9c3b12',
+        tag: 'v2024.4-DIRECTOR',
+        branch: 'lead/institutional-milad',
+        commitMsg: 'lead(tata-kelola): koordinasi 6 divisi operasional perhelatan 500+ peserta',
+        role: 'Project Director Acara',
+        org: 'Milad Sistem Informasi ke-22, UIN Suska Riau',
+        period: 'Sep 2024 – Nov 2024',
+        telemetry: '500+ Peserta · 6 Divisi Kerja · Manajemen Kontinjensi',
+        hook: 'Bagaimana menjaga kelancaran alur operasional acara institusional dan mitigasi krisis lapangan di bawah tenggat waktu yang ketat?',
+        tech: ['Project Management', 'Operational Governance', 'Crisis Resolution', 'Resource Allocation'],
+        expIndex: 4,
+      },
+      {
+        hash: 'd2c18f',
+        tag: 'v2024.3-INFRA',
+        branch: 'infra/campus-wlan-rollout',
+        commitMsg: 'deploy(jaringan): instalasi & konfigurasi 256 Ruijie access point di 14 gedung',
+        role: 'Teknisi Implementasi Infrastruktur Jaringan',
+        org: 'Tim Infrastruktur Jaringan, UIN Sultan Syarif Kasim Riau',
+        period: 'Jun 2024 – Agu 2024',
+        telemetry: '256 Titik Ruijie AP · 14 Gedung Kampus · Terminasi Patch Panel',
+        hook: 'Bagaimana menggelar jaringan WLAN kampus di 14 gedung bertingkat dengan redaman beton tebal dan memastikan konektivitas 100% stabil?',
+        tech: ['Ruijie Wireless APs', 'UTP Structured Cabling', 'Patch Panels & RJ45', 'Cable Continuity Testing', 'WLAN Setup'],
+        expIndex: 5,
+      },
+      {
+        hash: 'c8d34a',
+        tag: 'v2024.2-MOBILE',
+        branch: 'mobile/compose-mvvm',
+        commitMsg: 'feat(mobile-native): bangun aplikasi Android Penny Path & pimpin tim capstone',
+        role: 'Lulusan Mobile Development & Leader Tim Capstone',
+        org: 'Google Bangkit Academy (Google, GoTo, Traveloka)',
+        period: 'Feb 2024 – Jul 2024',
+        telemetry: 'Jetpack Compose · Arsitektur MVVM · Integrasi Model ML',
+        hook: 'Bagaimana mengintegrasikan model rekomendasi Machine Learning dan endpoint Cloud ke dalam aplikasi Android native dengan performa 60 FPS?',
+        tech: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'MVVM', 'Retrofit', 'Coroutines & Flow'],
+        expIndex: 6,
+      },
+      {
+        hash: 'e9a47b',
+        tag: 'v2023.1-SYS',
+        branch: 'sys/lab-infrastructure',
+        commitMsg: 'ops(workstation): pelihara 83 unit PC & pastikan nol downtime ujian praktikum',
+        role: 'Asisten Laboratorium & IT Support',
+        org: 'Fakultas Sains dan Teknologi, UIN Suska Riau',
+        period: 'Sep 2023 – Jun 2024',
+        telemetry: '83 Workstation · 3 Lab Komputasi · Kesiapan Operasional 100%',
+        hook: 'Bagaimana menjaga kesiapan operasional 83 workstation komputer di 3 laboratorium selama periode ujian praktikum tanpa gangguan sistem?',
+        tech: ['Hardware Diagnostics', 'Windows OS Deployment', 'IPv4 & Subnetting', 'LAN Switch Patching', 'Cisco Packet Tracer'],
+        expIndex: 7,
+      },
+    ] : [
+      {
+        hash: '7f01c2',
+        tag: 'v2026.1-AIML',
+        branch: 'feat/data-mining-eda',
+        commitMsg: 'feat(ai-edu): instruct data mining practicum & predictive modeling algorithms',
+        role: 'Data Mining Practicum Instructor & Workshop Speaker',
+        org: 'Faculty of Science and Technology, UIN Suska Riau',
+        period: 'Mar 2026',
+        telemetry: 'Data Preprocessing · EDA · Classification & Clustering',
+        hook: 'How do you systematically bridge data science theory into robust preprocessing pipelines and predictive models?',
+        tech: ['Python', 'Pandas & NumPy', 'Scikit-Learn', 'EDA & Modeling', 'Data Preprocessing'],
+        expIndex: 0,
+      },
+      {
+        hash: '4e92d8',
+        tag: 'v2025.4-LEAD',
+        branch: 'core/git-workflows-sop',
+        commitMsg: 'feat(eng-core): govern version control workflows & standard operating procedures',
+        role: 'Head of Software Engineering Division',
+        org: 'Puzzle Research Data Technology (Predatech)',
+        period: 'Nov 2024 – Dec 2025',
+        telemetry: 'Branching Protocols · Code Review Workflows · Technical SOPs',
+        hook: 'How do you coordinate multidisciplinary developer teams through structured Git branching protocols, code reviews, and architectural SOPs?',
+        tech: ['Git & GitHub', 'Code Review Workflows', 'Systems Analysis', 'Technical Documentation', 'Branching SOPs'],
+        expIndex: 1,
+      },
+      {
+        hash: '9c3b12',
+        tag: 'v2024.4-DIRECTOR',
+        branch: 'lead/institutional-milad',
+        commitMsg: 'lead(ops-governance): govern 6 operational divisions for 500+ participant institutional event',
+        role: 'Event Project Director',
+        org: 'The 22nd Information Systems Anniversary, UIN Suska Riau',
+        period: 'Sep 2024 – Nov 2024',
+        telemetry: '500+ Participants · 6 Operating Divisions · Zero Critical Blocker',
+        hook: 'How do you maintain strict operational continuity and rapid contingency resolution under live high-stakes event pressure?',
+        tech: ['Project Management', 'Operational Governance', 'Crisis Resolution', 'Resource Allocation'],
+        expIndex: 4,
+      },
+      {
+        hash: 'd2c18f',
+        tag: 'v2024.3-INFRA',
+        branch: 'infra/campus-wlan-rollout',
+        commitMsg: 'deploy(wlan): provision 256 enterprise Ruijie APs across 14 multi-story campus buildings',
+        role: 'Network Infrastructure Deployment Technician',
+        org: 'Network Infrastructure Team, UIN Sultan Syarif Kasim Riau',
+        period: 'Jun 2024 – Aug 2024',
+        telemetry: '256 Ruijie AP Nodes · 14 Multi-Story Buildings · Patch Panel Terminations',
+        hook: 'How do you deploy 256 enterprise access points across 14 multi-story concrete buildings with zero link failures?',
+        tech: ['Ruijie Wireless APs', 'UTP Structured Cabling', 'Patch Panels & RJ45', 'Cable Continuity Testing', 'WLAN Setup'],
+        expIndex: 5,
+      },
+      {
+        hash: 'c8d34a',
+        tag: 'v2024.2-MOBILE',
+        branch: 'mobile/compose-mvvm',
+        commitMsg: 'feat(android-arch): engineer Penny Path native app & coordinate capstone integration',
+        role: 'Mobile Development Cohort Graduate & Capstone Lead',
+        org: 'Google Bangkit Academy (Google, GoTo, Traveloka)',
+        period: 'Feb 2024 – Jul 2024',
+        telemetry: 'Jetpack Compose · MVVM Clean Architecture · 60 FPS Native UI',
+        hook: 'How do you coordinate mobile, cloud, and machine learning tracks to build an AI-integrated personal finance Android application?',
+        tech: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'MVVM', 'Retrofit', 'Coroutines & Flow'],
+        expIndex: 6,
+      },
+      {
+        hash: 'e9a47b',
+        tag: 'v2023.1-SYS',
+        branch: 'sys/lab-infrastructure',
+        commitMsg: 'ops(workstations): maintain 83 computing nodes & zero-downtime exam infrastructure',
+        role: 'IT Support & Laboratory Assistant',
+        org: 'Faculty of Science and Technology, UIN Suska Riau',
+        period: 'Sep 2023 – Jun 2024',
+        telemetry: '83 Computing Workstations · 3 Laboratories · 0 Exam Downtime',
+        hook: 'How do you maintain 100% workstation operational readiness across 3 computing laboratories during consecutive exam sessions?',
+        tech: ['Hardware Diagnostics', 'Windows OS Deployment', 'IPv4 & Subnetting', 'LAN Switch Patching', 'Cisco Packet Tracer'],
+        expIndex: 7,
+      },
+    ];
 
-            <div class="git-hud-meta">
-              <span class="git-hud-branch">${c.branch}</span>
-              <span class="git-hud-dot">·</span>
-              <span class="git-hud-org">${c.org}</span>
-            </div>
+    const hudLabels = {
+      headerId: isIndo ? 'TELEMETRI_SISTEM' : 'TELEMETRY_HUD',
+      status: isIndo ? 'TERVERIFIKASI' : 'COMMITTED',
+      hookLabel: isIndo ? 'TANTANGAN REKAYASA SISTEM:' : 'THE ENGINEERING CHALLENGE:',
+      actionBtn: isIndo ? 'LIHAT DETAIL PENGALAMAN' : 'INSPECT DEEP-DIVE IN EXPERIENCE',
+    };
 
-            <h4 class="git-hud-role">${c.role}</h4>
-
-            <div class="git-hud-hook-box">
-              <span class="git-hud-hook-label">THE ENGINEERING CHALLENGE:</span>
-              <p class="git-hud-hook-text">"${c.hook}"</p>
-            </div>
-
-            <div class="git-hud-telemetry-badge">
-              <span class="git-hud-telemetry-icon">⚡</span>
-              <span class="git-hud-telemetry-val">${c.telemetry}</span>
-            </div>
-
-            <div class="git-hud-tech-row">
-              ${c.tech.map(t => `<span class="git-hud-tech-pill">${t}</span>`).join('')}
-            </div>
-
-            <div class="git-hud-footer">
-              <a href="pages/experience.html" class="git-hud-action-btn" data-exp="${c.expIndex}">
-                <span>INSPECT DEEP-DIVE IN EXPERIENCE</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </a>
-            </div>
+    function renderHud(c) {
+      gitHud.innerHTML = `
+        <div class="git-hud-card">
+          <div class="git-hud-header">
+            <span class="git-hud-terminal-id">${hudLabels.headerId} // ${c.hash}</span>
+            <span class="git-hud-status">${hudLabels.status}</span>
           </div>
-        `;
 
-        gitHud.querySelector('.git-hud-action-btn')?.addEventListener('click', (e) => {
-          e.preventDefault();
-          openExperienceModal(c.expIndex);
-        });
-      }
-
-      gitCommits.forEach((c, idx) => {
-        const item = el('div', {
-          class: `git-commit-node ${idx === 0 ? 'active' : ''}`,
-          tabindex: '0',
-          role: 'button',
-          'aria-label': `${c.tag}: ${c.role}`,
-        });
-
-        item.innerHTML = `
-          <div class="git-commit-rail">
-            <span class="git-commit-dot"></span>
+          <div class="git-hud-meta">
+            <span class="git-hud-branch">${c.branch}</span>
+            <span class="git-hud-dot">·</span>
+            <span class="git-hud-org">${c.org}</span>
           </div>
-          <div class="git-commit-content">
-            <div class="git-commit-header">
-              <span class="git-commit-hash">${c.hash}</span>
-              <span class="git-commit-tag">${c.tag}</span>
-              <span class="git-commit-period">${c.period}</span>
-            </div>
-            <p class="git-commit-msg">${c.commitMsg}</p>
+
+          <h4 class="git-hud-role">${c.role}</h4>
+
+          <div class="git-hud-hook-box">
+            <span class="git-hud-hook-label">${hudLabels.hookLabel}</span>
+            <p class="git-hud-hook-text">"${c.hook}"</p>
           </div>
-        `;
 
-        const setNodeActive = () => {
-          gitTree.querySelectorAll('.git-commit-node').forEach(n => n.classList.remove('active'));
-          item.classList.add('active');
-          renderHud(c);
-        };
+          <div class="git-hud-telemetry-badge">
+            <span class="git-hud-telemetry-icon">⚡</span>
+            <span class="git-hud-telemetry-val">${c.telemetry}</span>
+          </div>
 
-        item.addEventListener('mouseenter', setNodeActive);
-        item.addEventListener('click', setNodeActive);
-        item.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            setNodeActive();
-          }
-        });
+          <div class="git-hud-tech-row">
+            ${c.tech.map(t => `<span class="git-hud-tech-pill">${t}</span>`).join('')}
+          </div>
 
-        gitTree.appendChild(item);
+          <div class="git-hud-footer">
+            <a href="pages/experience.html" class="git-hud-action-btn" data-exp="${c.expIndex}">
+              <span>${hudLabels.actionBtn}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+      `;
+
+      gitHud.querySelector('.git-hud-action-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openExperienceModal(c.expIndex);
       });
-
-      // Initial render
-      renderHud(gitCommits[0]);
     }
 
-    /* ===============================================================
-       CONCEPT 2: HARDWARE CONSOLE & SPEC SHEET (Dieter Rams style)
-       =============================================================== */
-    const hwBank = document.getElementById('hwConsoleBank');
-    const hwScreen = document.getElementById('hwConsoleScreen');
-
-    if (hwBank && hwScreen) {
-      hwBank.innerHTML = '';
-      hwScreen.innerHTML = '';
-
-      const hwSpecs = [
-        {
-          key: '2026 PROD',
-          unitId: 'SYS-SPEC-2026-WEB',
-          phase: 'Public Sector Web Systems & Modern Info Architecture',
-          target: 'Desa Air Putih · Riau, Indonesia',
-          metrics: '70% Payload Slashed · <90kB Bundle · 100% Responsive',
-          hook: 'Architected dynamic client schema and progressive image delivery for unstable mobile networks.',
-          tags: ['React 19', 'TypeScript', 'Vite 6', 'Tailwind 4', 'JSON-LD'],
-          expIndex: 7,
-        },
-        {
-          key: '2025 AI/NLP',
-          unitId: 'SYS-SPEC-2025-NLP',
-          phase: 'Natural Language Processing & Deep Learning Platform',
-          target: 'MBKM DBS Coding Camp (Emotica) · Jakarta / Remote',
-          metrics: '<120ms Latency · 3-Tier Stack · Bi-LSTM Slang Model',
-          hook: 'Integrated transformer & recurrent neural networks into client dashboards for real-time text analysis.',
-          tags: ['Next.js', 'Bi-LSTM', 'BERT', 'Flask API', 'Chart.js'],
-          expIndex: 5,
-        },
-        {
-          key: '2024 CLOUD',
-          unitId: 'SYS-SPEC-2024-CLOUD',
-          phase: 'Distributed Mobile Client & Cloud Microservices',
-          target: 'Bangkit Academy by Google, GoTo, Traveloka',
-          metrics: 'Top Capstone Project · 3 Cross-Disciplinary Teams · 60 FPS Native UI',
-          hook: 'Led the mobile engineering squad and synchronized Android Jetpack Compose with backend cloud endpoints.',
-          tags: ['Kotlin', 'Jetpack Compose', 'FastAPI', 'Android SDK', 'GCP'],
-          expIndex: 4,
-        },
-        {
-          key: '2024 NET',
-          unitId: 'SYS-SPEC-2024-WLAN',
-          phase: 'Enterprise WLAN Deployment & Physical Topologies',
-          target: 'Campus Network Operations — UIN Suska',
-          metrics: '256 Ruijie AP Nodes · 14 Multi-Story Buildings · Zero Defects',
-          hook: 'Mitigated high RF signal attenuation and co-channel interference across concrete lecture auditoriums.',
-          tags: ['Structured Cat6', 'Ruijie WLAN', 'RF Site Plan', 'Patch Panels'],
-          expIndex: 3,
-        },
-        {
-          key: '2022 LAB',
-          unitId: 'SYS-SPEC-2022-LAB',
-          phase: 'Multi-Workstation Systems Administration & Infrastructure',
-          target: 'Faculty of Science & Technology · UIN Suska Riau',
-          metrics: '83 Physical Units · 3 Computer Laboratories · 0 Exam Downtime',
-          hook: 'Executed mass OS deployment, hardware component triage, and isolated LAN IPv4 diagnostics.',
-          tags: ['Hardware Diagnostics', 'OS Imaging', 'IPv4 & LAN', 'Database Systems'],
-          expIndex: 1,
-        },
-      ];
-
-      function renderHwSpec(spec) {
-        hwScreen.innerHTML = `
-          <div class="hw-screen-card">
-            <div class="hw-screen-header">
-              <span class="hw-screen-title">${spec.unitId}</span>
-              <span class="hw-screen-badge">STATUS: VERIFIED</span>
-            </div>
-
-            <div class="hw-spec-table">
-              <div class="hw-spec-row">
-                <span class="hw-spec-cell-label">01 / ARCHITECTURAL PHASE</span>
-                <span class="hw-spec-cell-val">${spec.phase}</span>
-              </div>
-              <div class="hw-spec-row">
-                <span class="hw-spec-cell-label">02 / DEPLOYMENT TARGET</span>
-                <span class="hw-spec-cell-val">${spec.target}</span>
-              </div>
-              <div class="hw-spec-row">
-                <span class="hw-spec-cell-label">03 / SCALE &amp; HARD TELEMETRY</span>
-                <span class="hw-spec-cell-val hw-spec-highlight">${spec.metrics}</span>
-              </div>
-              <div class="hw-spec-row">
-                <span class="hw-spec-cell-label">04 / THE CORE CONSTRAINT</span>
-                <span class="hw-spec-cell-val">"${spec.hook}"</span>
-              </div>
-            </div>
-
-            <div class="hw-screen-footer">
-              <div class="hw-screen-tags">
-                ${spec.tags.map(t => `<span class="hw-tag-pill">${t}</span>`).join('')}
-              </div>
-              <a href="pages/experience.html" class="hw-action-btn" data-exp="${spec.expIndex}">
-                <span>OPEN ARCHITECTURAL DOSSIER IN EXPERIENCE ↗</span>
-              </a>
-            </div>
-          </div>
-        `;
-
-        hwScreen.querySelector('.hw-action-btn')?.addEventListener('click', (e) => {
-          e.preventDefault();
-          openExperienceModal(spec.expIndex);
-        });
-      }
-
-      hwSpecs.forEach((spec, idx) => {
-        const btn = el('button', {
-          class: `hw-bank-btn ${idx === 0 ? 'active' : ''}`,
-          type: 'button',
-          'aria-label': spec.key,
-        });
-
-        btn.innerHTML = `
-          <span class="hw-led ${idx === 0 ? 'on' : ''}"></span>
-          <span class="hw-btn-label">${spec.key}</span>
-        `;
-
-        btn.addEventListener('click', () => {
-          hwBank.querySelectorAll('.hw-bank-btn').forEach(b => {
-            b.classList.remove('active');
-            b.querySelector('.hw-led')?.classList.remove('on');
-          });
-          btn.classList.add('active');
-          btn.querySelector('.hw-led')?.classList.add('on');
-          renderHwSpec(spec);
-        });
-
-        hwBank.appendChild(btn);
+    gitCommits.forEach((c, idx) => {
+      const item = el('div', {
+        class: `git-commit-node ${idx === 0 ? 'active' : ''}`,
+        tabindex: '0',
+        role: 'button',
+        'aria-label': `${c.tag}: ${c.role}`,
       });
 
-      // Initial render
-      renderHwSpec(hwSpecs[0]);
-    }
-
-    /* ===============================================================
-       CONCEPT 3: T-SHAPED CAPABILITY RADAR (Pillar Matrix)
-       =============================================================== */
-    const radarTabs = document.getElementById('radarMatrixTabs');
-    const radarContent = document.getElementById('radarMatrixContent');
-
-    if (radarTabs && radarContent) {
-      radarTabs.innerHTML = '';
-      radarContent.innerHTML = '';
-
-      const pillars = [
-        {
-          id: 'web',
-          num: '01',
-          name: 'Full-Stack & Civic Web Systems',
-          badge: 'PRODUCTION READY',
-          thesis: 'Building resilient, offline-tolerant web architectures that load instantly on low-bandwidth rural networks without sacrificing accessibility or semantic structure.',
-          flagship: 'Desa Air Putih Public Civic Information System (2026)',
-          proofPoints: [
-            '70% media payload slashed via automated next-gen WebP compression pipeline.',
-            '<90kB total gzipped mobile initial bundle with React 19 and Vite 6.',
-            'Structured JSON-LD schema integration for rich public search engine indexing.',
-          ],
-          certs: ['Bangkit Mobile/Web Cert', 'Responsive Web Foundations'],
-          expIndex: 7,
-        },
-        {
-          id: 'ml',
-          num: '02',
-          name: 'Applied Machine Learning & NLP',
-          badge: 'RESEARCH & DEPLOY',
-          thesis: 'Productizing natural language models and classification pipelines into clean, sub-120ms user interfaces for high-value sentiment and text analytics.',
-          flagship: 'MBKM DBS Coding Camp (Emotica) & Data Mining Workshop (2025)',
-          proofPoints: [
-            'End-to-end integration of BERT & Bi-LSTM neural networks into an interactive dashboard.',
-            'Speaker & Mentor for 60+ participants on rapid data preprocessing & clustering.',
-            'Robust handling of unstandardized Indonesian informal slang & conversational syntax.',
-          ],
-          certs: ['Speaker Data Mining Cert', 'MBKM DBS Coding Camp Cert'],
-          expIndex: 5,
-        },
-        {
-          id: 'cloud',
-          num: '03',
-          name: 'Cloud & Distributed Mobile Architecture',
-          badge: 'CROSS-DISCIPLINARY',
-          thesis: 'Bridging native mobile clients with scalable cloud microservices, driving technical alignment across disparate engineering squads under high-stakes timelines.',
-          flagship: 'Bangkit Academy by Google, GoTo, Traveloka (2024)',
-          proofPoints: [
-            'Technical Capstone Team Lead coordinating Mobile, Cloud, and Machine Learning teams.',
-            'Architected 60 FPS Android native UI in Kotlin using modern Jetpack Compose.',
-            'Connected client side to asynchronous FastAPI inference microservices.',
-          ],
-          certs: ['Official Bangkit Academy Cert (Distinction)', 'Google Cloud Foundations'],
-          expIndex: 4,
-        },
-        {
-          id: 'infra',
-          num: '04',
-          name: 'Enterprise Network & Infrastructure',
-          badge: 'FIELD TESTED',
-          thesis: 'Hands-on hardware topology, structured UTP Cat6 cabling, and large-scale enterprise wireless access point deployments across challenging multi-story facilities.',
-          flagship: 'Campus Network Operations (256 APs) & Computer Laboratories (83 PCs)',
-          proofPoints: [
-            'Coordinated deployment of 256 Ruijie enterprise wireless APs across 14 buildings.',
-            'Zero co-channel interference and 100% throughput test pass rate in dense auditoriums.',
-            'Maintained 83 physical workstations across 3 labs with 0 downtime during major exams.',
-          ],
-          certs: ['Campus Network Technician Verification', 'Faculty IT Support Credential'],
-          expIndex: 3,
-        },
-      ];
-
-      function renderPillar(p) {
-        radarContent.innerHTML = `
-          <div class="radar-card">
-            <div class="radar-card-header">
-              <div class="radar-pillar-num-wrap">
-                <span class="radar-num">${p.num}</span>
-                <span class="radar-pillar-name">${p.name}</span>
-              </div>
-              <span class="radar-badge">${p.badge}</span>
-            </div>
-
-            <p class="radar-thesis">"${p.thesis}"</p>
-
-            <div class="radar-flagship-box">
-              <span class="radar-flagship-label">BATTLE-TESTED DEPLOYMENT:</span>
-              <span class="radar-flagship-name">${p.flagship}</span>
-            </div>
-
-            <div class="radar-proof-list">
-              ${p.proofPoints.map(pt => `
-                <div class="radar-proof-item">
-                  <span class="radar-proof-check">✓</span>
-                  <span class="radar-proof-text">${pt}</span>
-                </div>
-              `).join('')}
-            </div>
-
-            <div class="radar-certs-row">
-              <span class="radar-certs-label">VERIFIED CREDENTIALS:</span>
-              ${p.certs.map(c => `<span class="radar-cert-pill">${c}</span>`).join('')}
-            </div>
-
-            <div class="radar-footer">
-              <a href="pages/experience.html" class="radar-action-btn" data-exp="${p.expIndex}">
-                <span>EXPLORE DETAILED ARCHITECTURE &amp; ARTIFACTS IN EXPERIENCE →</span>
-              </a>
-            </div>
+      item.innerHTML = `
+        <div class="git-commit-rail">
+          <span class="git-commit-dot"></span>
+        </div>
+        <div class="git-commit-content">
+          <div class="git-commit-header">
+            <span class="git-commit-hash">${c.hash}</span>
+            <span class="git-commit-tag">${c.tag}</span>
+            <span class="git-commit-period">${c.period}</span>
           </div>
-        `;
+          <p class="git-commit-msg">${c.commitMsg}</p>
+        </div>
+      `;
 
-        radarContent.querySelector('.radar-action-btn')?.addEventListener('click', (e) => {
+      const setNodeActive = () => {
+        gitTree.querySelectorAll('.git-commit-node').forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+        renderHud(c);
+      };
+
+      item.addEventListener('mouseenter', setNodeActive);
+      item.addEventListener('click', setNodeActive);
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          openExperienceModal(p.expIndex);
-        });
-      }
-
-      pillars.forEach((p, idx) => {
-        const tab = el('button', {
-          class: `radar-tab-btn ${idx === 0 ? 'active' : ''}`,
-          type: 'button',
-          'aria-label': p.name,
-        });
-
-        tab.innerHTML = `
-          <span class="radar-tab-num">${p.num}</span>
-          <span class="radar-tab-title">${p.name}</span>
-        `;
-
-        tab.addEventListener('click', () => {
-          radarTabs.querySelectorAll('.radar-tab-btn').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          renderPillar(p);
-        });
-
-        radarTabs.appendChild(tab);
+          setNodeActive();
+        }
       });
 
-      // Initial render
-      renderPillar(pillars[0]);
-    }
+      gitTree.appendChild(item);
+    });
+
+    // Initial render
+    renderHud(gitCommits[0]);
   }
+
 
   /* ── Full Snaking Map (Deprecated / Replaced by clean reversed cards) ── */
   function buildFullSnakingMap() {
@@ -1589,8 +1383,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="exp-modal__cat">${catText.toUpperCase()}</span>
             <span class="exp-modal__period">${item.period}</span>
           </div>
-          <h2 class="exp-modal__role">${item.role}</h2>
-          <div class="exp-modal__org">${item.org} · <span class="exp-modal__loc">${item.location}</span></div>
+          <h2 class="exp-modal__role">${getLoc(item, 'role')}</h2>
+          <div class="exp-modal__org">${getLoc(item, 'org')} · <span class="exp-modal__loc">${item.location}</span></div>
           ${item.gpa ? `<div class="exp-modal__gpa">GPA: ${item.gpa}</div>` : ''}
         </div>
 
@@ -1674,20 +1468,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!listWrap || !D.experience) return;
     listWrap.innerHTML = '';
 
+    // D.experience is already chronological from newest to oldest (2026 -> 2022)
     const items = D.experience.map((item, originalIdx) => ({ item, originalIdx }));
-    // Reverse to show newest first (2026 -> 2022)
-    items.reverse();
 
     items.forEach(({ item, originalIdx }) => {
       const catText = getLoc(item, 'typeLabel') || 'EXPERIENCE';
       const headlineText = getLoc(item, 'headline');
+      const roleText = getLoc(item, 'role');
+      const orgText = getLoc(item, 'org');
 
       const card = el('article', {
         class: 'exp-detail-card',
         id: `exp-card-${originalIdx}`,
         role: 'button',
         tabindex: '0',
-        'aria-label': `${item.role} · ${item.org} (${item.period})`,
+        'aria-label': `${roleText} · ${orgText} (${item.period})`,
       });
 
       card.innerHTML = `
@@ -1696,8 +1491,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="exp-card__type-badge">${catText.toUpperCase()}</span>
             <span class="exp-card__period">${item.period}</span>
           </div>
-          <h2 class="exp-card__role">${item.role}</h2>
-          <div class="exp-card__org">${item.org} · <span class="exp-card__loc">${item.location}</span></div>
+          <h2 class="exp-card__role">${roleText}</h2>
+          <div class="exp-card__org">${orgText} · <span class="exp-card__loc">${item.location}</span></div>
           ${item.gpa ? `<div class="exp-card__gpa">GPA: ${item.gpa}</div>` : ''}
         </div>
 
