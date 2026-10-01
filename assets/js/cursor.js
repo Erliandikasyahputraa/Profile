@@ -20,6 +20,14 @@
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+  // Disable completely on touch-only mobile devices (smartphones/tablets without hover pointer)
+  // Eliminates 100% of requestAnimationFrame CPU/GPU consumption on mobile devices.
+  if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+    const mobileCanvas = document.getElementById('cursor-canvas');
+    if (mobileCanvas) mobileCanvas.style.display = 'none';
+    return;
+  }
+
   const canvas = document.getElementById('cursor-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
