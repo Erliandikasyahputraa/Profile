@@ -937,7 +937,7 @@
     } catch (e) {}
   }
 
-  /* ── Cute Sleepy Yawn Synthesizer (Nguap saat Bangun) ── */
+  /* ── Cute Sleepy Yawn Synthesizer (Slow-mo Nguap saat Bangun) ── */
   function playYawnSound() {
     try {
       const actx = getAudioContext();
@@ -947,26 +947,26 @@
       const t = now;
 
       const master = actx.createGain();
-      master.gain.setValueAtTime(0.22, t);
+      master.gain.setValueAtTime(0.25, t);
       master.connect(actx.destination);
 
-      // Gentle cute rising then sighing sine tone
+      // Slow-motion cute yawn: deeper, longer (1.1s) gentle sine pitch curve
       const osc = actx.createOscillator();
       const oscGain = actx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(260, t);
-      osc.frequency.exponentialRampToValueAtTime(380, t + 0.22);
-      osc.frequency.exponentialRampToValueAtTime(180, t + 0.55);
+      osc.frequency.setValueAtTime(220, t);
+      osc.frequency.exponentialRampToValueAtTime(340, t + 0.45);
+      osc.frequency.exponentialRampToValueAtTime(160, t + 1.05);
 
       oscGain.gain.setValueAtTime(0.001, t);
-      oscGain.gain.linearRampToValueAtTime(0.15, t + 0.18);
-      oscGain.gain.linearRampToValueAtTime(0.001, t + 0.58);
+      oscGain.gain.linearRampToValueAtTime(0.18, t + 0.35);
+      oscGain.gain.linearRampToValueAtTime(0.001, t + 1.10);
 
       osc.connect(oscGain);
       oscGain.connect(master);
 
       osc.start(t);
-      osc.stop(t + 0.60);
+      osc.stop(t + 1.15);
     } catch (e) {}
   }
 
@@ -1024,10 +1024,7 @@
     /* ── C2. FSM ── */
     switch (currentState) {
       case STATES.LAZY_FOLLOW:
-        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
-          currentState = STATES.SLEEPING;
-          stateTimer   = now;
-        } else if (timeSinceMouseMove >= IDLE_MS) {
+        if (timeSinceMouseMove >= IDLE_MS) {
           if (isCursorOnDino || distToFood <= 25) {
             // Cursor is resting right on dino's body: calm bite without frantic chasing
             currentState = STATES.EATING;
@@ -1047,10 +1044,7 @@
         break;
 
       case STATES.WALKING_TO_FOOD:
-        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
-          currentState = STATES.SLEEPING;
-          stateTimer   = now;
-        } else if (distToFood <= 25 || distFromCenter <= 30 || isCursorOnDino) {
+        if (distToFood <= 25 || distFromCenter <= 30 || isCursorOnDino) {
           currentState = STATES.EATING;
           stateTimer   = now;
           spawnBiteCrumbs(foodX, foodY);
@@ -1060,34 +1054,25 @@
         break;
 
       case STATES.WAITING:
-        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
-          currentState = STATES.SLEEPING;
-          stateTimer   = now;
-        } else if (now - stateTimer > 120) {
+        if (now - stateTimer > 120) {
           currentState = STATES.ANTICIPATING;
           stateTimer   = now;
         }
         break;
 
       case STATES.ANTICIPATING:
-        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
-          currentState = STATES.SLEEPING;
-          stateTimer   = now;
-        } else if (now - stateTimer >= ANTICIPATE_MS) {
+        if (now - stateTimer >= ANTICIPATE_MS) {
           currentState = STATES.CHASING;
         }
         break;
 
       case STATES.CHASING:
-        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
-          currentState = STATES.SLEEPING;
-          stateTimer   = now;
-        } else if (distToFood <= 25 || distFromCenter <= 30 || isCursorOnDino) {
+        if (distToFood <= 25 || distFromCenter <= 30 || isCursorOnDino) {
           currentState = STATES.EATING;
           stateTimer   = now;
           spawnBiteCrumbs(foodX, foodY);
           playEatSound();
-          idleChaseCount = 0; // Reset cycle: next 3 will be normal walking again!
+          idleChaseCount = 0; // Reset cycle: next will be normal walking again!
         }
         break;
 
@@ -1104,8 +1089,8 @@
 
         if (progress >= 1.0) {
           consecutiveEats++;
-          if (consecutiveEats >= 10) {
-            // Eaten 10 times consecutively -> stuffed full, fall asleep!
+          if (consecutiveEats >= 5) {
+            // Eaten 5 times consecutively -> stuffed full, fall asleep!
             currentState = STATES.SLEEPING;
             stateTimer   = now;
             foodVisible  = true;
@@ -1120,12 +1105,7 @@
       }
 
       case STATES.SATISFIED:
-        if (timeSinceMouseMove >= IDLE_SLEEP_MS) {
-          currentState = STATES.SLEEPING;
-          stateTimer   = now;
-          foodVisible  = true;
-          foodScale    = 1.0;
-        } else if (now - stateTimer >= SATISFIED_PAUSE) {
+        if (now - stateTimer >= SATISFIED_PAUSE) {
           currentState = STATES.LAZY_FOLLOW;
           foodVisible  = true;
           foodScale    = 1.0;
@@ -1144,8 +1124,9 @@
         break;
 
       case STATES.WAKING: {
+        // Slow motion waking stretch & yawn: ~1800ms
         const wakeElapsed = now - stateTimer;
-        if (wakeElapsed >= 680) {
+        if (wakeElapsed >= 1800) {
           currentState = STATES.LAZY_FOLLOW;
         }
         break;
@@ -1426,7 +1407,8 @@
       verticalBob = 0;
     } else if (currentState === STATES.WAKING) {
       const wakeElapsed = now - stateTimer;
-      if (wakeElapsed < 420) {
+      const t = Math.min(1.0, wakeElapsed / 1800);
+      if (t < 0.65) {
         fullDinoMatrix = DINO_STRETCH_YAWN;
         verticalBob = 0;
       } else {
@@ -1455,7 +1437,7 @@
 
     /* ── G. Draw Dino ──
        During ROARING: scale the sprite up slightly (Godzilla chest-puff)
-       using a sine envelope so it swells and returns naturally.
+       During WAKING: slow-motion cat stretch (elastic stretch with anchor at paws)
     ── */
     if (currentState === STATES.ROARING) {
       const roarProgress = Math.min(1, (now - roarStartTime) / ROAR_DURATION);
@@ -1466,6 +1448,25 @@
       ctx.save();
       ctx.translate(cx, cy);
       ctx.scale(swell, swell);
+      ctx.translate(-cx, -cy);
+      drawMatrix(
+        fullDinoMatrix,
+        Math.round(dinoX),
+        Math.round(dinoY + verticalBob * PX),
+        fg, bg, isFacingLeft, 1.0
+      );
+      ctx.restore();
+    } else if (currentState === STATES.WAKING) {
+      const wakeElapsed = now - stateTimer;
+      const t = Math.min(1.0, wakeElapsed / 1800);
+      const stretchPhase = Math.sin(Math.min(1.0, t / 0.65) * Math.PI);
+      const scaleX = 1.0 + stretchPhase * 0.14;
+      const scaleY = 1.0 - stretchPhase * 0.08;
+      const cx = Math.round(dinoX + (isFacingLeft ? spriteW * 0.35 : spriteW * 0.65));
+      const cy = Math.round(dinoY + spriteH);      // Anchor at paws on floor
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(scaleX, scaleY);
       ctx.translate(-cx, -cy);
       drawMatrix(
         fullDinoMatrix,

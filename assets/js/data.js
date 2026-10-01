@@ -13,7 +13,7 @@ window.PORTFOLIO_DATA = {
     email:         'syahputraerliandika@gmail.com',
     photoPrimary:  'assets/images/profile-primary.webp',
     photoSecondary:'assets/images/profile-glitch.webp',
-    cv:            'assets/docs/Erliandika_Syahputra_General_Resume.pdf',
+    cv:            'assets/docs/Global_Master-ENG.pdf',
   },
 
   /* ── SOCIALS ─────────────────────────────── */
@@ -21,7 +21,7 @@ window.PORTFOLIO_DATA = {
     github:   'https://github.com/Erliandikasyahputraa',
     linkedin: 'https://www.linkedin.com/in/erliandika-syahputra/',
     email:    'syahputraerliandika@gmail.com',
-    cv:       'assets/docs/Erliandika_Syahputra_General_Resume.pdf',
+    cv:       'assets/docs/Global_Master-ENG.pdf',
   },
 
   /* ── SNEAK PEEK JOURNEY MAP (Landing Page Treasure Map) ── */
@@ -337,7 +337,7 @@ window.PORTFOLIO_DATA = {
       year: '2024 — 2025',
       category: 'Mobile & Cloud Engineering',
       category_id: 'Rekayasa Mobile & Cloud',
-      image: '', // ⚠️ DATA KURANG: Gambar sertifikat Bangkit Academy belum tersedia di folder certs/. Harap tambahkan file: assets/images/certs/bangkit_certificate_erliandika.webp
+      image: 'assets/images/certs/bangkit_certificate_erliandika.webp',
       credential: 'assets/docs/certs/bangkit-mobile-development-erliandika.pdf',
     },
     {

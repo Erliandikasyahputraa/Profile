@@ -308,166 +308,144 @@ document.addEventListener('DOMContentLoaded', () => {
     photoContainer.addEventListener('pointerleave', triggerGlitchExit);
   }
 
-  /* ── Career Journey: Numbered Timeline Preview (Home) ── */
+  /* ── Upgraded Career Journey Showcase (Home) ── */
   function buildExpPreviewMap() {
-    const wrap = document.getElementById('expPreviewMap');
-    if (!wrap) return;
+    const track = document.getElementById('expPreviewMap');
+    const wrapper = document.getElementById('expJourneyWrapper');
+    if (!track) return;
     const milestones = D.journeyMilestones || [];
-    wrap.innerHTML = '';
+    track.innerHTML = '';
 
-    const track = el('div', { class: 'journey-track' });
-
-    milestones.forEach((m, i) => {
-      const num = String(i + 1).padStart(2, '0');
+    milestones.forEach((m) => {
       const badgeText = getLoc(m, 'badge');
       const titleText = getLoc(m, 'title');
       const reflectionText = getLoc(m, 'reflection');
 
-      const step = el('div', {
-        class: 'journey-step',
+      const card = el('article', {
+        class: 'exp-mcard',
         tabindex: '0',
         role: 'button',
         'aria-label': `${titleText} — ${m.year}`,
       });
 
-      step.innerHTML = `
-        <div class="journey-step__num">${num}</div>
-        <div class="journey-step__connector" aria-hidden="true"></div>
-        <div class="journey-step__body">
-          <div class="journey-step__badge">${badgeText}</div>
-          <div class="journey-step__title">${titleText}</div>
-          <div class="journey-step__year">${m.year}</div>
-          <div class="journey-step__role">${m.role || ''}</div>
+      card.innerHTML = `
+        <div class="exp-mcard__rail-node">
+          <span class="exp-mcard__dot" aria-hidden="true"></span>
+          <span class="exp-mcard__year">${m.year}</span>
         </div>
-        <div class="journey-step__detail" aria-hidden="true">
-          <p class="journey-step__reflection">${reflectionText}</p>
-          <div class="journey-step__loc">${m.location || ''}</div>
-          <div class="journey-step__cta">
-            <span>${window.t('exp_view_cta')}</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <div class="exp-mcard__content">
+          <div class="exp-mcard__badge">${badgeText}</div>
+          <h3 class="exp-mcard__title">${titleText}</h3>
+          <div class="exp-mcard__role">${m.role || ''}</div>
+          ${m.location ? `
+            <div class="exp-mcard__loc">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>${m.location}</span>
+            </div>
+          ` : ''}
+          <p class="exp-mcard__reflection">${reflectionText}</p>
+          <div class="exp-mcard__footer">
+            <span class="exp-mcard__cta">${window.t('exp_view_cta')}</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </div>
         </div>
       `;
 
-      step.addEventListener('click', () => {
+      card.addEventListener('click', () => {
         window.location.href = PAGES_REL + 'experience.html';
       });
-      step.addEventListener('keydown', (e) => {
+      card.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           window.location.href = PAGES_REL + 'experience.html';
         }
       });
 
-      track.appendChild(step);
+      track.appendChild(card);
     });
 
-    // End node — explore CTA
-    const ctaStep = el('a', {
-      class: 'journey-step journey-step--cta',
+    // Final Dossier CTA Card
+    const isIndo = window.currentLang === 'id';
+    const ctaCard = el('a', {
+      class: 'exp-mcard exp-mcard--final',
       href: PAGES_REL + 'experience.html',
       'aria-label': window.t('journey_explore_cta'),
     });
-    ctaStep.innerHTML = `
-      <div class="journey-step__num journey-step__num--arrow">→</div>
-      <div class="journey-step__connector" aria-hidden="true"></div>
-      <div class="journey-step__body">
-        <div class="journey-step__badge">${window.currentLang === 'id' ? 'LINIMASA LENGKAP' : 'FULL TIMELINE'}</div>
-        <div class="journey-step__title">${window.t('journey_explore_cta')}</div>
+    ctaCard.innerHTML = `
+      <div class="exp-mcard__rail-node">
+        <span class="exp-mcard__dot exp-mcard__dot--final" aria-hidden="true">✦</span>
+        <span class="exp-mcard__year">2026+</span>
+      </div>
+      <div class="exp-mcard__content exp-mcard__content--final">
+        <div class="exp-mcard__badge">${isIndo ? 'DOSIR LENGKAP' : 'COMPLETE DOSSIER'}</div>
+        <h3 class="exp-mcard__title">${isIndo ? '8 Rekam Jejak & 8 Sertifikasi Resmi' : '8 Career Milestones & 8 Verified Credentials'}</h3>
+        <p class="exp-mcard__reflection">${isIndo ? 'Buka dokumentasi mendalam arsitektur teknis, kepemimpinan proyek, dan verifikasi sertifikat PDF resmi.' : 'Explore complete architectural deep-dives, leadership milestones, and verified credentials.'}</p>
+        <div class="exp-mcard__footer">
+          <span class="exp-mcard__cta">${window.t('journey_explore_cta')}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
       </div>
     `;
-    track.appendChild(ctaStep);
+    track.appendChild(ctaCard);
 
-    wrap.appendChild(track);
+    // Track Navigation Buttons & Drag
+    const scrollContainer = wrapper || track;
+    const prevBtn = document.getElementById('journeyPrevBtn');
+    const nextBtn = document.getElementById('journeyNextBtn');
+    const progressFill = document.getElementById('journeyProgressIndicator');
+
+    function updateProgress() {
+      const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+      const progress = maxScroll > 0 ? (scrollContainer.scrollLeft / maxScroll) * 100 : 0;
+      if (progressFill) progressFill.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        scrollContainer.scrollBy({ left: -360, behavior: 'smooth' });
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        scrollContainer.scrollBy({ left: 360, behavior: 'smooth' });
+      });
+    }
+
+    scrollContainer.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    // Mouse drag-to-scroll support
+    let isDown = false;
+    let startX = 0;
+    let scrollStart = 0;
+
+    scrollContainer.addEventListener('mousedown', (e) => {
+      // Don't drag if clicking directly on a button or link
+      if (e.target.closest('button, a')) return;
+      isDown = true;
+      scrollContainer.classList.add('is-dragging');
+      startX = e.pageX - scrollContainer.offsetLeft;
+      scrollStart = scrollContainer.scrollLeft;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isDown) return;
+      isDown = false;
+      scrollContainer.classList.remove('is-dragging');
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - scrollContainer.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      scrollContainer.scrollLeft = scrollStart - walk;
+    });
   }
 
-  /* ── Career Journey: Full Numbered Timeline (Exp Page) ── */
+  /* ── Full Snaking Map (Deprecated / Replaced by clean reversed cards) ── */
   function buildFullSnakingMap() {
-    const wrap = document.getElementById('expFullMap');
-    if (!wrap || !D.experience || !D.experience.length) return;
-    wrap.innerHTML = '';
-
-    const items = D.experience;
-    const isIndo = window.currentLang === 'id';
-
-    const timeline = el('div', { class: 'exp-timeline', 'aria-label': isIndo ? 'Linimasa Karier' : 'Career Timeline' });
-
-    items.forEach((item, i) => {
-      const num = String(i + 1).padStart(2, '0');
-      const catText = getLoc(item, 'typeLabel') || 'MILESTONE';
-      const headlineText = getLoc(item, 'headline');
-
-      const row = el('article', {
-        class: 'exp-tl-row',
-        id: `exp-tl-${i}`,
-        role: 'button',
-        tabindex: '0',
-        'aria-label': `${num} — ${item.role} at ${item.org}, ${item.period}`,
-      });
-
-      row.innerHTML = `
-        <div class="exp-tl__left">
-          <span class="exp-tl__num">${num}</span>
-          <div class="exp-tl__vline" aria-hidden="true"></div>
-        </div>
-        <div class="exp-tl__right">
-          <div class="exp-tl__meta-row">
-            <span class="exp-tl__cat">${catText.toUpperCase()}</span>
-            <span class="exp-tl__period">${item.period || item.year}</span>
-          </div>
-          <h2 class="exp-tl__role">${item.role}</h2>
-          <div class="exp-tl__org">${item.org}<span class="exp-tl__loc"> · ${item.location}</span></div>
-          ${item.gpa ? `<div class="exp-tl__gpa">GPA ${item.gpa}</div>` : ''}
-          ${headlineText ? `<p class="exp-tl__headline">${headlineText}</p>` : ''}
-          ${item.technologies && item.technologies.length ? `
-            <div class="exp-tl__chips">
-              ${item.technologies.slice(0, 5).map(t => `<span class="exp-tl__chip">${t}</span>`).join('')}
-              ${item.technologies.length > 5 ? `<span class="exp-tl__chip exp-tl__chip--more">+${item.technologies.length - 5}</span>` : ''}
-            </div>
-          ` : ''}
-          <div class="exp-tl__open-cta">
-            <span>${window.t('exp_view_cta')}</span>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </div>
-        </div>
-      `;
-
-      row.addEventListener('click', () => openExperienceModal(i));
-      row.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          openExperienceModal(i);
-        }
-      });
-
-      timeline.appendChild(row);
-    });
-
-    // Destination — Next Chapter CTA
-    const destRow = el('a', {
-      class: 'exp-tl-row exp-tl-row--dest',
-      href: `mailto:syahputraerliandika@gmail.com?subject=Collaboration%20Inquiry%20%E2%80%94%20Erliandika%20Syahputra`,
-      'aria-label': window.t('map_dest_cta'),
-    });
-    destRow.innerHTML = `
-      <div class="exp-tl__left">
-        <span class="exp-tl__num exp-tl__num--dest">✦</span>
-      </div>
-      <div class="exp-tl__right">
-        <div class="exp-tl__meta-row">
-          <span class="exp-tl__cat">${window.t('map_dest_badge')}</span>
-        </div>
-        <h2 class="exp-tl__role exp-tl__role--dest">${window.t('map_dest_title')}</h2>
-        <div class="exp-tl__open-cta exp-tl__open-cta--dest">
-          <span>${window.t('map_dest_cta')}</span>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </div>
-      </div>
-    `;
-    timeline.appendChild(destRow);
-
-    // Floating Sneak Peek Card (kept for compat, now not used by timeline but needed by openExperienceModal)
-    wrap.appendChild(timeline);
+    // Stub to maintain backwards compatibility
   }
 
   /* ── 5 Selected Projects Horizontal Carousel (Home) ── */
@@ -1216,22 +1194,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function initExperiencePage() {
-    currentExpMode = window.innerWidth < 900 ? 'mobile' : 'desktop';
-    buildFullSnakingMap();
     buildExperienceCards();
     buildCertifications();
-
-    let expResizeTimer;
-    window.addEventListener('resize', () => {
-      clearTimeout(expResizeTimer);
-      expResizeTimer = setTimeout(() => {
-        const newMode = window.innerWidth < 900 ? 'mobile' : 'desktop';
-        if (newMode !== currentExpMode) {
-          currentExpMode = newMode;
-          buildFullSnakingMap();
-        }
-      }, 200);
-    }, { passive: true });
   }
 
   /* ── 3-Zone Career Expedition Map (Organic Cartographic Journey) ── */
@@ -1365,25 +1329,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ── Interactive Cards List ── */
+  /* ── Interactive Cards List (Newest First, No Numbers) ── */
   function buildExperienceCards() {
-    const existingList = document.getElementById('expCardsList');
-    if (existingList) existingList.remove();
+    const listWrap = document.getElementById('expCardsList');
+    if (!listWrap || !D.experience) return;
+    listWrap.innerHTML = '';
 
-    const fullWrap = document.getElementById('expFullMap');
-    if (!fullWrap || !D.experience) return;
+    const items = D.experience.map((item, originalIdx) => ({ item, originalIdx }));
+    // Reverse to show newest first (2026 -> 2022)
+    items.reverse();
 
-    const listWrap = el('div', { class: 'exp-cards-list', id: 'expCardsList' });
-
-    D.experience.forEach((item, idx) => {
+    items.forEach(({ item, originalIdx }) => {
       const catText = getLoc(item, 'typeLabel') || 'EXPERIENCE';
       const headlineText = getLoc(item, 'headline');
 
       const card = el('article', {
         class: 'exp-detail-card',
-        id: `exp-card-${idx}`,
+        id: `exp-card-${originalIdx}`,
         role: 'button',
         tabindex: '0',
+        'aria-label': `${item.role} · ${item.org} (${item.period})`,
       });
 
       card.innerHTML = `
@@ -1414,20 +1379,18 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       card.addEventListener('click', () => {
-        openExperienceModal(idx);
+        openExperienceModal(originalIdx);
       });
 
       card.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          openExperienceModal(idx);
+          openExperienceModal(originalIdx);
         }
       });
 
       listWrap.appendChild(card);
     });
-
-    fullWrap.parentNode.insertBefore(listWrap, fullWrap.nextSibling);
   }
 
   /* ── Rich Inline Certifications Grid (Direct Image Visuals) ── */

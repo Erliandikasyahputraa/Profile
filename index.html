@@ -193,26 +193,43 @@
       <a href="mailto:syahputraerliandika@gmail.com" class="hero__icon-btn" aria-label="Email">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
       </a>
-      <a href="assets/docs/Erliandika_Syahputra_General_Resume.pdf" id="cvBtn" target="_blank" rel="noopener noreferrer" download="Erliandika_Syahputra_General_Resume.pdf" class="hero__cv-btn" aria-label="Download CV" data-i18n-aria-label="aria_download_cv">
+      <a href="assets/docs/Global_Master-ENG.pdf" id="cvBtn" target="_blank" rel="noopener noreferrer" download="Global_Master-ENG.pdf" class="hero__cv-btn" aria-label="Download CV" data-i18n-aria-label="aria_download_cv">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         CV
       </a>
     </div>
   </section>
 
-  <!-- ═══ EXPERIENCE PREVIEW / TREASURE MAP ════════════════════ -->
+  <!-- ═══ CAREER JOURNEY SHOWCASE ════════════════════════════════ -->
   <section class="exp-preview container" id="exp-preview" aria-label="Career journey preview">
     <div class="exp-preview__header">
-      <div class="section-label" style="margin-bottom:0"><span data-i18n="section_journey_label">Career Journey</span></div>
+      <div class="exp-preview__header-left">
+        <div class="section-label" style="margin-bottom:0.25rem"><span data-i18n="section_journey_label">Career Journey</span></div>
+        <p class="exp-preview__sub" data-i18n="journey_sub">Milestones from academic foundations to full-stack &amp; cloud systems.</p>
+      </div>
+      <div class="exp-preview__header-right">
+        <div class="exp-preview__nav-arrows">
+          <button class="exp-preview__nav-btn" id="journeyPrevBtn" type="button" aria-label="Scroll left">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="exp-preview__nav-btn" id="journeyNextBtn" type="button" aria-label="Scroll right">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <a href="pages/experience.html" class="exp-preview__view-all-pill">
+          <span data-i18n="exp_view_all">View All (8)</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
     </div>
-    <div class="exp-map-stage" id="expMapStage">
-      <div class="exp-map-wrap" id="expPreviewMap" aria-label="Interactive career journey map"></div>
+
+    <div class="exp-journey-wrapper" id="expJourneyWrapper">
+      <div class="exp-journey-track" id="expPreviewMap" role="list"></div>
     </div>
-    <div class="exp-map-mobile-bar">
-      <a href="pages/experience.html" class="exp-map-mobile-cta">
-        <span data-i18n="journey_explore_cta">Explore the full journey</span>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </a>
+
+    <!-- Progress Indicator -->
+    <div class="exp-journey-progress-rail" aria-hidden="true">
+      <div class="exp-journey-progress-indicator" id="journeyProgressIndicator"></div>
     </div>
   </section>
 

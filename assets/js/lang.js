@@ -33,7 +33,9 @@
 
       // Section Labels
       section_journey_label: 'Career Journey',
+      journey_sub: 'Milestones from academic foundations to full-stack & cloud systems.',
       journey_explore_cta: 'Explore the full journey',
+      exp_view_all: 'View All (8)',
       section_projects_label: 'Selected Projects',
 
       // Projects Trailer & Archive
@@ -144,7 +146,9 @@
 
       // Section Labels
       section_journey_label: 'Perjalanan Karier',
+      journey_sub: 'Linimasa milestone dari fondasi komputasi hingga sistem cloud & full-stack.',
       journey_explore_cta: 'Jelajahi linimasa lengkap',
+      exp_view_all: 'Lihat Semua (8)',
       section_projects_label: 'Proyek Pilihan',
 
       // Projects Trailer & Archive
