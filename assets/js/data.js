@@ -337,17 +337,27 @@ window.PORTFOLIO_DATA = {
       year: '2024 — 2025',
       category: 'Mobile & Cloud Engineering',
       category_id: 'Rekayasa Mobile & Cloud',
-      image: 'assets/images/certs/erliandika_syahputra_1.webp',
+      image: '', // ⚠️ DATA KURANG: Gambar sertifikat Bangkit Academy belum tersedia di folder certs/. Harap tambahkan file: assets/images/certs/bangkit_certificate_erliandika.webp
       credential: 'assets/docs/certs/bangkit-mobile-development-erliandika.pdf',
     },
     {
       id: 'cert-codingcamp',
-      name: 'Front-End and Back-End Developer Track & Squad Representative',
+      name: 'Front-End and Back-End Developer Track — Coding Camp DBS Foundation',
       issuer: 'Coding Camp powered by DBS Foundation & Dicoding',
       year: '2025',
       category: 'Full-Stack Web Development',
       category_id: 'Pengembangan Web Full-Stack',
       image: 'assets/images/certs/erliandika_syahputra_certificate___fc220d5y0389_1_1.webp',
+      credential: 'assets/docs/certs/dbs-coding-camp-fullstack-erliandika.pdf',
+    },
+    {
+      id: 'cert-codingcamp-squad',
+      name: 'Squad Representative Appreciation — Coding Camp 2026 DBS Foundation',
+      issuer: 'Coding Camp powered by DBS Foundation & Dicoding',
+      year: '2026',
+      category: 'Community & Ambassador',
+      category_id: 'Komunitas & Duta Kampus',
+      image: 'assets/images/certs/sertifikat___erliandika_syahputra.webp',
       credential: 'assets/docs/certs/dbs-coding-camp-fullstack-erliandika.pdf',
     },
     {
@@ -377,7 +387,7 @@ window.PORTFOLIO_DATA = {
       year: '2025',
       category: 'Data Mining & Public Speaking',
       category_id: 'Sains Data & Public Speaking',
-      image: 'assets/images/certs/sertifikat___erliandika_syahputra.webp',
+      image: 'assets/images/certs/erliandika_syahputra_1.webp',
       credential: 'assets/docs/certs/speaker-data-mining-himasi-erliandika.pdf',
     },
     {

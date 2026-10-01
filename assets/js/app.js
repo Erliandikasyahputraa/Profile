@@ -308,431 +308,166 @@ document.addEventListener('DOMContentLoaded', () => {
     photoContainer.addEventListener('pointerleave', triggerGlitchExit);
   }
 
-  /* ── Experience Preview Map (Home Trailer) ── */
+  /* ── Career Journey: Numbered Timeline Preview (Home) ── */
   function buildExpPreviewMap() {
     const wrap = document.getElementById('expPreviewMap');
     if (!wrap) return;
-
     const milestones = D.journeyMilestones || [];
-    const isMobile = window.innerWidth < 900;
-    currentHomeExpMode = isMobile ? 'mobile' : 'desktop';
-
     wrap.innerHTML = '';
 
-    if (!isMobile) {
-      // ══════════════════════════════════════════════════════════
-      // DESKTOP PANORAMIC EXPEDITION MAP (UNTOUCHED REFERENCE)
-      // ══════════════════════════════════════════════════════════
-      const VW = 1000;
-      const VH = 280;
+    const track = el('div', { class: 'journey-track' });
 
-      const svg = mkSVG('svg', {
-        viewBox: `0 0 ${VW} ${VH}`,
-        width: '100%',
-        height: String(VH),
-        class: 'exp-map-svg',
-        'aria-label': 'Journey preview route',
-      });
+    milestones.forEach((m, i) => {
+      const num = String(i + 1).padStart(2, '0');
+      const badgeText = getLoc(m, 'badge');
+      const titleText = getLoc(m, 'title');
+      const reflectionText = getLoc(m, 'reflection');
 
-      // SVG Defs for organic mist & fog gradients
-      const defs = mkSVG('defs');
-      
-      const fog1 = mkSVG('radialGradient', { id: 'fogRadial1', cx: '50%', cy: '50%', r: '50%' });
-      fog1.appendChild(mkSVG('stop', { offset: '0%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.18' }));
-      fog1.appendChild(mkSVG('stop', { offset: '60%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.06' }));
-      fog1.appendChild(mkSVG('stop', { offset: '100%', 'stop-color': 'var(--fg)', 'stop-opacity': '0' }));
-      defs.appendChild(fog1);
-
-      const fog2 = mkSVG('radialGradient', { id: 'fogRadial2', cx: '50%', cy: '50%', r: '50%' });
-      fog2.appendChild(mkSVG('stop', { offset: '0%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.24' }));
-      fog2.appendChild(mkSVG('stop', { offset: '70%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.08' }));
-      fog2.appendChild(mkSVG('stop', { offset: '100%', 'stop-color': 'var(--fg)', 'stop-opacity': '0' }));
-      defs.appendChild(fog2);
-
-      const fogGlow = mkSVG('radialGradient', { id: 'fogMysteryGlow', cx: '50%', cy: '50%', r: '50%' });
-      fogGlow.appendChild(mkSVG('stop', { offset: '0%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.35' }));
-      fogGlow.appendChild(mkSVG('stop', { offset: '100%', 'stop-color': 'var(--fg)', 'stop-opacity': '0' }));
-      defs.appendChild(fogGlow);
-
-      svg.appendChild(defs);
-
-      // Curved organic winding path leading into the uncharted mist
-      const pathD = `
-        M 60 140
-        C 130 140, 150 80, 205 80
-        C 285 80, 345 200, 415 200
-        C 495 200, 555 90, 625 90
-        C 700 90, 740 170, 795 170
-        C 850 170, 895 110, 940 110
-      `;
-
-      const path = mkSVG('path', {
-        d: pathD,
-        class: 'map-path',
-      });
-      svg.appendChild(path);
-
-      // Start origin dot
-      const startDot = mkSVG('circle', {
-        cx: '60',
-        cy: '140',
-        r: '4.5',
-        class: 'map-node-start',
-      });
-      svg.appendChild(startDot);
-
-      const DESKTOP_NODES = [
-        { x: 205, y: 80,  textX: 205, textY: 48,  side: 'above', item: milestones[0] },
-        { x: 415, y: 200, textX: 415, textY: 232, side: 'below', item: milestones[1] },
-        { x: 625, y: 90,  textX: 625, textY: 58,  side: 'above', item: milestones[2] },
-        { x: 795, y: 170, textX: 795, textY: 202, side: 'below', item: milestones[3] },
-      ];
-
-      // Floating Sneak Peek Card Container (anchored inside wrap)
-      const peekCard = el('div', { class: 'map-sneak-peek', 'aria-hidden': 'true' });
-      wrap.appendChild(peekCard);
-
-      DESKTOP_NODES.forEach(nd => {
-        if (!nd.item) return;
-
-        const badgeText = getLoc(nd.item, 'badge');
-        const titleText = getLoc(nd.item, 'title');
-
-        const g = mkSVG('g', {
-          class: 'map-node-group',
-          tabindex: '0',
-          role: 'button',
-          'aria-label': `${titleText} (${nd.item.year})`,
-        });
-
-        // Outer halo ring
-        const ring = mkSVG('circle', {
-          cx: String(nd.x),
-          cy: String(nd.y),
-          r: '9',
-          class: 'map-node-ring',
-        });
-        g.appendChild(ring);
-
-        // Core dot
-        const dot = mkSVG('circle', {
-          cx: String(nd.x),
-          cy: String(nd.y),
-          r: '4.5',
-          class: 'map-node-core',
-        });
-        g.appendChild(dot);
-
-        // Label typography
-        const isAbove = nd.side === 'above';
-        const anchor = nd.x > VW * 0.85 ? 'end' : (nd.x < VW * 0.2 ? 'start' : 'middle');
-
-        g.appendChild(mkSVGText(badgeText, nd.textX, isAbove ? nd.textY - 14 : nd.textY, 'map-label-tag', anchor));
-        g.appendChild(mkSVGText(nd.item.year, nd.textX, isAbove ? nd.textY : nd.textY + 14, 'map-label-year', anchor));
-        g.appendChild(mkSVGText(titleText, nd.textX, isAbove ? nd.textY + 16 : nd.textY + 30, 'map-label-title', anchor));
-
-        // Exact Hover Sneak Peek Trigger
-        g.addEventListener('mouseenter', () => {
-          const reflectionText = getLoc(nd.item, 'reflection');
-          const roleText = nd.item.role ? `<span class="msp-role">${nd.item.role}</span>` : '';
-          const locText = nd.item.location ? `<span class="msp-loc"> · ${nd.item.location}</span>` : '';
-          const hintLabel = window.t('exp_view_cta');
-
-          peekCard.innerHTML = `
-            <div class="msp-header">
-              <span class="msp-badge">${badgeText}</span>
-              <span class="msp-year">${nd.item.year}</span>
-            </div>
-            <div class="msp-title">${titleText}</div>
-            <div class="msp-meta">${roleText}${locText}</div>
-            <p class="msp-desc">${reflectionText}</p>
-            <div class="msp-hint">
-              <span>${hintLabel}</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          `;
-
-          const dotRect = dot.getBoundingClientRect();
-          const wrapRect = wrap.getBoundingClientRect();
-
-          const relX = (dotRect.left + dotRect.width / 2) - wrapRect.left + wrap.scrollLeft;
-          const relY = (dotRect.top + dotRect.height / 2) - wrapRect.top;
-
-          peekCard.style.left = `${relX}px`;
-          if (nd.side === 'above') {
-            peekCard.style.top = `${relY + 16}px`;
-            peekCard.style.transform = 'translate(-50%, 0)';
-          } else {
-            peekCard.style.top = `${relY - 16}px`;
-            peekCard.style.transform = 'translate(-50%, -100%)';
-          }
-          peekCard.classList.add('active');
-        });
-
-        g.addEventListener('mouseleave', () => {
-          peekCard.classList.remove('active');
-        });
-
-        // Click navigates to experience page
-        g.addEventListener('click', () => {
-          window.location.href = PAGES_REL + 'experience.html';
-        });
-
-        svg.appendChild(g);
-      });
-
-      wrap.addEventListener('mouseleave', () => {
-        peekCard.classList.remove('active');
-      });
-
-      // ── WIDE CLICKABLE MYSTERY FOG & WAYPOINT ZONE ──
-      const fogClickGroup = mkSVG('g', {
-        class: 'map-fog-clickable-zone',
+      const step = el('div', {
+        class: 'journey-step',
         tabindex: '0',
         role: 'button',
-        'aria-label': window.t('journey_explore_cta'),
+        'aria-label': `${titleText} — ${m.year}`,
       });
 
-      // Broad invisible hitbox
-      const hitBox = mkSVG('rect', {
-        x: '820',
-        y: '20',
-        width: '180',
-        height: '220',
-        rx: '24',
-        class: 'map-fog-hitbox',
-      });
-      fogClickGroup.appendChild(hitBox);
+      step.innerHTML = `
+        <div class="journey-step__num">${num}</div>
+        <div class="journey-step__connector" aria-hidden="true"></div>
+        <div class="journey-step__body">
+          <div class="journey-step__badge">${badgeText}</div>
+          <div class="journey-step__title">${titleText}</div>
+          <div class="journey-step__year">${m.year}</div>
+          <div class="journey-step__role">${m.role || ''}</div>
+        </div>
+        <div class="journey-step__detail" aria-hidden="true">
+          <p class="journey-step__reflection">${reflectionText}</p>
+          <div class="journey-step__loc">${m.location || ''}</div>
+          <div class="journey-step__cta">
+            <span>${window.t('exp_view_cta')}</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </div>
+      `;
 
-      // Layered Organic Mystery Clouds
-      const cloudGlow = mkSVG('circle', {
-        cx: '940',
-        cy: '110',
-        r: '85',
-        fill: 'url(#fogMysteryGlow)',
-        class: 'map-fog-aura',
-      });
-      fogClickGroup.appendChild(cloudGlow);
-
-      const cloud1 = mkSVG('ellipse', { cx: '940', cy: '110', rx: '95', ry: '65', fill: 'url(#fogRadial1)', class: 'map-cloud-layer c1' });
-      const cloud2 = mkSVG('ellipse', { cx: '965', cy: '135', rx: '80', ry: '50', fill: 'url(#fogRadial2)', class: 'map-cloud-layer c2' });
-      const cloud3 = mkSVG('ellipse', { cx: '915', cy: '90',  rx: '60', ry: '40', fill: 'url(#fogRadial1)', class: 'map-cloud-layer c3' });
-      fogClickGroup.appendChild(cloud1);
-      fogClickGroup.appendChild(cloud2);
-      fogClickGroup.appendChild(cloud3);
-
-      // Pulsing Radar Rings
-      const radarOuter = mkSVG('circle', { cx: '940', cy: '110', r: '22', class: 'waypoint-radar-outer' });
-      const radar = mkSVG('circle', { cx: '940', cy: '110', r: '14', class: 'waypoint-radar' });
-      fogClickGroup.appendChild(radarOuter);
-      fogClickGroup.appendChild(radar);
-
-      // Mystery Question Glyph
-      const qGlyph = mkSVG('text', {
-        x: '940',
-        y: '116',
-        class: 'map-mystery-glyph',
-        'text-anchor': 'middle',
-      });
-      qGlyph.textContent = '?';
-      fogClickGroup.appendChild(qGlyph);
-
-      // Badge / Tooltip Label
-      const pillG = mkSVG('g', { class: 'waypoint-pill-tooltip' });
-      const pillBg = mkSVG('rect', {
-        x: '850',
-        y: '50',
-        width: '180',
-        height: '26',
-        rx: '13',
-        class: 'wp-pill-bg',
-      });
-      pillG.appendChild(pillBg);
-
-      const pillText = mkSVG('text', {
-        x: '940',
-        y: '67',
-        class: 'wp-pill-text',
-        'text-anchor': 'middle',
-      });
-      pillText.textContent = window.currentLang === 'id' ? 'JELAJAHI LINIMASA LENGKAP →' : 'EXPLORE FULL MAP →';
-      pillG.appendChild(pillText);
-      fogClickGroup.appendChild(pillG);
-
-      // Direct navigation on click
-      fogClickGroup.addEventListener('click', () => {
+      step.addEventListener('click', () => {
         window.location.href = PAGES_REL + 'experience.html';
       });
-
-      fogClickGroup.addEventListener('keydown', (e) => {
+      step.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           window.location.href = PAGES_REL + 'experience.html';
         }
       });
 
-      svg.appendChild(fogClickGroup);
+      track.appendChild(step);
+    });
 
-      wrap.appendChild(svg);
-    } else {
-      // ══════════════════════════════════════════════════════════
-      // MOBILE VERTICAL EXPEDITION TRAIL (< 900px)
-      // ══════════════════════════════════════════════════════════
-      const MVW = 380;
-      const MVH = 640;
+    // End node — explore CTA
+    const ctaStep = el('a', {
+      class: 'journey-step journey-step--cta',
+      href: PAGES_REL + 'experience.html',
+      'aria-label': window.t('journey_explore_cta'),
+    });
+    ctaStep.innerHTML = `
+      <div class="journey-step__num journey-step__num--arrow">→</div>
+      <div class="journey-step__connector" aria-hidden="true"></div>
+      <div class="journey-step__body">
+        <div class="journey-step__badge">${window.currentLang === 'id' ? 'LINIMASA LENGKAP' : 'FULL TIMELINE'}</div>
+        <div class="journey-step__title">${window.t('journey_explore_cta')}</div>
+      </div>
+    `;
+    track.appendChild(ctaStep);
 
-      const svg = mkSVG('svg', {
-        viewBox: `0 0 ${MVW} ${MVH}`,
-        width: '100%',
-        height: 'auto',
-        class: 'exp-mobile-map-svg',
-        'aria-label': 'Mobile Journey Expedition Trail',
+    wrap.appendChild(track);
+  }
+
+  /* ── Career Journey: Full Numbered Timeline (Exp Page) ── */
+  function buildFullSnakingMap() {
+    const wrap = document.getElementById('expFullMap');
+    if (!wrap || !D.experience || !D.experience.length) return;
+    wrap.innerHTML = '';
+
+    const items = D.experience;
+    const isIndo = window.currentLang === 'id';
+
+    const timeline = el('div', { class: 'exp-timeline', 'aria-label': isIndo ? 'Linimasa Karier' : 'Career Timeline' });
+
+    items.forEach((item, i) => {
+      const num = String(i + 1).padStart(2, '0');
+      const catText = getLoc(item, 'typeLabel') || 'MILESTONE';
+      const headlineText = getLoc(item, 'headline');
+
+      const row = el('article', {
+        class: 'exp-tl-row',
+        id: `exp-tl-${i}`,
+        role: 'button',
+        tabindex: '0',
+        'aria-label': `${num} — ${item.role} at ${item.org}, ${item.period}`,
       });
 
-      const defs = mkSVG('defs');
-      const fogGlow = mkSVG('radialGradient', { id: 'mFogMysteryGlow', cx: '50%', cy: '50%', r: '50%' });
-      fogGlow.appendChild(mkSVG('stop', { offset: '0%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.35' }));
-      fogGlow.appendChild(mkSVG('stop', { offset: '100%', 'stop-color': 'var(--fg)', 'stop-opacity': '0' }));
-      defs.appendChild(fogGlow);
-      svg.appendChild(defs);
-
-      // Continuous vertical path curve with organic wander
-      const mobilePathD = `
-        M 50 40
-        C 50 75, 65 95, 65 125
-        C 65 170, 45 190, 45 235
-        C 45 280, 70 300, 70 345
-        C 70 390, 50 410, 50 455
-        C 50 500, 60 520, 60 555
+      row.innerHTML = `
+        <div class="exp-tl__left">
+          <span class="exp-tl__num">${num}</span>
+          <div class="exp-tl__vline" aria-hidden="true"></div>
+        </div>
+        <div class="exp-tl__right">
+          <div class="exp-tl__meta-row">
+            <span class="exp-tl__cat">${catText.toUpperCase()}</span>
+            <span class="exp-tl__period">${item.period || item.year}</span>
+          </div>
+          <h2 class="exp-tl__role">${item.role}</h2>
+          <div class="exp-tl__org">${item.org}<span class="exp-tl__loc"> · ${item.location}</span></div>
+          ${item.gpa ? `<div class="exp-tl__gpa">GPA ${item.gpa}</div>` : ''}
+          ${headlineText ? `<p class="exp-tl__headline">${headlineText}</p>` : ''}
+          ${item.technologies && item.technologies.length ? `
+            <div class="exp-tl__chips">
+              ${item.technologies.slice(0, 5).map(t => `<span class="exp-tl__chip">${t}</span>`).join('')}
+              ${item.technologies.length > 5 ? `<span class="exp-tl__chip exp-tl__chip--more">+${item.technologies.length - 5}</span>` : ''}
+            </div>
+          ` : ''}
+          <div class="exp-tl__open-cta">
+            <span>${window.t('exp_view_cta')}</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </div>
       `;
 
-      svg.appendChild(mkSVG('path', { d: mobilePathD, class: 'map-road-glow' }));
-      svg.appendChild(mkSVG('path', { d: mobilePathD, class: 'map-road-track' }));
-
-      // Origin dot
-      const startDot = mkSVG('circle', { cx: '50', cy: '40', r: '4', class: 'map-node-start' });
-      svg.appendChild(startDot);
-
-      const M_PREVIEW_POSITIONS = [
-        { x: 65, y: 125 },
-        { x: 45, y: 235 },
-        { x: 70, y: 345 },
-        { x: 50, y: 455 },
-      ];
-
-      milestones.forEach((m, i) => {
-        const pos = M_PREVIEW_POSITIONS[i];
-        if (!pos) return;
-
-        const badgeText = getLoc(m, 'badge');
-        const titleText = getLoc(m, 'title');
-        const titleShort = titleText.length > 26 ? titleText.substring(0, 24) + '…' : titleText;
-        const locText = m.location ? m.location.split('—')[0].trim() : '';
-
-        const g = mkSVG('g', {
-          class: 'map-node-group map-mobile-node',
-          tabindex: '0',
-          role: 'button',
-          'aria-label': `${badgeText} · ${titleText} (${m.year})`,
-        });
-
-        // Elevation line to label block
-        g.appendChild(mkSVG('line', {
-          x1: String(pos.x + 8),
-          y1: String(pos.y),
-          x2: '92',
-          y2: String(pos.y),
-          class: 'map-elevation-line',
-        }));
-
-        // Halo ring & core dot
-        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '10', class: 'map-node-ring' }));
-        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '4', class: 'map-node-core' }));
-
-        // Typography Stack beside node
-        const labelX = 104;
-        g.appendChild(mkSVGText(badgeText, labelX, pos.y - 14, 'map-label-tag', 'start'));
-        g.appendChild(mkSVGText(m.year, labelX, pos.y, 'map-label-year', 'start'));
-        g.appendChild(mkSVGText(titleShort, labelX, pos.y + 16, 'map-label-title', 'start'));
-        if (locText) {
-          const locShort = locText.length > 30 ? locText.substring(0, 28) + '…' : locText;
-          g.appendChild(mkSVGText(locShort, labelX, pos.y + 30, 'map-label-sub', 'start'));
-        }
-
-        // Tap/click navigates to experience page
-        g.addEventListener('click', () => {
-          window.location.href = PAGES_REL + 'experience.html';
-        });
-        g.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            window.location.href = PAGES_REL + 'experience.html';
-          }
-        });
-
-        svg.appendChild(g);
-      });
-
-      // Mobile Mystery Destination '?' at bottom
-      const mDestY = 555;
-      const mFogG = mkSVG('g', {
-        class: 'map-fog-clickable-zone',
-        tabindex: '0',
-        role: 'button',
-        'aria-label': window.t('journey_explore_cta'),
-      });
-
-      // Mystery aura & radar rings
-      mFogG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '28', fill: 'url(#mFogMysteryGlow)', class: 'map-fog-aura' }));
-      mFogG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '18', class: 'waypoint-radar-outer' }));
-      mFogG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '11', class: 'waypoint-radar' }));
-
-      // Mystery Question mark glyph
-      const mQGlyph = mkSVG('text', {
-        x: '60',
-        y: String(mDestY + 5),
-        class: 'map-mystery-glyph',
-        'text-anchor': 'middle',
-      });
-      mQGlyph.textContent = '?';
-      mFogG.appendChild(mQGlyph);
-
-      // Pill Button beside destination
-      const mPillG = mkSVG('g', { class: 'waypoint-pill-tooltip' });
-      const mPillBg = mkSVG('rect', {
-        x: '96',
-        y: String(mDestY - 14),
-        width: '240',
-        height: '28',
-        rx: '14',
-        class: 'wp-pill-bg',
-      });
-      mPillG.appendChild(mPillBg);
-
-      const mPillText = mkSVG('text', {
-        x: '216',
-        y: String(mDestY + 4),
-        class: 'wp-pill-text',
-        'text-anchor': 'middle',
-      });
-      mPillText.textContent = window.currentLang === 'id' ? 'JELAJAHI LINIMASA LENGKAP →' : 'EXPLORE FULL MAP →';
-      mPillG.appendChild(mPillText);
-      mFogG.appendChild(mPillG);
-
-      mFogG.addEventListener('click', () => {
-        window.location.href = PAGES_REL + 'experience.html';
-      });
-      mFogG.addEventListener('keydown', (e) => {
+      row.addEventListener('click', () => openExperienceModal(i));
+      row.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          window.location.href = PAGES_REL + 'experience.html';
+          openExperienceModal(i);
         }
       });
 
-      svg.appendChild(mFogG);
+      timeline.appendChild(row);
+    });
 
-      wrap.appendChild(svg);
-    }
+    // Destination — Next Chapter CTA
+    const destRow = el('a', {
+      class: 'exp-tl-row exp-tl-row--dest',
+      href: `mailto:syahputraerliandika@gmail.com?subject=Collaboration%20Inquiry%20%E2%80%94%20Erliandika%20Syahputra`,
+      'aria-label': window.t('map_dest_cta'),
+    });
+    destRow.innerHTML = `
+      <div class="exp-tl__left">
+        <span class="exp-tl__num exp-tl__num--dest">✦</span>
+      </div>
+      <div class="exp-tl__right">
+        <div class="exp-tl__meta-row">
+          <span class="exp-tl__cat">${window.t('map_dest_badge')}</span>
+        </div>
+        <h2 class="exp-tl__role exp-tl__role--dest">${window.t('map_dest_title')}</h2>
+        <div class="exp-tl__open-cta exp-tl__open-cta--dest">
+          <span>${window.t('map_dest_cta')}</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    `;
+    timeline.appendChild(destRow);
+
+    // Floating Sneak Peek Card (kept for compat, now not used by timeline but needed by openExperienceModal)
+    wrap.appendChild(timeline);
   }
 
   /* ── 5 Selected Projects Horizontal Carousel (Home) ── */
@@ -1500,419 +1235,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ── 3-Zone Career Expedition Map (Organic Cartographic Journey) ── */
-  function buildFullSnakingMap() {
-    const wrap = document.getElementById('expFullMap');
-    if (!wrap || !D.experience || !D.experience.length) return;
-
-    wrap.innerHTML = '';
-
-    const items = D.experience; // Exactly 8 items
-    const isMobile = window.innerWidth < 900;
-    const isIndo = window.currentLang === 'id';
-
-    if (!isMobile) {
-      const VW = 1320;
-      const VH = 560;
-
-      const svg = mkSVG('svg', {
-        viewBox: `0 0 ${VW} ${VH}`,
-        width: '100%',
-        height: 'auto',
-        class: 'exp-snaking-svg',
-        'aria-label': isIndo ? 'Peta Ekspedisi Jejak Karier & Rekayasa' : 'Career Journey & Engineering Expedition Map',
-      });
-
-      // SVG Defs
-      const defs = mkSVG('defs');
-      
-      const starGlow = mkSVG('radialGradient', { id: 'collabStarGlow', cx: '50%', cy: '50%', r: '50%' });
-      starGlow.appendChild(mkSVG('stop', { offset: '0%', 'stop-color': 'var(--fg)', 'stop-opacity': '0.22' }));
-      starGlow.appendChild(mkSVG('stop', { offset: '100%', 'stop-color': 'var(--fg)', 'stop-opacity': '0' }));
-      defs.appendChild(starGlow);
-
-      svg.appendChild(defs);
-
-      // Subtle atmospheric topographic contour lines (single gentle horizon contour)
-      const topoContours = [
-        'M 30 260 C 220 220, 440 310, 680 250 C 900 190, 1120 270, 1290 230',
-      ];
-      topoContours.forEach(d => {
-        svg.appendChild(mkSVG('path', { d, class: 'map-path-contour' }));
-      });
-
-      // ── Organic 8-Waypoint Cartographic Expedition Path ──
-      // Silhouette: (60, 310) → (190, 240) → (330, 275) → (480, 150) → (640, 380) → (790, 270) → (920, 305) → (1050, 160) → (1170, 220) → (1265, 220)
-      const pathD = `
-        M 60 310
-        C 105 310, 145 240, 190 240
-        C 240 240, 280 275, 330 275
-        C 380 275, 425 150, 480 150
-        C 540 150, 580 380, 640 380
-        C 700 380, 740 270, 790 270
-        C 840 270, 875 305, 920 305
-        C 970 305, 1005 160, 1050 160
-        C 1095 160, 1130 220, 1170 220
-        C 1205 220, 1235 220, 1265 220
-      `;
-
-      svg.appendChild(mkSVG('path', { d: pathD, class: 'map-road-glow' }));
-      svg.appendChild(mkSVG('path', { d: pathD, class: 'map-road-track' }));
-
-      // ── Origin Node: BASECAMP ──
-      const startG = mkSVG('g', { class: 'map-start-basecamp', tabindex: '0', role: 'region', 'aria-label': 'Basecamp origin' });
-      startG.appendChild(mkSVG('circle', { cx: '60', cy: '310', r: '12', class: 'map-start-halo' }));
-      startG.appendChild(mkSVG('circle', { cx: '60', cy: '310', r: '7', class: 'map-start-ring' }));
-      startG.appendChild(mkSVG('circle', { cx: '60', cy: '310', r: '3.5', class: 'map-node-start' }));
-      
-      startG.appendChild(mkSVGText('BASECAMP', 60, 336, 'map-start-label', 'middle'));
-      startG.appendChild(mkSVGText(isIndo ? 'Awal mula rasa ingin tahu' : 'Where curiosity began', 60, 350, 'map-start-sub', 'middle'));
-      svg.appendChild(startG);
-
-      // ── Deterministic Waypoint Coordinates (Organic 3-Zone Terrain) ──
-      const NODE_POSITIONS = [
-        // 0: S1 Sistem Informasi (Pendidikan) — gentle ascent
-        { x: 190, y: 240, side: 'above', labelY: 135, leaderY1: 226, leaderY2: 160, align: 'middle' },
-        // 1: IT Support & Lab Assistant (Infrastruktur IT) — shelf step
-        { x: 330, y: 275, side: 'below', labelY: 355, leaderY1: 287, leaderY2: 335, align: 'middle' },
-        // 2: Project Director & Division Head (Kepemimpinan & Komunitas) — early summit
-        { x: 480, y: 150, side: 'above', labelY: 55,  leaderY1: 136, leaderY2: 80,  align: 'middle' },
-        // 3: Network Infrastructure Deployment (Infrastruktur Jaringan) — fieldwork valley
-        { x: 640, y: 380, side: 'below', labelY: 455, leaderY1: 392, leaderY2: 435, align: 'middle' },
-        // 4: Bangkit Mobile Development (Program Industri) — industry plateau
-        { x: 790, y: 270, side: 'above', labelY: 175, leaderY1: 256, leaderY2: 200, align: 'middle' },
-        // 5: Coding Camp DBS Full-Stack (Program Industri) — continuing plateau
-        { x: 920, y: 305, side: 'below', labelY: 385, leaderY1: 317, leaderY2: 365, align: 'middle' },
-        // 6: Head of Software Dev (Kepemimpinan Rekayasa) — leadership peak
-        { x: 1050, y: 160, side: 'above', labelY: 65,  leaderY1: 146, leaderY2: 90,  align: 'middle' },
-        // 7: Sertifikasi BNSP Web (Sertifikasi Profesi) — credential shelf
-        { x: 1170, y: 220, side: 'below', labelY: 300, leaderY1: 232, leaderY2: 280, align: 'middle' },
-      ];
-
-      // ── Render 8 Milestone Waypoints with Elevation Leader Lines & Typography ──
-      items.forEach((item, i) => {
-        const pos = NODE_POSITIONS[i];
-        if (!pos) return;
-
-        const isAbove = pos.side === 'above';
-        const tagText = getLoc(item, 'typeLabel') || 'MILESTONE';
-        const roleText = item.role || '';
-        const orgText = item.org ? item.org.split('—')[0].trim() : '';
-
-        const g = mkSVG('g', {
-          class: 'map-node-group map-snaking-node',
-          tabindex: '0',
-          role: 'button',
-          'aria-label': `${String(i + 1).padStart(2, '0')} · ${item.role} at ${item.org} (${item.period})`,
-        });
-
-        // Altitude elevation leader line (connecting path node to label)
-        const leaderLine = mkSVG('line', {
-          x1: String(pos.x),
-          y1: String(pos.leaderY1),
-          x2: String(pos.x),
-          y2: String(pos.leaderY2),
-          class: 'map-elevation-line',
-        });
-        g.appendChild(leaderLine);
-
-        // Halo Ring
-        const halo = mkSVG('circle', {
-          cx: String(pos.x),
-          cy: String(pos.y),
-          r: '11',
-          class: 'map-node-ring',
-        });
-        g.appendChild(halo);
-
-        // Core Dot
-        const core = mkSVG('circle', {
-          cx: String(pos.x),
-          cy: String(pos.y),
-          r: '4.5',
-          class: 'map-node-core',
-        });
-        g.appendChild(core);
-
-        // Typography Stack: Tag, Period, Role, Org
-        const textY = pos.labelY;
-
-        // 1. Tag (e.g. 01 · PENDIDIKAN)
-        g.appendChild(mkSVGText(
-          `${String(i + 1).padStart(2, '0')} · ${tagText.toUpperCase()}`,
-          pos.x,
-          isAbove ? textY - 18 : textY,
-          'map-label-tag',
-          pos.align
-        ));
-
-        // 2. Period (e.g. Sep 2022 — Jun 2026)
-        g.appendChild(mkSVGText(
-          item.period || item.year,
-          pos.x,
-          isAbove ? textY - 4 : textY + 13,
-          'map-label-year',
-          pos.align
-        ));
-
-        // 3. Role Title (Primary)
-        const roleShort = roleText.length > 30 ? roleText.substring(0, 28) + '…' : roleText;
-        g.appendChild(mkSVGText(
-          roleShort,
-          pos.x,
-          isAbove ? textY + 12 : textY + 28,
-          'map-label-title',
-          pos.align
-        ));
-
-        // 4. Organization Subtitle (Quiet micro info)
-        const orgShort = orgText.length > 34 ? orgText.substring(0, 32) + '…' : orgText;
-        if (orgShort) {
-          g.appendChild(mkSVGText(
-            orgShort,
-            pos.x,
-            isAbove ? textY + 25 : textY + 41,
-            'map-label-sub',
-            pos.align
-          ));
-        }
-
-        // Hover Sneak-Peek Card Trigger
-        g.addEventListener('mouseenter', () => {
-          const reflectionText = getLoc(item, 'beginning') || getLoc(item, 'headline') || '';
-          const peekCard = wrap.querySelector('.map-sneak-peek');
-          if (!peekCard) return;
-
-          peekCard.innerHTML = `
-            <div class="msp-header">
-              <span class="msp-badge">${String(i + 1).padStart(2, '0')} · ${tagText}</span>
-              <span class="msp-year">${item.period || item.year}</span>
-            </div>
-            <div class="msp-title">${roleText}</div>
-            <div class="msp-meta">${item.org || ''}${item.location ? ` · ${item.location}` : ''}</div>
-            <p class="msp-desc">${reflectionText}</p>
-            <div class="msp-hint">
-              <span>${window.t('exp_view_cta')}</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          `;
-
-          const dotRect = core.getBoundingClientRect();
-          const wrapRect = wrap.getBoundingClientRect();
-          const relX = (dotRect.left + dotRect.width / 2) - wrapRect.left + wrap.scrollLeft;
-          const relY = (dotRect.top + dotRect.height / 2) - wrapRect.top;
-
-          peekCard.style.left = `${relX}px`;
-          if (isAbove) {
-            peekCard.style.top = `${relY + 18}px`;
-            peekCard.style.transform = 'translate(-50%, 0)';
-          } else {
-            peekCard.style.top = `${relY - 18}px`;
-            peekCard.style.transform = 'translate(-50%, -100%)';
-          }
-          peekCard.classList.add('active');
-        });
-
-        g.addEventListener('mouseleave', () => {
-          const peekCard = wrap.querySelector('.map-sneak-peek');
-          if (peekCard) peekCard.classList.remove('active');
-        });
-
-        // Click opens Experience Dossier Popup Modal
-        g.addEventListener('click', () => {
-          const peekCard = wrap.querySelector('.map-sneak-peek');
-          if (peekCard) peekCard.classList.remove('active');
-          openExperienceModal(i);
-        });
-
-        g.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            const peekCard = wrap.querySelector('.map-sneak-peek');
-            if (peekCard) peekCard.classList.remove('active');
-            openExperienceModal(i);
-          }
-        });
-
-        svg.appendChild(g);
-      });
-
-      // ── Destination Endpoint: ✦ LANGKAH BERIKUTNYA / ✦ THE NEXT CHAPTER ──
-      const destX = 1265;
-      const destY = 220;
-
-      const destG = mkSVG('g', {
-        class: 'map-destination-hook',
-        tabindex: '0',
-        role: 'button',
-        'aria-label': `${window.t('map_dest_badge')} — ${window.t('map_dest_title')}`,
-      });
-
-      // Destination Aura & Concentric Target Ring
-      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '24', fill: 'url(#collabStarGlow)', class: 'map-dest-aura' }));
-      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '12', class: 'map-dest-ring-outer' }));
-      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '7', class: 'map-dest-ring-inner' }));
-      destG.appendChild(mkSVG('circle', { cx: String(destX), cy: String(destY), r: '3.5', class: 'map-dest-core' }));
-
-      // Destination Typography (Placed above the horizon arrival node)
-      destG.appendChild(mkSVGText(window.t('map_dest_badge'), destX, destY - 50, 'map-dest-badge', 'middle'));
-      destG.appendChild(mkSVGText(window.t('map_dest_title'), destX, destY - 34, 'map-dest-title', 'middle'));
-      destG.appendChild(mkSVGText(window.t('map_dest_cta'), destX, destY - 18, 'map-dest-cta', 'middle'));
-
-      destG.addEventListener('click', () => {
-        window.location.href = 'mailto:syahputraerliandika@gmail.com?subject=Collaboration%20Inquiry%20%E2%80%94%20Erliandika%20Syahputra';
-      });
-
-      destG.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          window.location.href = 'mailto:syahputraerliandika@gmail.com?subject=Collaboration%20Inquiry%20%E2%80%94%20Erliandika%20Syahputra';
-        }
-      });
-
-      svg.appendChild(destG);
-
-      // Floating Sneak Peek Card Container (anchored inside wrap)
-      const peekCard = el('div', { class: 'map-sneak-peek', 'aria-hidden': 'true' });
-      wrap.appendChild(peekCard);
-
-      wrap.addEventListener('mouseleave', () => {
-        peekCard.classList.remove('active');
-      });
-
-      wrap.appendChild(svg);
-
-    } else {
-      // ══════════════════════════════════════════════════════════
-      // MOBILE VERTICAL EXPEDITION TRAIL (< 768px)
-      // ══════════════════════════════════════════════════════════
-      const MVW = 380;
-      const MVH = 1180;
-
-      const svg = mkSVG('svg', {
-        viewBox: `0 0 ${MVW} ${MVH}`,
-        width: '100%',
-        height: 'auto',
-        class: 'exp-mobile-trail-svg',
-        'aria-label': isIndo ? 'Linimasa Vertikal Ekspedisi Karier' : 'Vertical Career Expedition Trail',
-      });
-
-      // Continuous vertical path curve with gentle wander
-      const mobilePathD = `
-        M 50 50
-        C 50 85, 65 115, 65 155
-        C 65 200, 50 225, 50 265
-        C 50 310, 75 340, 75 385
-        C 75 435, 45 465, 45 510
-        C 45 560, 70 585, 70 630
-        C 70 675, 55 705, 55 750
-        C 55 795, 80 825, 80 870
-        C 80 915, 60 945, 60 990
-        C 60 1035, 60 1070, 60 1110
-      `;
-
-      svg.appendChild(mkSVG('path', { d: mobilePathD, class: 'map-road-glow' }));
-      svg.appendChild(mkSVG('path', { d: mobilePathD, class: 'map-road-track' }));
-
-      // Mobile Origin: BASECAMP
-      const mStartG = mkSVG('g', { class: 'map-start-basecamp', tabindex: '0', role: 'region', 'aria-label': 'Basecamp origin' });
-      mStartG.appendChild(mkSVG('circle', { cx: '50', cy: '50', r: '11', class: 'map-start-halo' }));
-      mStartG.appendChild(mkSVG('circle', { cx: '50', cy: '50', r: '6', class: 'map-start-ring' }));
-      mStartG.appendChild(mkSVG('circle', { cx: '50', cy: '50', r: '3', class: 'map-node-start' }));
-      
-      mStartG.appendChild(mkSVGText('BASECAMP', 75, 48, 'map-start-label', 'start'));
-      mStartG.appendChild(mkSVGText(isIndo ? 'Awal mula rasa ingin tahu' : 'Where curiosity began', 75, 62, 'map-start-sub', 'start'));
-      svg.appendChild(mStartG);
-
-      // Mobile Waypoint Coordinates (8 Milestones with organic vertical offsets)
-      const M_POSITIONS = [
-        { x: 65, y: 155 },
-        { x: 50, y: 265 },
-        { x: 75, y: 385 },
-        { x: 45, y: 510 },
-        { x: 70, y: 630 },
-        { x: 55, y: 750 },
-        { x: 80, y: 870 },
-        { x: 60, y: 990 },
-      ];
-
-      items.forEach((item, i) => {
-        const pos = M_POSITIONS[i];
-        if (!pos) return;
-
-        const tagText = getLoc(item, 'typeLabel') || 'MILESTONE';
-        const roleText = item.role || '';
-        const roleShort = roleText.length > 26 ? roleText.substring(0, 24) + '…' : roleText;
-        const orgText = item.org ? item.org.split('—')[0].trim() : '';
-        const orgShort = orgText.length > 28 ? orgText.substring(0, 26) + '…' : orgText;
-
-        const g = mkSVG('g', {
-          class: 'map-node-group map-mobile-node',
-          tabindex: '0',
-          role: 'button',
-          'aria-label': `${String(i + 1).padStart(2, '0')} · ${item.role} (${item.period})`,
-        });
-
-        // Leader line to label block
-        g.appendChild(mkSVG('line', {
-          x1: String(pos.x + 8),
-          y1: String(pos.y),
-          x2: '92',
-          y2: String(pos.y),
-          class: 'map-elevation-line',
-        }));
-
-        // Halo Ring & Node
-        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '11', class: 'map-node-ring' }));
-        g.appendChild(mkSVG('circle', { cx: String(pos.x), cy: String(pos.y), r: '4', class: 'map-node-core' }));
-
-        // Typography Stack beside node
-        const labelX = 104;
-        g.appendChild(mkSVGText(`${String(i + 1).padStart(2, '0')} · ${tagText.toUpperCase()}`, labelX, pos.y - 14, 'map-label-tag', 'start'));
-        g.appendChild(mkSVGText(item.period || item.year, labelX, pos.y, 'map-label-year', 'start'));
-        g.appendChild(mkSVGText(roleShort, labelX, pos.y + 15, 'map-label-title', 'start'));
-        if (orgShort) {
-          g.appendChild(mkSVGText(orgShort, labelX, pos.y + 28, 'map-label-sub', 'start'));
-        }
-
-        // Tap opens modal
-        g.addEventListener('click', () => openExperienceModal(i));
-        g.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openExperienceModal(i);
-          }
-        });
-
-        svg.appendChild(g);
-      });
-
-      // Mobile Destination: ✦ LANGKAH BERIKUTNYA
-      const mDestY = 1110;
-      const mDestG = mkSVG('g', {
-        class: 'map-destination-hook',
-        tabindex: '0',
-        role: 'button',
-        'aria-label': `${window.t('map_dest_badge')} — ${window.t('map_dest_title')}`,
-      });
-
-      mDestG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '18', fill: 'url(#collabStarGlow)', class: 'map-dest-aura' }));
-      mDestG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '11', class: 'map-dest-ring-outer' }));
-      mDestG.appendChild(mkSVG('circle', { cx: '60', cy: String(mDestY), r: '3.5', class: 'map-dest-core' }));
-
-      mDestG.appendChild(mkSVGText(window.t('map_dest_badge'), 92, mDestY - 10, 'map-dest-badge', 'start'));
-      mDestG.appendChild(mkSVGText(window.t('map_dest_title'), 92, mDestY + 6, 'map-dest-title', 'start'));
-      mDestG.appendChild(mkSVGText(window.t('map_dest_cta'), 92, mDestY + 22, 'map-dest-cta', 'start'));
-
-      mDestG.addEventListener('click', () => {
-        window.location.href = 'mailto:syahputraerliandika@gmail.com?subject=Collaboration%20Inquiry%20%E2%80%94%20Erliandika%20Syahputra';
-      });
-
-      svg.appendChild(mDestG);
-
-      wrap.appendChild(svg);
-    }
-  }
-
   /* ── Dedicated Experience Dossier Modal Popup ── */
   function openExperienceModal(idx) {
     if (!D.experience || !D.experience[idx]) return;
