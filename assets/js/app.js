@@ -529,19 +529,52 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="git-commit-header">
             <span class="git-node-badge">${c.category}</span>
             <span class="git-commit-period">${c.period}</span>
+            <span class="git-node-chevron" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
           </div>
           <h4 class="git-node-role">${c.role}</h4>
           <p class="git-node-org">${c.org}</p>
           <p class="git-node-desc">${c.shortDesc}</p>
+
+          <div class="git-commit-drawer">
+            <div class="git-commit-drawer__inner">
+              <div class="git-hud-summary-box">
+                <span class="git-hud-summary-label">${hudLabels.responsibilitiesLabel}</span>
+                <p class="git-hud-summary-text">${c.responsibilities}</p>
+              </div>
+              <div class="git-hud-highlights-box">
+                <span class="git-hud-highlights-label">${hudLabels.highlightsLabel}</span>
+                <span class="git-hud-highlights-val">${c.highlights}</span>
+              </div>
+              <div class="git-hud-tech-row">
+                ${c.tech.map(t => `<span class="git-hud-tech-pill">${t}</span>`).join('')}
+              </div>
+              <div class="git-hud-footer">
+                <a href="pages/experience.html" class="git-hud-action-btn" data-exp="${c.expIndex}">
+                  <span>${hudLabels.actionBtn}</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       `;
 
       const setNodeActive = (isClick = false) => {
-        gitTree.querySelectorAll('.git-commit-node').forEach(n => n.classList.remove('active'));
-        item.classList.add('active');
-        renderHud(c);
-        if (isClick && window.innerWidth < 900) {
-          gitHud.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const isMobile = window.innerWidth <= 860;
+        if (isMobile) {
+          if (isClick) {
+            const wasActive = item.classList.contains('active');
+            gitTree.querySelectorAll('.git-commit-node').forEach(n => n.classList.remove('active'));
+            if (!wasActive) {
+              item.classList.add('active');
+            }
+          }
+        } else {
+          gitTree.querySelectorAll('.git-commit-node').forEach(n => n.classList.remove('active'));
+          item.classList.add('active');
+          renderHud(c);
         }
       };
 
@@ -552,6 +585,12 @@ document.addEventListener('DOMContentLoaded', () => {
           e.preventDefault();
           setNodeActive(true);
         }
+      });
+
+      item.querySelector('.git-commit-drawer .git-hud-action-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openExperienceModal(c.expIndex);
       });
 
       gitTree.appendChild(item);
@@ -1763,22 +1802,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateSplit(idx) {
-      activeSplitIdx = idx;
-      nav.querySelectorAll('.exp-split-nav-item').forEach((n, i) => {
-        const isActive = i === idx;
-        n.classList.toggle('active', isActive);
-        n.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        if (isActive) {
-          n.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      const isMobile = window.innerWidth <= 860;
+      if (isMobile) {
+        const itemEl = nav.children[idx];
+        const wasActive = itemEl && itemEl.classList.contains('active');
+        nav.querySelectorAll('.exp-split-nav-item').forEach((n) => {
+          n.classList.remove('active');
+          n.setAttribute('aria-selected', 'false');
+        });
+        if (!wasActive && itemEl) {
+          activeSplitIdx = idx;
+          itemEl.classList.add('active');
+          itemEl.setAttribute('aria-selected', 'true');
         }
-      });
-      renderInspector(idx);
+      } else {
+        activeSplitIdx = idx;
+        nav.querySelectorAll('.exp-split-nav-item').forEach((n, i) => {
+          const isActive = i === idx;
+          n.classList.toggle('active', isActive);
+          n.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        renderInspector(idx);
+      }
     }
 
     D.experience.forEach((item, idx) => {
       const catText = getLoc(item, 'typeLabel') || 'EXPERIENCE';
       const roleText = getLoc(item, 'role');
       const orgText = getLoc(item, 'org');
+      const workText = getLoc(item, 'work') || getLoc(item, 'beginning');
+      const probText = getLoc(item, 'problem');
+      const impactText = getLoc(item, 'impact');
 
       const navItem = el('div', {
         class: `exp-split-nav-item ${idx === activeSplitIdx ? 'active' : ''}`,
@@ -1788,12 +1842,58 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       navItem.innerHTML = `
-        <div class="exp-split-nav-item__badge-row">
-          <span class="exp-split-nav-item__cat">${catText}</span>
-          <span class="exp-split-nav-item__period">${item.period}</span>
+        <div class="exp-split-nav-item__header-row">
+          <div class="exp-split-nav-item__badge-row">
+            <span class="exp-split-nav-item__cat">${catText}</span>
+            <span class="exp-split-nav-item__period">${item.period}</span>
+          </div>
+          <span class="exp-split-nav-item__chevron" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
         </div>
         <div class="exp-split-nav-item__role">${roleText}</div>
-        <div class="exp-split-nav-item__org">${orgText}</div>
+        <div class="exp-split-nav-item__org">${orgText} · <span style="opacity:0.75">${item.location}</span></div>
+        ${item.gpa ? `<div class="exp-editorial-card__gpa" style="margin-top:0.35rem;font-size:0.6875rem;">GPA: ${item.gpa}</div>` : ''}
+
+        <div class="exp-split-nav-item__drawer">
+          <div class="exp-split-nav-item__drawer-inner">
+            ${workText ? `
+              <div class="exp-editorial-sec">
+                <h4 class="exp-editorial-sec__title">${isIndo ? 'Tanggung Jawab & Pekerjaan Utama' : 'Key Responsibilities & Scope'}</h4>
+                <p class="exp-editorial-sec__text">${workText}</p>
+              </div>
+            ` : ''}
+            ${item.bullets && item.bullets.length ? `
+              <div class="exp-editorial-sec">
+                <h4 class="exp-editorial-sec__title">${isIndo ? 'Poin Pencapaian' : 'Key Accomplishments'}</h4>
+                <ul class="exp-bullet-list">
+                  ${item.bullets.map(b => `<li>${b}</li>`).join('')}
+                </ul>
+              </div>
+            ` : ''}
+            ${(probText || impactText) ? `
+              <div class="exp-callout-box">
+                ${probText ? `
+                  <div class="exp-callout-row">
+                    <span class="exp-callout-label">${isIndo ? 'Tantangan:' : 'Technical Challenge:'}</span>
+                    <p class="exp-callout-desc">${probText}</p>
+                  </div>
+                ` : ''}
+                ${impactText ? `
+                  <div class="exp-callout-row">
+                    <span class="exp-callout-label">${isIndo ? 'Hasil & Dampak:' : 'Measured Outcome:'}</span>
+                    <p class="exp-callout-desc">${impactText}</p>
+                  </div>
+                ` : ''}
+              </div>
+            ` : ''}
+            ${item.technologies && item.technologies.length ? `
+              <div class="exp-tech-chips" style="margin-top:0.85rem">
+                ${item.technologies.map(t => `<span class="exp-tech-chip">${t}</span>`).join('')}
+              </div>
+            ` : ''}
+          </div>
+        </div>
       `;
 
       navItem.addEventListener('click', () => updateSplit(idx));

@@ -67,6 +67,7 @@
     ROARING:          'ROARING',  // Cold predator growl on click
     SLEEPING:         'SLEEPING', // Stuffed / gemoy sleep after 15s idle or 10 drumsticks
     WAKING:           'WAKING',   // Seamless cat stretch & yawn when waking up
+    GOING_TO_BED:     'GOING_TO_BED', // Smoothly trotting to corner bed to sleep
   };
 
   /* ═══════════════════════════════════════════════════════════
@@ -360,6 +361,109 @@
     });
   }
 
+  /* ── Pet Resting State (Persistent) ── */
+  let isManualResting = false;
+  try {
+    isManualResting = localStorage.getItem('porto_dino_resting') === 'true';
+  } catch (e) {}
+
+  function getBedPos() {
+    const width = W || window.innerWidth || 1200;
+    const height = H || window.innerHeight || 800;
+    return {
+      x: Math.max(10, width - 230),
+      y: Math.max(10, height - 52)
+    };
+  }
+
+  function drawPetBed(fg, bg) {
+    const bed = getBedPos();
+    const bedW = 28 * PX;
+    const bedH = 4 * PX;
+    const bx = Math.round(bed.x - 2 * PX);
+    const by = Math.round(bed.y + 17 * PX);
+    ctx.save();
+    ctx.fillStyle = fg;
+    ctx.globalAlpha = 0.14;
+    ctx.fillRect(bx, by, bedW, bedH);
+    ctx.globalAlpha = 0.32;
+    ctx.fillRect(bx + 2 * PX, by + 1 * PX, bedW - 4 * PX, bedH - 2 * PX);
+    ctx.restore();
+  }
+
+  function sendDinoToBed() {
+    isManualResting = true;
+    try { localStorage.setItem('porto_dino_resting', 'true'); } catch (e) {}
+    currentState = STATES.GOING_TO_BED;
+    stateTimer = performance.now();
+    foodVisible = false;
+    document.documentElement.classList.remove('custom-cursor-active');
+    updateDinoToggleBtn();
+  }
+
+  function wakeUpDino() {
+    isManualResting = false;
+    try { localStorage.setItem('porto_dino_resting', 'false'); } catch (e) {}
+    currentState = STATES.WAKING;
+    stateTimer = performance.now();
+    consecutiveEats = 0;
+    zzzParticles.length = 0;
+    playYawnSound();
+    foodVisible = true;
+    document.documentElement.classList.add('custom-cursor-active');
+    updateDinoToggleBtn();
+  }
+
+  function updateDinoToggleBtn() {
+    const btn = document.getElementById('dinoToggleBtn');
+    if (!btn) return;
+    const isIndo = (window.currentLang === 'id') || (document.documentElement.lang === 'id');
+    const isAsleep = isManualResting || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING;
+    if (isAsleep) {
+      btn.classList.add('is-resting');
+      btn.innerHTML = `
+        <span class="dino-toggle-icon">💤</span>
+        <span class="dino-toggle-text">${isIndo ? 'T-Rex: Istirahat' : 'T-Rex: Resting'}</span>
+      `;
+      btn.title = isIndo ? 'T-Rex sedang tidur di sudut. Klik untuk bangunkan.' : 'T-Rex is resting in the corner. Click to wake.';
+    } else {
+      btn.classList.remove('is-resting');
+      btn.innerHTML = `
+        <span class="dino-toggle-icon">🦖</span>
+        <span class="dino-toggle-text">${isIndo ? 'T-Rex: Aktif' : 'T-Rex: Active'}</span>
+      `;
+      btn.title = isIndo ? 'Klik untuk suruh T-Rex istirahat ke sudut.' : 'Click to send T-Rex to rest in the corner.';
+    }
+  }
+
+  function initDinoToggle() {
+    if (document.getElementById('dinoToggleBtn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'dinoToggleBtn';
+    btn.className = 'dino-toggle-btn';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Toggle T-Rex Companion');
+    document.body.appendChild(btn);
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isManualResting || currentState === STATES.SLEEPING || currentState === STATES.GOING_TO_BED) {
+        wakeUpDino();
+      } else {
+        sendDinoToBed();
+      }
+    });
+
+    document.addEventListener('langchange', updateDinoToggleBtn);
+    updateDinoToggleBtn();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDinoToggle);
+  } else {
+    initDinoToggle();
+  }
+
   /* ── Resize ── */
   function resize() {
     W = window.innerWidth;
@@ -396,12 +500,23 @@
       hasMoved = true;
       foodX    = mouseX;
       foodY    = mouseY;
-      // Dino starts far from cursor — large offset so clicking cursor ≠ clicking dino
-      dinoX = Math.max(10, Math.min(W - 80, mouseX - INIT_OFFSET_X));
-      dinoY = Math.max(10, Math.min(H - 60, mouseY + INIT_OFFSET_Y));
+      if (isManualResting) {
+        const bed = getBedPos();
+        dinoX = bed.x;
+        dinoY = bed.y;
+        currentState = STATES.SLEEPING;
+        isFacingLeft = true;
+        foodVisible = false;
+      } else {
+        dinoX = Math.max(10, Math.min(W - 80, mouseX - INIT_OFFSET_X));
+        dinoY = Math.max(10, Math.min(H - 60, mouseY + INIT_OFFSET_Y));
+        document.documentElement.classList.add('custom-cursor-active');
+      }
     }
     mouseInside = true;
-    document.documentElement.classList.add('custom-cursor-active');
+    if (!isManualResting && currentState !== STATES.GOING_TO_BED && currentState !== STATES.SLEEPING) {
+      document.documentElement.classList.add('custom-cursor-active');
+    }
 
     // Check if hovering over clickable / interactive elements
     const target = e.target;
@@ -409,22 +524,26 @@
       isHoveringClickable = !!target.closest(
         'a, button, [role="button"], [role="tab"], input, select, textarea, label, ' +
         '.project-card, .parow, .hero__photo, .fan-card, [tabindex], .map-waypoint-group, ' +
-        '.map-mystery-group, .pdetail__thumb-btn, .navbar__lang-pill, .navbar__toggle'
+        '.map-mystery-group, .pdetail__thumb-btn, .navbar__lang-pill, .navbar__toggle, .dino-toggle-btn'
       );
     } else {
       isHoveringClickable = false;
     }
 
     if (currentState === STATES.SLEEPING) {
-      // Waking up: start cute morning cat stretch & yawn transition!
-      currentState = STATES.WAKING;
-      stateTimer   = performance.now();
-      consecutiveEats = 0;
-      zzzParticles.length = 0;
-      playYawnSound();
+      if (!isManualResting) {
+        // Waking up: start cute morning cat stretch & yawn transition!
+        currentState = STATES.WAKING;
+        stateTimer   = performance.now();
+        consecutiveEats = 0;
+        zzzParticles.length = 0;
+        playYawnSound();
+      }
     } else if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING || currentState === STATES.WALKING_TO_FOOD) {
-      currentState = STATES.LAZY_FOLLOW;
-      consecutiveEats = 0;
+      if (!isManualResting) {
+        currentState = STATES.LAZY_FOLLOW;
+        consecutiveEats = 0;
+      }
     }
   });
 
@@ -442,7 +561,9 @@
   document.addEventListener('mouseenter', () => {
     if (!isTouchActive) {
       mouseInside = true;
-      document.documentElement.classList.add('custom-cursor-active');
+      if (!isManualResting && currentState !== STATES.GOING_TO_BED && currentState !== STATES.SLEEPING) {
+        document.documentElement.classList.add('custom-cursor-active');
+      }
     }
   });
   document.addEventListener('mouseleave', () => {
@@ -452,13 +573,24 @@
     document.documentElement.classList.remove('custom-cursor-active');
   });
 
-  /* ── Click: Predator Roar — triggers on clicks, except on toggles/controls ── */
+  /* ── Click: Predator Roar or Wake Resting Dino ── */
   document.addEventListener('click', (e) => {
-    if (!mouseInside || isTouchActive) return;
-    // Don't trigger roar on theme toggle or language toggle to prevent audio/performance clash
-    if (e.target.closest('#themeToggle, #themeToggleMobile, #langToggle, #langToggleMobile, .navbar__toggle, .navbar__lang-pill, .modal-close-btn')) {
+    if (isTouchActive) return;
+    // Don't trigger roar on controls, modals, or companion toggle button
+    if (e.target.closest('#themeToggle, #themeToggleMobile, #langToggle, #langToggleMobile, .navbar__toggle, .navbar__lang-pill, .modal-close-btn, .dino-toggle-btn')) {
       return;
     }
+    // If dino is resting or going to bed, check if user tapped the sleeping dino to wake it up!
+    if (isManualResting || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
+      const spriteW = 26 * PX;
+      const spriteH = 18 * PX;
+      const dinoDist = Math.hypot(e.clientX - (dinoX + spriteW * 0.5), e.clientY - (dinoY + spriteH * 0.5));
+      if (dinoDist < 65) {
+        wakeUpDino();
+      }
+      return;
+    }
+    if (!mouseInside) return;
     // Trigger roar on any click — it's a cool surprise, no hitbox required.
     // Guard: don't interrupt eating, don't stack.
     if (currentState !== STATES.EATING && currentState !== STATES.ROARING) {
@@ -976,7 +1108,17 @@
   function tick(now) {
     ctx.clearRect(0, 0, W, H);
 
-    if (!hasMoved || !mouseInside || isTouchActive) {
+    if (isTouchActive) {
+      requestAnimationFrame(tick);
+      return;
+    }
+
+    if (!hasMoved && !isManualResting) {
+      requestAnimationFrame(tick);
+      return;
+    }
+
+    if (!mouseInside && !isManualResting && currentState !== STATES.GOING_TO_BED) {
       requestAnimationFrame(tick);
       return;
     }
@@ -1123,6 +1265,24 @@
         }
         break;
 
+      case STATES.GOING_TO_BED: {
+        const bed = getBedPos();
+        const bedDx = bed.x - dinoX;
+        const bedDy = bed.y - dinoY;
+        const distToBed = Math.hypot(bedDx, bedDy);
+        if (distToBed < 8) {
+          dinoX = bed.x;
+          dinoY = bed.y;
+          velX = 0;
+          velY = 0;
+          currentState = STATES.SLEEPING;
+          isFacingLeft = true;
+          stateTimer = now;
+          lastZzzTime = now;
+        }
+        break;
+      }
+
       case STATES.WAKING: {
         // Slow motion waking stretch & yawn: ~1800ms
         const wakeElapsed = now - stateTimer;
@@ -1143,7 +1303,21 @@
     const centerDeltaX = foodX - dinoCenterX;
     const centerDeltaY = foodY - dinoCenterY;
 
-    if (currentState === STATES.CHASING) {
+    if (currentState === STATES.GOING_TO_BED) {
+      const bed = getBedPos();
+      const bedDeltaX = bed.x - dinoX;
+      const bedDeltaY = bed.y - dinoY;
+      const distToBed = Math.hypot(bedDeltaX, bedDeltaY);
+      isFacingLeft = bedDeltaX < 0;
+      if (distToBed > 4) {
+        const trotSpeed = Math.min(MAX_LAZY_SPEED * 1.6, Math.max(1.2, distToBed * 0.08));
+        velX = (bedDeltaX / distToBed) * trotSpeed;
+        velY = (bedDeltaY / distToBed) * trotSpeed;
+      } else {
+        velX = 0;
+        velY = 0;
+      }
+    } else if (currentState === STATES.CHASING) {
       if (distFromCenter < 25) {
         // Approaching target: smooth deceleration, zero overshoot
         velX *= 0.7;
@@ -1434,6 +1608,11 @@
 
     // Always restore full opacity before drawing the dinosaur — eliminates any blinking/flickering!
     ctx.globalAlpha = 1.0;
+
+    /* ── G0. Draw Pet Bed (Cozy Woven Mat) ── */
+    if (isManualResting || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
+      drawPetBed(fg, bg);
+    }
 
     /* ── G. Draw Dino ──
        During ROARING: scale the sprite up slightly (Godzilla chest-puff)
