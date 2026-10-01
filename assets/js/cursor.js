@@ -65,9 +65,10 @@
     EATING:           'EATING',
     SATISFIED:        'SATISFIED',
     ROARING:          'ROARING',  // Cold predator growl on click
-    SLEEPING:         'SLEEPING', // Stuffed / gemoy sleep after 15s idle or 10 drumsticks
-    WAKING:           'WAKING',   // Seamless cat stretch & yawn when waking up
-    GOING_TO_BED:     'GOING_TO_BED', // Smoothly trotting to corner bed to sleep
+    SLEEPING:           'SLEEPING', // Stuffed / gemoy sleep after 15s idle or 10 drumsticks
+    WAKING:             'WAKING',   // Seamless cat stretch & yawn when waking up
+    YAWNING_BEFORE_BED: 'YAWNING_BEFORE_BED', // Sleepy yawn & heavy blink when commanded to sleep
+    GOING_TO_BED:       'GOING_TO_BED', // Weary, lunglai trudge walk towards nest
   };
 
   /* ═══════════════════════════════════════════════════════════
@@ -178,6 +179,24 @@
     [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  /* ── Head: Tired Droop (Lunglai & Lelah saat disuruh tidur) ──
+     Head lower, weary heavy posture, eye half-closed (3=eyelid slit)
+  ── */
+  const HEAD_TIRED_DROOP = [
+    //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0 empty - head hung low
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], // r1 lower crown
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], // r2 forehead
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 0], // r3 sleepy half-closed eye (-_-)
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // r4 drooping snout
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], // r5 jaw relaxed
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // r6
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r7
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r8
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], // r9
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0], // r10
   ];
 
   /* ── Head: ROAR ── */
@@ -347,15 +366,16 @@
   // Sleeping Zzz particles
   const zzzParticles = [];
   let lastZzzTime = 0;
+  let lastWearyZzz = 0;
 
-  function spawnZzz(x, y) {
+  function spawnZzz(x, y, customSize = 9, customChar = 'Zzz') {
     zzzParticles.push({
       x: x + (Math.random() - 0.5) * 4,
       y: y,
       vx: (isFacingLeft ? -0.28 : 0.28) + (Math.random() - 0.5) * 0.1,
       vy: -0.45 - Math.random() * 0.15,
-      char: 'Zzz',
-      size: 9,
+      char: customChar,
+      size: customSize,
       life: 1.0,
       decay: 0.011,
     });
@@ -371,32 +391,135 @@
     const width = W || window.innerWidth || 1200;
     const height = H || window.innerHeight || 800;
     return {
-      x: Math.max(10, width - 84),
-      y: Math.max(10, height - 42)
+      x: Math.max(10, width - 88),
+      y: Math.max(10, height - 44)
     };
   }
 
+  /* ── Prehistoric Jurassic Habitat Nest (Sangkar Ranting & Rerumputan Alami) ── */
   function drawPetBed(fg, bg) {
     const bed = getBedPos();
-    const bedW = 28 * PX;
-    const bedH = 4 * PX;
-    const bx = Math.round(bed.x - 2 * PX);
-    const by = Math.round(bed.y + 17 * PX);
+    const bx = Math.round(bed.x - 4 * PX);
+    const by = Math.round(bed.y + 11 * PX);
+    const nw = 34 * PX;
+    const nh = 8 * PX;
+
     ctx.save();
-    ctx.fillStyle = fg;
-    ctx.globalAlpha = 0.14;
-    ctx.fillRect(bx, by, bedW, bedH);
-    ctx.globalAlpha = 0.32;
-    ctx.fillRect(bx + 2 * PX, by + 1 * PX, bedW - 4 * PX, bedH - 2 * PX);
+
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const barkDark  = isDark ? '#451a03' : '#78350f'; // Deep ancient wood & roots
+    const barkLight = isDark ? '#78350f' : '#92400e'; // Warm twigs & woven branches
+    const mossDeep  = isDark ? '#065f46' : '#047857'; // Lush prehistoric moss base
+    const mossLight = isDark ? '#10b981' : '#059669'; // Soft emerald moss cushion
+    const fernGreen = isDark ? '#34d399' : '#10b981'; // Fresh Jurassic fern fronds
+    const stoneCol  = isDark ? '#52525b' : '#a1a1aa'; // River pebbles base
+
+    // 0. Ancient River Pebbles supporting the nest base
+    ctx.fillStyle = stoneCol;
+    ctx.globalAlpha = 0.50;
+    ctx.fillRect(bx + 4 * PX, by + nh - 1 * PX, 3 * PX, 2 * PX);
+    ctx.fillRect(bx + 14 * PX, by + nh, 4 * PX, 2 * PX);
+    ctx.fillRect(bx + 24 * PX, by + nh - 1 * PX, 3 * PX, 2 * PX);
+
+    // 1. Woven Wooden Branch & Root Cradle (Sangkar Ranting Alami)
+    // Darker foundation branches
+    ctx.fillStyle = barkDark;
+    ctx.globalAlpha = 0.75;
+    ctx.fillRect(bx + 1 * PX, by + 4 * PX, nw - 2 * PX, nh - 4 * PX);
+    // Outer woven branches wrapping upward on left & right rim
+    ctx.fillRect(bx - 1 * PX, by + 2 * PX, 3 * PX, nh - 2 * PX);
+    ctx.fillRect(bx + nw - 2 * PX, by + 2 * PX, 3 * PX, nh - 2 * PX);
+
+    // Lighter cross-woven twigs & bark texture
+    ctx.fillStyle = barkLight;
+    ctx.globalAlpha = 0.85;
+    ctx.fillRect(bx + 2 * PX, by + 5 * PX, nw - 4 * PX, 2 * PX);
+    ctx.fillRect(bx, by + 3 * PX, 2 * PX, 3 * PX);
+    ctx.fillRect(bx + nw - 2 * PX, by + 3 * PX, 2 * PX, 3 * PX);
+    // Knots and twig ends poking out
+    ctx.fillRect(bx - 2 * PX, by + 5 * PX, 2 * PX, 2 * PX);
+    ctx.fillRect(bx + nw, by + 4 * PX, 2 * PX, 2 * PX);
+
+    // 2. Soft Bedding Layer (Alas Rerumputan Kering & Lumut Prasejarah)
+    ctx.fillStyle = mossDeep;
+    ctx.globalAlpha = 0.70;
+    ctx.fillRect(bx + 2 * PX, by + 2 * PX, nw - 4 * PX, 4 * PX);
+
+    ctx.fillStyle = mossLight;
+    ctx.globalAlpha = 0.85;
+    ctx.fillRect(bx + 3 * PX, by + 3 * PX, nw - 6 * PX, 2 * PX);
+
+    // 3. Two Prehistoric Speckled Dinosaur Eggs nestled in the back corner (🥚🥚)
+    // Egg 1 (back left egg)
+    ctx.fillStyle = isDark ? '#fef3c7' : '#fffbeb';
+    ctx.globalAlpha = 0.95;
+    ctx.fillRect(bx + 3 * PX, by - 1 * PX, 3 * PX, 4 * PX);
+    ctx.fillRect(bx + 4 * PX, by - 2 * PX, 2 * PX, 5 * PX);
+    // Delicate prehistoric speckle dots on Egg 1
+    ctx.fillStyle = barkDark;
+    ctx.globalAlpha = 0.65;
+    ctx.fillRect(bx + 4 * PX, by, 1 * PX, 1 * PX);
+    ctx.fillRect(bx + 5 * PX, by + 1 * PX, 1 * PX, 1 * PX);
+
+    // Egg 2 (leaning beside Egg 1)
+    ctx.fillStyle = isDark ? '#fef3c7' : '#fffbeb';
+    ctx.globalAlpha = 0.90;
+    ctx.fillRect(bx + 7 * PX, by, 3 * PX, 3 * PX);
+    ctx.fillRect(bx + 8 * PX, by - 1 * PX, 2 * PX, 4 * PX);
+    // Speckle on Egg 2
+    ctx.fillStyle = barkDark;
+    ctx.globalAlpha = 0.65;
+    ctx.fillRect(bx + 8 * PX, by + 1 * PX, 1 * PX, 1 * PX);
+
+    // 4. Wild Jurassic Fern Fronds & Foliage (Rerumputan & Pakis Melengkung)
+    ctx.fillStyle = fernGreen;
+    ctx.globalAlpha = 0.90;
+
+    // Left arching Cycad/Fern frond (sprouting outward and upward)
+    ctx.fillRect(bx - 3 * PX, by + 1 * PX, 2 * PX, 3 * PX);
+    ctx.fillRect(bx - 4 * PX, by - 1 * PX, 2 * PX, 3 * PX);
+    ctx.fillRect(bx - 3 * PX, by - 3 * PX, 2 * PX, 2 * PX); // fern leaf crown tip
+    ctx.fillRect(bx - 1 * PX, by - 1 * PX, 2 * PX, 2 * PX);
+    ctx.fillRect(bx, by - 2 * PX, 2 * PX, 2 * PX);
+    ctx.fillRect(bx - 2 * PX, by + 3 * PX, 2 * PX, 2 * PX);
+
+    // Right lush fern frond (curling gracefully along right rim)
+    ctx.fillRect(bx + nw, by + 1 * PX, 2 * PX, 3 * PX);
+    ctx.fillRect(bx + nw + 1 * PX, by - 1 * PX, 2 * PX, 3 * PX);
+    ctx.fillRect(bx + nw, by - 3 * PX, 2 * PX, 2 * PX);     // right leaf crown tip
+    ctx.fillRect(bx + nw - 2 * PX, by - 1 * PX, 2 * PX, 2 * PX);
+    ctx.fillRect(bx + nw - 1 * PX, by - 2 * PX, 2 * PX, 2 * PX);
+    ctx.fillRect(bx + nw - 1 * PX, by + 3 * PX, 2 * PX, 2 * PX);
+
+    // Foreground grass blades along the front rim of the nest
+    ctx.fillRect(bx + 6 * PX, by + 4 * PX, 1 * PX, 2 * PX);
+    ctx.fillRect(bx + 11 * PX, by + 4 * PX, 1 * PX, 2 * PX);
+    ctx.fillRect(bx + 17 * PX, by + 4 * PX, 1 * PX, 2 * PX);
+    ctx.fillRect(bx + 23 * PX, by + 4 * PX, 1 * PX, 2 * PX);
+    ctx.fillRect(bx + 27 * PX, by + 4 * PX, 1 * PX, 2 * PX);
+
+    // Ambient warm glow / firefly spore in dark mode
+    if (isDark) {
+      ctx.fillStyle = '#fde047';
+      ctx.globalAlpha = 0.35 + Math.sin(performance.now() * 0.003) * 0.20;
+      ctx.fillRect(bx - 2 * PX, by - 4 * PX, 2 * PX, 2 * PX);
+    }
+
     ctx.restore();
   }
 
   function sendDinoToBed() {
     isManualResting = true;
     try { localStorage.setItem('porto_dino_resting', 'true'); } catch (e) {}
-    currentState = STATES.GOING_TO_BED;
+    currentState = STATES.YAWNING_BEFORE_BED;
     stateTimer = performance.now();
     foodVisible = false;
+    velX = 0;
+    velY = 0;
+    const bed = getBedPos();
+    isFacingLeft = (bed.x < dinoX);
+    playSleepyGroan();
+    spawnZzz(dinoX + (isFacingLeft ? 4 : 26 * PX - 12), dinoY + 2, 7, 'z');
     document.documentElement.classList.remove('custom-cursor-active');
     updateDinoToggleBtn();
   }
@@ -419,7 +542,7 @@
     const btn = document.getElementById('dinoToggle') || document.getElementById('dinoToggleBtn');
     if (!btn) return;
     const isIndo = (window.currentLang === 'id') || (document.documentElement.lang === 'id');
-    const isAsleep = isManualResting || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING;
+    const isAsleep = isManualResting || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING;
     if (isAsleep) {
       btn.classList.add('is-resting');
       btn.innerHTML = `<span class="dino-nav-icon" aria-hidden="true">💤</span>`;
@@ -453,7 +576,7 @@
 
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (isManualResting || currentState === STATES.SLEEPING || currentState === STATES.GOING_TO_BED) {
+      if (isManualResting || currentState === STATES.SLEEPING || currentState === STATES.GOING_TO_BED || currentState === STATES.YAWNING_BEFORE_BED) {
         wakeUpDino();
       } else {
         sendDinoToBed();
@@ -579,7 +702,7 @@
   document.addEventListener('mouseenter', () => {
     if (!isTouchActive) {
       mouseInside = true;
-      if (!isManualResting && currentState !== STATES.GOING_TO_BED && currentState !== STATES.SLEEPING) {
+      if (!isManualResting && currentState !== STATES.GOING_TO_BED && currentState !== STATES.SLEEPING && currentState !== STATES.YAWNING_BEFORE_BED) {
         document.documentElement.classList.add('custom-cursor-active');
       }
     }
@@ -600,7 +723,7 @@
       return;
     }
     // If dino is resting or going to bed, check if user tapped the sleeping dino to wake it up!
-    if (isManualResting || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
+    if (isManualResting || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
       const spriteW = 26 * PX;
       const spriteH = 18 * PX;
       const dinoDist = Math.hypot(e.clientX - (dinoX + spriteW * 0.5), e.clientY - (dinoY + spriteH * 0.5));
@@ -1121,6 +1244,50 @@
     } catch (e) {}
   }
 
+  /* ── Sleepy Tired Groan / Yawn Synthesizer (Suara Ngantuk Berat saat Disuruh Tidur) ── */
+  function playSleepyGroan() {
+    try {
+      const actx = getAudioContext();
+      if (!actx) return;
+      if (actx.state === 'suspended') actx.resume().catch(() => {});
+      const now = actx.currentTime;
+      const t = now;
+
+      const master = actx.createGain();
+      master.gain.setValueAtTime(0.24, t);
+      master.connect(actx.destination);
+
+      // Deep sleepy sigh / baby dino groan: pitch dips down tiredly
+      const osc = actx.createOscillator();
+      const oscGain = actx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(240, t);
+      osc.frequency.exponentialRampToValueAtTime(140, t + 0.35);
+      osc.frequency.exponentialRampToValueAtTime(85, t + 0.85);
+
+      // Gentle tired flutter
+      const lfo = actx.createOscillator();
+      const lfoGain = actx.createGain();
+      lfo.type = 'sine';
+      lfo.frequency.setValueAtTime(8, t);
+      lfoGain.gain.setValueAtTime(0.06, t);
+      lfo.connect(lfoGain);
+      lfoGain.connect(oscGain.gain);
+
+      oscGain.gain.setValueAtTime(0.001, t);
+      oscGain.gain.linearRampToValueAtTime(0.18, t + 0.20);
+      oscGain.gain.linearRampToValueAtTime(0.001, t + 0.90);
+
+      osc.connect(oscGain);
+      oscGain.connect(master);
+
+      osc.start(t);
+      lfo.start(t);
+      osc.stop(t + 0.95);
+      lfo.stop(t + 0.95);
+    } catch (e) {}
+  }
+
   /* ═══════════════════════════════════════════════════════════
      5. MAIN LOOP
   ═══════════════════════════════════════════════════════════ */
@@ -1282,12 +1449,31 @@
         }
         break;
 
+      case STATES.YAWNING_BEFORE_BED: {
+        const yawnElapsed = now - stateTimer;
+        // Dino pauses, yawns sleepily for 1200ms before starting to walk to bed
+        if (yawnElapsed >= 1200) {
+          currentState = STATES.GOING_TO_BED;
+          stateTimer = now;
+          lastWearyZzz = now;
+        }
+        break;
+      }
+
       case STATES.GOING_TO_BED: {
         const bed = getBedPos();
         const bedDx = bed.x - dinoX;
         const bedDy = bed.y - dinoY;
         const distToBed = Math.hypot(bedDx, bedDy);
-        if (distToBed < 8) {
+
+        // Periodic sleepy 'z' puff while trudging wearily to nest
+        if (now - lastWearyZzz > 900) {
+          lastWearyZzz = now;
+          const zX = isFacingLeft ? dinoX + 4 : dinoX + spriteW - 12;
+          spawnZzz(zX, dinoY - 2, 7, 'z');
+        }
+
+        if (distToBed < 7) {
           dinoX = bed.x;
           dinoY = bed.y;
           velX = 0;
@@ -1296,6 +1482,8 @@
           isFacingLeft = true;
           stateTimer = now;
           lastZzzTime = now;
+          spawnZzz(bed.x + 8, bed.y + 4);
+          playSnoreSound();
         }
         break;
       }
@@ -1327,10 +1515,18 @@
       const distToBed = Math.hypot(bedDeltaX, bedDeltaY);
       isFacingLeft = bedDeltaX < 0;
       if (distToBed > 4) {
-        const trotSpeed = Math.min(MAX_LAZY_SPEED * 1.6, Math.max(1.2, distToBed * 0.08));
-        velX = (bedDeltaX / distToBed) * trotSpeed;
-        velY = (bedDeltaY / distToBed) * trotSpeed;
+        // Weary, sluggish trudge walk (lunglai & lelah)
+        const wearySpeed = Math.min(1.4, Math.max(0.65, distToBed * 0.035));
+        velX = (bedDeltaX / distToBed) * wearySpeed;
+        velY = (bedDeltaY / distToBed) * wearySpeed;
       } else {
+        velX = 0;
+        velY = 0;
+      }
+    } else if (currentState === STATES.YAWNING_BEFORE_BED) {
+      velX *= 0.3;
+      velY *= 0.3;
+      if (Math.hypot(velX, velY) < 0.05) {
         velX = 0;
         velY = 0;
       }
@@ -1401,8 +1597,8 @@
 
     // Direction update: Stable hysteresis deadzone based on cursor relative to dino center (±30px).
     // If cursor is on or near dino's body, lock facing completely to eliminate any rapid flip jitter (linglung).
-    if (currentState === STATES.SLEEPING || currentState === STATES.WAKING || currentState === STATES.EATING || currentState === STATES.ROARING) {
-      // Keep facing locked during static / bite / sleep / waking stretch animations
+    if (currentState === STATES.SLEEPING || currentState === STATES.WAKING || currentState === STATES.EATING || currentState === STATES.ROARING || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED) {
+      // Keep facing locked during static / bite / sleep / waking stretch / tired trudge animations
     } else if (distFromCenter < 35 || Math.abs(centerDeltaX) < 30 || isCursorOnDino) {
       // Cursor is on or right next to dino's body -> LOCK FACING, DO NOT FLIP!
     } else if (centerDeltaX < -30) {
@@ -1412,7 +1608,7 @@
     }
 
     /* ── E. Footprint Trail (appears when walking/running across screen) ── */
-    if (currentSpeed > 0.4 && (currentState === STATES.LAZY_FOLLOW || currentState === STATES.WALKING_TO_FOOD || currentState === STATES.CHASING)) {
+    if (currentSpeed > 0.4 && (currentState === STATES.LAZY_FOLLOW || currentState === STATES.WALKING_TO_FOOD || currentState === STATES.CHASING || currentState === STATES.GOING_TO_BED)) {
       const footX = dinoX + (isFacingLeft ? spriteW * 0.72 : spriteW * 0.28);
       const footY = dinoY + spriteH - PX;
       spawnFootprint(footX, footY, fg);
@@ -1543,14 +1739,15 @@
     /* ── F. Animation Selection ── */
     walkTick++;
     const isSprinting = currentState === STATES.CHASING;
-    const strideCadence = isSprinting ? 3 : 8;
+    const isWearyTrudge = currentState === STATES.GOING_TO_BED;
+    const strideCadence = isSprinting ? 3 : (isWearyTrudge ? 14 : 8);
 
-    if (currentSpeed > 0.4 && walkTick % strideCadence === 0) {
+    if (currentSpeed > 0.3 && walkTick % strideCadence === 0) {
       walkFrame = (walkFrame + 1) % 4;
-      if (currentState === STATES.LAZY_FOLLOW || currentState === STATES.WALKING_TO_FOOD) {
+      if (currentState === STATES.LAZY_FOLLOW || currentState === STATES.WALKING_TO_FOOD || currentState === STATES.GOING_TO_BED) {
         playFootstepSound(false);
       }
-    } else if (currentSpeed <= 0.4 && currentState !== STATES.CHASING && currentState !== STATES.WALKING_TO_FOOD) {
+    } else if (currentSpeed <= 0.3 && currentState !== STATES.CHASING && currentState !== STATES.WALKING_TO_FOOD && currentState !== STATES.GOING_TO_BED) {
       walkFrame = 0;
     }
 
@@ -1563,6 +1760,15 @@
     } else if (currentState === STATES.ANTICIPATING) {
       activeLegs = LEGS_STAND;
       verticalBob = 1;
+    } else if (currentState === STATES.YAWNING_BEFORE_BED) {
+      activeLegs = LEGS_STAND;
+      verticalBob = 1; // Sleepy relaxed stance
+    } else if (currentState === STATES.GOING_TO_BED) {
+      // Sluggish heavy trudge ("lunglai") — heavy sag down on steps
+      if (walkFrame === 0)      { activeLegs = LEGS_STRIDE_A; verticalBob = 2; }
+      else if (walkFrame === 1) { activeLegs = LEGS_PASSING;  verticalBob = 0; }
+      else if (walkFrame === 2) { activeLegs = LEGS_STRIDE_B; verticalBob = 2; }
+      else if (walkFrame === 3) { activeLegs = LEGS_PASSING;  verticalBob = 0; }
     } else if (currentSpeed > 0.4) {
       if (walkFrame === 0)      { activeLegs = LEGS_STRIDE_A; verticalBob = 1;  }
       else if (walkFrame === 1) { activeLegs = LEGS_PASSING;  verticalBob = -1; }
@@ -1577,6 +1783,22 @@
       const snapPhase = Math.floor(roarT * 5) % 2;
       activeHead = snapPhase === 0 ? HEAD_ROAR : HEAD_CHOMP;
       verticalBob = -2; // Head throws back then forward
+    } else if (currentState === STATES.YAWNING_BEFORE_BED) {
+      const yawnElapsed = now - stateTimer;
+      const progress = Math.min(1.0, yawnElapsed / 1200);
+      if (progress < 0.25) {
+        activeHead = HEAD_TIRED_DROOP; // Heavy eyelids drooping
+        verticalBob = 1;
+      } else if (progress < 0.75) {
+        activeHead = HEAD_OPEN_WIDE;   // Big sleepy dinosaur yawn!
+        verticalBob = -1;
+      } else {
+        activeHead = HEAD_TIRED_DROOP; // Exhausted sleepy sigh
+        verticalBob = 2;
+      }
+    } else if (currentState === STATES.GOING_TO_BED) {
+      // While walking lunglai to bed: heavy drooped head with sleepy eye slits
+      activeHead = HEAD_TIRED_DROOP;
     } else if (currentState === STATES.EATING) {
       const eatElapsed = now - stateTimer;
       const progress = eatElapsed / EAT_DURATION;
@@ -1626,8 +1848,8 @@
     // Always restore full opacity before drawing the dinosaur — eliminates any blinking/flickering!
     ctx.globalAlpha = 1.0;
 
-    /* ── G0. Draw Pet Bed (Cozy Woven Mat) ── */
-    if (isManualResting || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
+    /* ── G0. Draw Prehistoric Habitat Nest (Sangkar Ranting & Rerumputan) ── */
+    if (isManualResting || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
       drawPetBed(fg, bg);
     }
 
