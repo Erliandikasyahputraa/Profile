@@ -345,14 +345,14 @@ document.addEventListener('DOMContentLoaded', () => {
         expIndex: 1,
       },
       {
-        category: 'Kepemimpinan Operasional',
+        category: 'Kepemimpinan Acara',
         period: 'Sep 2024 – Nov 2024',
-        role: 'Project Director Acara',
+        role: 'Ketua Pelaksana Acara (Project Director)',
         org: 'Milad Sistem Informasi ke-22, UIN Suska Riau',
         location: 'Pekanbaru, Riau',
-        shortDesc: 'Memimpin tata kelola operasional acara perhelatan 500+ peserta dengan koordinasi 6 divisi kerja.',
-        responsibilities: 'Memimpin perencanaan strategis dan eksekusi operasional acara perhelatan institusional dengan 500+ peserta. Mengoordinasikan 6 divisi operasional lintas fungsi di bawah tenggat waktu ketat, serta mengelola mitigasi kendala teknis audio-visual dan logistik di lapangan.',
-        highlights: '500+ Peserta · 6 Divisi Kerja · Manajemen Kontinjensi Lapangan',
+        shortDesc: 'Memimpin perencanaan dan pelaksanaan acara Milad ke-22 dengan 500+ peserta bersama 6 divisi panitia.',
+        responsibilities: 'Memimpin perencanaan dan pelaksanaan seluruh rangkaian acara Milad ke-22 dengan 500+ peserta. Mengoordinasikan 6 divisi panitia, mengelola anggaran, serta menangani kendala teknis multimedia dan logistik di lapangan secara langsung.',
+        highlights: '500+ Peserta · 6 Divisi Panitia · Penanganan Teknis Langsung',
         tech: ['Project Management', 'Operational Leadership', 'Logistics & Budgeting', 'Contingency Planning'],
         expIndex: 4,
       },
@@ -362,8 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
         role: 'Teknisi Implementasi Infrastruktur Jaringan',
         org: 'Tim Infrastruktur Jaringan, UIN Sultan Syarif Kasim Riau',
         location: 'Pekanbaru, Riau',
-        shortDesc: 'Penggelaran dan konfigurasi 256 wireless access point Ruijie di 14 gedung kampus bertingkat.',
-        responsibilities: 'Memasang dan mengonfigurasi 256 Ruijie wireless access point di 14 gedung fakultas bertingkat bersama tim infrastruktur 13 orang. Melakukan penarikan kabel UTP terstruktur, perutean pipa conduit, terminasi konektor RJ45 dan patch panel, serta pengujian konektivitas LAN/WLAN secara sistematis.',
+        shortDesc: 'Pemasangan dan konfigurasi 256 access point Ruijie di 14 gedung kampus bertingkat.',
+        responsibilities: 'Memasang dan mengonfigurasi 256 access point Ruijie di 14 gedung fakultas bertingkat bersama tim teknisi 13 orang. Melakukan penarikan kabel UTP, pemasangan pipa pelindung conduit, terminasi konektor RJ45 dan patch panel rak server, serta pengujian kontinuitas kabel LAN.',
         highlights: '256 Access Point Ruijie · 14 Gedung Kampus · Pengkabelan UTP & Patch Panel',
         tech: ['Ruijie Wireless APs', 'UTP Structured Cabling', 'Patch Panels & RJ45', 'Cable Continuity Testing', 'WLAN Setup'],
         expIndex: 5,
@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
         org: 'Google Bangkit Academy (Google, GoTo, Traveloka)',
         location: 'Program Nasional (Remote)',
         shortDesc: 'Pengembangan aplikasi Android native Penny Path dengan Kotlin Jetpack Compose dan arsitektur MVVM.',
-        responsibilities: 'Menuntaskan kurikulum intensif rekayasa Android native: Kotlin, Android SDK, Jetpack Compose, arsitektur MVVM, Coroutines, Room Database, dan Retrofit. Memimpin tim mobile development pada proyek capstone Penny Path, mengintegrasikan REST API cloud dan model rekomendasi machine learning.',
+        responsibilities: 'Menyelesaikan kurikulum pengembangan Android native: bahasa Kotlin, Jetpack Compose, arsitektur MVVM, Coroutines, Room Database, dan Retrofit. Memimpin tim mobile development pada proyek capstone Penny Path, mengintegrasikan antarmuka aplikasi dengan REST API dan model rekomendasi machine learning.',
         highlights: 'Android Native Kotlin · Jetpack Compose · Arsitektur MVVM · Integrasi ML',
         tech: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'MVVM', 'Retrofit', 'Coroutines & Flow'],
         expIndex: 6,
@@ -386,9 +386,9 @@ document.addEventListener('DOMContentLoaded', () => {
         role: 'Asisten Laboratorium & IT Support',
         org: 'Fakultas Sains dan Teknologi, UIN Suska Riau',
         location: 'Pekanbaru, Riau',
-        shortDesc: 'Pemeliharaan 83 workstation komputer di 3 laboratorium, penataan switch LAN, dan instalasi OS massal.',
-        responsibilities: 'Menjaga kesiapan operasional 83 workstation komputer di 3 laboratorium komputasi melalui diagnostik preventif, pemeliharaan perangkat keras, dan isolasi kerusakan komponen. Mengonfigurasi lingkungan sistem operasi Windows, perangkat lunak akademik, koneksi switch LAN, dan pengkabelan patch cord tanpa insiden downtime saat ujian praktikum.',
-        highlights: '83 Workstation Komputer · 3 Laboratorium Komputasi · Pemeliharaan Hardware & LAN',
+        shortDesc: 'Pemeliharaan 83 unit komputer di 3 laboratorium, penataan switch LAN, dan instalasi software praktikum.',
+        responsibilities: 'Memastikan 83 unit komputer di 3 laboratorium selalu siap pakai untuk perkuliahan dan praktikum. Menangani perbaikan hardware, instalasi ulang Windows, penyiapan tools praktikum (VS Code, Cisco Packet Tracer, XAMPP), serta pemeliharaan kabel LAN dan switch agar tidak ada downtime saat ujian.',
+        highlights: '83 Komputer Laboratorium · 3 Lab Komputasi · Pemeliharaan Hardware & Jaringan',
         tech: ['Hardware Diagnostics', 'Windows OS Deployment', 'IPv4 & Subnetting', 'LAN Switch Patching', 'Cisco Packet Tracer'],
         expIndex: 7,
       },
@@ -1445,67 +1445,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function initExperiencePage() {
-    initExpViewSwitcher();
-    renderActiveExpMode();
+    renderModeSplit();
     buildCertifications();
   }
 
+  function renderActiveExpMode() {
+    renderModeSplit();
+  }
+
   function buildExperienceCards() {
-    renderActiveExpMode();
+    renderModeSplit();
   }
   window.buildExperienceCards = buildExperienceCards;
-
-  function initExpViewSwitcher() {
-    let savedMode = 'editorial';
-    try {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        savedMode = window.localStorage.getItem('exp-view-mode') || 'editorial';
-      }
-    } catch (e) {}
-    activeExpViewMode = ['editorial', 'accordion', 'split'].includes(savedMode) ? savedMode : 'editorial';
-
-    const updateSwitcherUI = () => {
-      document.querySelectorAll('.exp-view-pill').forEach(btn => {
-        const isMatch = btn.getAttribute('data-mode') === activeExpViewMode;
-        btn.classList.toggle('active', isMatch);
-        btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
-      });
-    };
-
-    document.querySelectorAll('.exp-view-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const mode = btn.getAttribute('data-mode');
-        if (mode && mode !== activeExpViewMode) {
-          activeExpViewMode = mode;
-          try { localStorage.setItem('exp-view-mode', mode); } catch (e) {}
-          updateSwitcherUI();
-          renderActiveExpMode();
-        }
-      });
-    });
-
-    updateSwitcherUI();
-  }
-
-  function renderActiveExpMode() {
-    const listWrap = document.getElementById('expCardsList');
-    const splitWrap = document.getElementById('expSplitView');
-    if (!listWrap || !splitWrap || !D.experience) return;
-
-    if (activeExpViewMode === 'split') {
-      listWrap.style.display = 'none';
-      splitWrap.style.display = 'block';
-      renderModeSplit();
-    } else {
-      splitWrap.style.display = 'none';
-      listWrap.style.display = 'flex';
-      if (activeExpViewMode === 'accordion') {
-        renderModeAccordion();
-      } else {
-        renderModeEditorial();
-      }
-    }
-  }
+  window.renderActiveExpMode = renderModeSplit;
 
   /* ── Mode 1: Full Editorial Dossier (Complete, Open, Printable Resume) ── */
   function renderModeEditorial() {
@@ -1748,14 +1700,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="exp-editorial-card__body">
           ${workText ? `
             <div class="exp-editorial-sec">
-              <h3 class="exp-editorial-sec__title">${isIndo ? 'Lingkup Rekayasa & Tanggung Jawab' : 'Engineering Scope & Execution'}</h3>
+              <h3 class="exp-editorial-sec__title">${isIndo ? 'Tanggung Jawab & Pekerjaan Utama' : 'Key Responsibilities & Scope'}</h3>
               <p class="exp-editorial-sec__text">${workText}</p>
             </div>
           ` : ''}
 
           ${item.bullets && item.bullets.length ? `
             <div class="exp-editorial-sec">
-              <h3 class="exp-editorial-sec__title">${isIndo ? 'Capaian & Sorotan Utama' : 'Key Deliverables & Highlights'}</h3>
+              <h3 class="exp-editorial-sec__title">${isIndo ? 'Poin Pencapaian' : 'Key Accomplishments'}</h3>
               <ul class="exp-bullet-list">
                 ${item.bullets.map(b => `<li>${b}</li>`).join('')}
               </ul>
@@ -1766,13 +1718,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="exp-callout-box">
               ${probText ? `
                 <div class="exp-callout-row">
-                  <span class="exp-callout-label">${isIndo ? 'Tantangan Teknis:' : 'Technical Challenge:'}</span>
+                  <span class="exp-callout-label">${isIndo ? 'Tantangan:' : 'Technical Challenge:'}</span>
                   <p class="exp-callout-desc">${probText}</p>
                 </div>
               ` : ''}
               ${impactText ? `
                 <div class="exp-callout-row">
-                  <span class="exp-callout-label">${isIndo ? 'Dampak Terukur:' : 'Measured Outcome:'}</span>
+                  <span class="exp-callout-label">${isIndo ? 'Hasil & Dampak:' : 'Measured Outcome:'}</span>
                   <p class="exp-callout-desc">${impactText}</p>
                 </div>
               ` : ''}
@@ -1813,6 +1765,9 @@ document.addEventListener('DOMContentLoaded', () => {
         n.setAttribute('aria-selected', i === idx ? 'true' : 'false');
       });
       renderInspector(idx);
+      if (window.innerWidth < 900) {
+        inspector.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     }
 
     D.experience.forEach((item, idx) => {
