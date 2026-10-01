@@ -1305,14 +1305,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeExpModalIdx = null;
   let currentExpMode = null;
 
-  if (IS.exp) {
-    initExperiencePage();
-  }
-
-  function initExperiencePage() {
-    buildExperienceCards();
-    buildCertifications();
-  }
 
   /* ── 3-Zone Career Expedition Map (Organic Cartographic Journey) ── */
   /* ── Dedicated Experience Dossier Modal Popup ── */
@@ -1458,8 +1450,18 @@ document.addEventListener('DOMContentLoaded', () => {
     buildCertifications();
   }
 
+  function buildExperienceCards() {
+    renderActiveExpMode();
+  }
+  window.buildExperienceCards = buildExperienceCards;
+
   function initExpViewSwitcher() {
-    const savedMode = localStorage.getItem('exp-view-mode') || 'editorial';
+    let savedMode = 'editorial';
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        savedMode = window.localStorage.getItem('exp-view-mode') || 'editorial';
+      }
+    } catch (e) {}
     activeExpViewMode = ['editorial', 'accordion', 'split'].includes(savedMode) ? savedMode : 'editorial';
 
     const updateSwitcherUI = () => {
@@ -1989,9 +1991,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (IS.exp) {
       document.title = isIndo ? 'Pengalaman & Pendidikan — Erliandika Syahputra' : 'Experience & Education — Erliandika Syahputra';
-      currentExpMode = window.innerWidth < 900 ? 'mobile' : 'desktop';
-      buildFullSnakingMap();
-      buildExperienceCards();
+      renderActiveExpMode();
       buildCertifications();
       if (activeExpModalIdx !== null && document.getElementById('expModal')?.classList.contains('active')) {
         openExperienceModal(activeExpModalIdx);
