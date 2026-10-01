@@ -2493,11 +2493,7 @@ html.theme-transitioning .project-card {
   align-items: start;
   margin-bottom: 4rem;
 }
-@media (max-width: 900px) {
-  .exp-split-layout {
-    grid-template-columns: 1fr;
-  }
-}
+
 .exp-split-nav {
   position: sticky;
   top: 90px;
@@ -2537,6 +2533,8 @@ html.theme-transitioning .project-card {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.35rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 .exp-split-nav-item__cat {
   font-family: var(--font-mono);
@@ -2560,12 +2558,16 @@ html.theme-transitioning .project-card {
   font-weight: 700;
   color: var(--fg);
   line-height: 1.3;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 .exp-split-nav-item__org {
   font-size: 0.8125rem;
   color: var(--muted);
   margin-top: 0.2rem;
+  line-height: 1.35;
 }
+
 .exp-split-inspector {
   position: sticky;
   top: 90px;
@@ -2582,6 +2584,7 @@ html.theme-transitioning .project-card {
   margin-top: 1.75rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
+  gap: 0.5rem;
 }
 .exp-split-inspector__nav-btn {
   font-family: var(--font-mono);
@@ -2592,13 +2595,14 @@ html.theme-transitioning .project-card {
   background: transparent;
   color: var(--fg);
   border: 1px solid var(--border-mid);
-  padding: 6px 14px;
+  padding: 7px 14px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 180ms ease;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  min-height: 36px;
 }
 .exp-split-inspector__nav-btn:hover:not(:disabled) {
   background: var(--fg);
@@ -2608,6 +2612,90 @@ html.theme-transitioning .project-card {
 .exp-split-inspector__nav-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+/* Master-Detail Responsive Transformations */
+@media (max-width: 860px) {
+  .exp-split-layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+  }
+  .exp-split-nav {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: none;
+    padding: 2px 2px 10px 2px;
+    gap: 0.75rem;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+  .exp-split-nav::-webkit-scrollbar {
+    height: 4px;
+  }
+  .exp-split-nav-item {
+    flex: 0 0 255px;
+    max-width: 275px;
+    scroll-snap-align: start;
+    padding: 0.875rem 1rem;
+    transform: none !important;
+  }
+  .exp-split-inspector {
+    position: static;
+    padding: 1.5rem 1.35rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .exp-split-nav {
+    gap: 0.5rem;
+    padding-bottom: 8px;
+  }
+  .exp-split-nav-item {
+    flex: 0 0 225px;
+    max-width: 245px;
+    padding: 0.75rem 0.875rem;
+  }
+  .exp-split-nav-item__role {
+    font-size: 0.875rem;
+  }
+  .exp-split-nav-item__org {
+    font-size: 0.75rem;
+  }
+  .exp-split-inspector {
+    padding: 1.25rem 1rem;
+    border-radius: 6px;
+  }
+  .exp-editorial-card__role {
+    font-size: 1.25rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .exp-card__badge-row {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .exp-callout-box {
+    padding: 0.875rem 1rem;
+    margin-top: 1rem;
+  }
+  .exp-bullet-list li {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  .exp-split-inspector__nav {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+  }
+  .exp-split-inspector__nav-btn {
+    padding: 6px 10px;
+    font-size: 0.625rem;
+    min-height: 34px;
+  }
 }
 
 /* ── Premium 4-Column Balanced Certifications Grid (4 x 2 = 8 Cards) ── */
@@ -3525,6 +3613,52 @@ html.theme-transitioning .project-card {
   }
   .exp-modal__nav-btn {
     padding: 0.35rem 0.75rem;
+    font-size: 0.625rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .exp-modal-backdrop {
+    padding: 0.65rem;
+  }
+  .exp-modal__dialog {
+    max-height: 94vh;
+    border-radius: 8px;
+  }
+  .exp-modal__close-btn {
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 32px;
+    height: 32px;
+  }
+  .exp-modal__header {
+    padding: 1.25rem 1rem 0.875rem;
+  }
+  .exp-modal__meta-row {
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+  }
+  .exp-modal__role {
+    font-size: 1.15rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .exp-modal__body {
+    padding: 1rem;
+    gap: 0.875rem;
+  }
+  .exp-modal__dossier-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .exp-dossier-card {
+    padding: 0.875rem 1rem;
+  }
+  .exp-modal__footer {
+    padding: 0.75rem 1rem;
+  }
+  .exp-modal__nav-btn {
+    padding: 0.4rem 0.75rem;
     font-size: 0.625rem;
   }
 }
@@ -4620,17 +4754,6 @@ html.theme-transitioning .project-card {
   display: flex;
   flex-direction: column;
   position: relative;
-  padding-left: 1.25rem;
-}
-.git-graph-tree::before {
-  content: '';
-  position: absolute;
-  top: 1.25rem;
-  bottom: 1.25rem;
-  left: 2rem;
-  width: 1px;
-  background: var(--border-str);
-  z-index: 0;
 }
 .git-commit-node {
   display: flex;
@@ -4668,8 +4791,28 @@ html.theme-transitioning .project-card {
   justify-content: center;
   margin-top: 2px;
   flex-shrink: 0;
+  position: relative;
+}
+.git-commit-rail::before {
+  content: '';
+  position: absolute;
+  top: -1.25rem;
+  bottom: -1.25rem;
+  left: 50%;
+  width: 1px;
+  background: var(--border-str);
+  transform: translateX(-50%);
+  z-index: 0;
+}
+.git-commit-node:first-child .git-commit-rail::before {
+  top: 50%;
+}
+.git-commit-node:last-child .git-commit-rail::before {
+  bottom: 50%;
 }
 .git-commit-dot {
+  position: relative;
+  z-index: 1;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -4891,13 +5034,8 @@ html.theme-transitioning .project-card {
     position: static;
   }
 }
+
 @media (max-width: 600px) {
-  .git-graph-tree {
-    padding-left: 0.5rem;
-  }
-  .git-graph-tree::before {
-    left: 1.25rem;
-  }
   .git-commit-node {
     padding: 0.875rem 1rem;
     gap: 0.875rem;
@@ -4906,5 +5044,80 @@ html.theme-transitioning .project-card {
     padding: 1.25rem;
   }
 }
+
+@media (max-width: 480px) {
+  .git-commit-node {
+    padding: 0.75rem 0.875rem;
+    gap: 0.75rem;
+  }
+  .git-commit-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+  .git-commit-period {
+    margin-left: 0;
+    font-size: 0.625rem;
+  }
+  .git-node-role {
+    font-size: 0.875rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .git-node-org {
+    font-size: 0.75rem;
+  }
+  .git-node-desc {
+    font-size: 0.75rem;
+  }
+  .git-hud-card {
+    padding: 1.15rem 1rem;
+  }
+  .git-hud-header {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .git-hud-role {
+    font-size: 1.125rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .git-hud-org {
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .git-hud-summary-box {
+    padding: 0.75rem 0.875rem;
+    margin-bottom: 1rem;
+  }
+  .git-hud-summary-text {
+    font-size: 0.78125rem;
+  }
+  .git-hud-highlights-box {
+    margin-bottom: 1rem;
+  }
+  .git-hud-highlights-val {
+    font-size: 0.71875rem;
+    padding: 5px 9px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .git-hud-tech-row {
+    margin-bottom: 1.25rem;
+    gap: 0.3rem;
+  }
+  .git-hud-tech-pill {
+    font-size: 0.59375rem;
+    padding: 2px 7px;
+  }
+  .git-hud-action-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 0.75rem;
+  }
+}
+
 
 

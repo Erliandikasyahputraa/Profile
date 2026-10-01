@@ -536,18 +536,21 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      const setNodeActive = () => {
+      const setNodeActive = (isClick = false) => {
         gitTree.querySelectorAll('.git-commit-node').forEach(n => n.classList.remove('active'));
         item.classList.add('active');
         renderHud(c);
+        if (isClick && window.innerWidth < 900) {
+          gitHud.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
       };
 
-      item.addEventListener('mouseenter', setNodeActive);
-      item.addEventListener('click', setNodeActive);
+      item.addEventListener('mouseenter', () => setNodeActive(false));
+      item.addEventListener('click', () => setNodeActive(true));
       item.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          setNodeActive();
+          setNodeActive(true);
         }
       });
 
@@ -1760,14 +1763,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateSplit(idx) {
+      activeSplitIdx = idx;
       nav.querySelectorAll('.exp-split-nav-item').forEach((n, i) => {
-        n.classList.toggle('active', i === idx);
-        n.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+        const isActive = i === idx;
+        n.classList.toggle('active', isActive);
+        n.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        if (isActive) {
+          n.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
       });
       renderInspector(idx);
-      if (window.innerWidth < 900) {
-        inspector.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
     }
 
     D.experience.forEach((item, idx) => {
