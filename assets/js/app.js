@@ -308,139 +308,254 @@ document.addEventListener('DOMContentLoaded', () => {
     photoContainer.addEventListener('pointerleave', triggerGlitchExit);
   }
 
-  /* ── Upgraded Career Journey Showcase (Home) ── */
+  /* ── Upgraded Career Journey Showcase (Dual Prototype: Concept A & Concept B) ── */
   function buildExpPreviewMap() {
-    const track = document.getElementById('expPreviewMap');
-    const wrapper = document.getElementById('expJourneyWrapper');
-    if (!track) return;
-    const milestones = D.journeyMilestones || [];
-    track.innerHTML = '';
+    const chronoList = document.getElementById('chronoIndexList');
+    const splitNav = document.getElementById('splitRoadmapNav');
+    const splitPanel = document.getElementById('splitRoadmapPanel');
+    if (!chronoList && !splitNav) return;
 
-    milestones.forEach((m) => {
-      const badgeText = getLoc(m, 'badge');
-      const titleText = getLoc(m, 'title');
-      const reflectionText = getLoc(m, 'reflection');
+    /* ── CONCEPT FILTER SWITCHER ── */
+    const blockA = document.getElementById('conceptBlockA');
+    const blockB = document.getElementById('conceptBlockB');
+    const btnAll = document.getElementById('btnConceptAll');
+    const btnA = document.getElementById('btnConceptA');
+    const btnB = document.getElementById('btnConceptB');
 
-      const card = el('article', {
-        class: 'exp-mcard',
-        tabindex: '0',
-        role: 'button',
-        'aria-label': `${titleText} — ${m.year}`,
-      });
+    function setActiveFilter(activeBtn, showA, showB) {
+      [btnAll, btnA, btnB].forEach(b => b?.classList.remove('active'));
+      activeBtn?.classList.add('active');
+      if (blockA) blockA.style.display = showA ? 'block' : 'none';
+      if (blockB) blockB.style.display = showB ? 'block' : 'none';
+    }
 
-      card.innerHTML = `
-        <div class="exp-mcard__rail-node">
-          <span class="exp-mcard__dot" aria-hidden="true"></span>
-          <span class="exp-mcard__year">${m.year}</span>
-        </div>
-        <div class="exp-mcard__content">
-          <div class="exp-mcard__badge">${badgeText}</div>
-          <h3 class="exp-mcard__title">${titleText}</h3>
-          <div class="exp-mcard__role">${m.role || ''}</div>
-          ${m.location ? `
-            <div class="exp-mcard__loc">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span>${m.location}</span>
-            </div>
-          ` : ''}
-          <p class="exp-mcard__reflection">${reflectionText}</p>
-          <div class="exp-mcard__footer">
-            <span class="exp-mcard__cta">${window.t('exp_view_cta')}</span>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    btnAll?.addEventListener('click', () => setActiveFilter(btnAll, true, true));
+    btnA?.addEventListener('click', () => setActiveFilter(btnA, true, false));
+    btnB?.addEventListener('click', () => setActiveFilter(btnB, false, true));
+
+    /* ── CONCEPT A: Minimalist Chrono-Index (Linear / Stripe style) ── */
+    if (chronoList && D.experience) {
+      chronoList.innerHTML = '';
+      // Newest first
+      const items = D.experience.map((item, originalIdx) => ({ item, originalIdx }));
+      items.reverse();
+
+      items.forEach(({ item, originalIdx }) => {
+        const catText = getLoc(item, 'typeLabel') || 'ENGINEERING';
+        const headlineText = getLoc(item, 'headline');
+
+        const row = el('article', {
+          class: 'chrono-row',
+          tabindex: '0',
+          role: 'button',
+          'aria-label': `${item.year} — ${item.role} at ${item.org}`,
+        });
+
+        row.innerHTML = `
+          <div class="chrono-col-year">
+            <span class="chrono-year-text">${item.year}</span>
           </div>
-        </div>
-      `;
+          <div class="chrono-col-main">
+            <div class="chrono-role-line">
+              <h3 class="chrono-role">${item.role}</h3>
+              <span class="chrono-org">(${item.org} · ${item.location})</span>
+            </div>
+            ${headlineText ? `<p class="chrono-headline">${headlineText}</p>` : ''}
+            <div class="chrono-period-tag">${item.period}</div>
+          </div>
+          <div class="chrono-col-tags">
+            <span class="chrono-pill-badge">${catText.toUpperCase()}</span>
+            ${item.technologies && item.technologies.length ? `
+              ${item.technologies.slice(0, 3).map(t => `<span class="chrono-tech-tag">${t}</span>`).join('')}
+            ` : ''}
+          </div>
+          <div class="chrono-col-action" aria-hidden="true">
+            <span class="chrono-action-btn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </div>
+        `;
 
-      card.addEventListener('click', () => {
-        window.location.href = PAGES_REL + 'experience.html';
-      });
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          window.location.href = PAGES_REL + 'experience.html';
-        }
-      });
+        row.addEventListener('click', () => openExperienceModal(originalIdx));
+        row.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openExperienceModal(originalIdx);
+          }
+        });
 
-      track.appendChild(card);
-    });
-
-    // Final Dossier CTA Card
-    const isIndo = window.currentLang === 'id';
-    const ctaCard = el('a', {
-      class: 'exp-mcard exp-mcard--final',
-      href: PAGES_REL + 'experience.html',
-      'aria-label': window.t('journey_explore_cta'),
-    });
-    ctaCard.innerHTML = `
-      <div class="exp-mcard__rail-node">
-        <span class="exp-mcard__dot exp-mcard__dot--final" aria-hidden="true">✦</span>
-        <span class="exp-mcard__year">2026+</span>
-      </div>
-      <div class="exp-mcard__content exp-mcard__content--final">
-        <div class="exp-mcard__badge">${isIndo ? 'DOSIR LENGKAP' : 'COMPLETE DOSSIER'}</div>
-        <h3 class="exp-mcard__title">${isIndo ? '8 Rekam Jejak & 8 Sertifikasi Resmi' : '8 Career Milestones & 8 Verified Credentials'}</h3>
-        <p class="exp-mcard__reflection">${isIndo ? 'Buka dokumentasi mendalam arsitektur teknis, kepemimpinan proyek, dan verifikasi sertifikat PDF resmi.' : 'Explore complete architectural deep-dives, leadership milestones, and verified credentials.'}</p>
-        <div class="exp-mcard__footer">
-          <span class="exp-mcard__cta">${window.t('journey_explore_cta')}</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </div>
-      </div>
-    `;
-    track.appendChild(ctaCard);
-
-    // Track Navigation Buttons & Drag
-    const scrollContainer = wrapper || track;
-    const prevBtn = document.getElementById('journeyPrevBtn');
-    const nextBtn = document.getElementById('journeyNextBtn');
-    const progressFill = document.getElementById('journeyProgressIndicator');
-
-    function updateProgress() {
-      const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-      const progress = maxScroll > 0 ? (scrollContainer.scrollLeft / maxScroll) * 100 : 0;
-      if (progressFill) progressFill.style.width = `${Math.min(100, Math.max(0, progress))}%`;
-    }
-
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        scrollContainer.scrollBy({ left: -360, behavior: 'smooth' });
-      });
-    }
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        scrollContainer.scrollBy({ left: 360, behavior: 'smooth' });
+        chronoList.appendChild(row);
       });
     }
 
-    scrollContainer.addEventListener('scroll', updateProgress, { passive: true });
-    updateProgress();
+    /* ── CONCEPT B: Interactive Split-Dossier Roadmap (Dieter Rams / Apple style) ── */
+    if (splitNav && splitPanel && D.experience) {
+      splitNav.innerHTML = '';
+      splitPanel.innerHTML = '';
 
-    // Mouse drag-to-scroll support
-    let isDown = false;
-    let startX = 0;
-    let scrollStart = 0;
+      // High-signal curated eras for the split interface (newest to oldest)
+      const curatedEras = [
+        {
+          year: '2026',
+          label: 'Production Web Systems',
+          role: 'Frontend Developer & Info Architect',
+          org: 'Desa Air Putih',
+          location: 'Riau, Indonesia',
+          metrics: [
+            { num: 'React 19', label: 'Architecture & Vite 6' },
+            { num: '70%', label: 'Payload slashed via WebP' },
+            { num: '<90kB', label: 'Gzipped mobile bundle' },
+          ],
+          summary: 'Architected responsive editorial public portal with dynamic route metadata, JSON-LD structured schemas, and progressive lazy loading for rural 3G networks.',
+          tags: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS 4', 'React Router 7', 'JSON-LD'],
+          expIndex: 7,
+        },
+        {
+          year: '2025',
+          label: 'NLP Sentiment Platform',
+          role: 'Front-End Lead',
+          org: 'MBKM DBS Coding Camp (Emotica)',
+          location: 'Remote · Jakarta',
+          metrics: [
+            { num: '<120ms', label: 'ML Inference latency' },
+            { num: '3-Tier', label: 'Next.js + Flask Architecture' },
+            { num: 'Bi-LSTM', label: 'Indonesian Slang NLP' },
+          ],
+          summary: 'Led the frontend engineering team productizing deep learning text models into an interactive analytics dashboard with real-time emotion visualization.',
+          tags: ['Next.js', 'Tailwind CSS', 'Bi-LSTM + Attention', 'BERT', 'Chart.js', 'Flask'],
+          expIndex: 5,
+        },
+        {
+          year: '2024',
+          label: 'Mobile & Cloud Architecture',
+          role: 'Mobile Dev · Capstone Team Lead',
+          org: 'Bangkit Academy by Google, GoTo, Traveloka',
+          location: 'Remote',
+          metrics: [
+            { num: '3 Teams', label: 'Mobile, Cloud, ML Coordination' },
+            { num: '60 FPS', label: 'Jetpack Compose native UI' },
+            { num: 'FastAPI', label: 'Cloud microservice inference' },
+          ],
+          summary: 'Engineered native Android client Penny Path in Kotlin with Jetpack Compose, coordinated technical capstone milestones across Mobile, Cloud, and Machine Learning.',
+          tags: ['Kotlin', 'Jetpack Compose', 'FastAPI', 'TensorFlow', 'Keras', 'Android SDK'],
+          expIndex: 4,
+        },
+        {
+          year: '2024',
+          label: 'Campus-Wide WLAN Deployment',
+          role: 'Network Infrastructure Technician',
+          org: 'Campus Network Operations — UIN Suska',
+          location: 'Pekanbaru, Riau',
+          metrics: [
+            { num: '256 APs', label: 'Ruijie Access Points deployed' },
+            { num: '14 Buildings', label: 'Multi-story concrete coverage' },
+            { num: '0 Defects', label: '100% throughput test pass' },
+          ],
+          summary: 'Collaborated in a 13-person infrastructure team deploying 256 wireless APs across 14 buildings. Managed structured UTP cabling, patch panel racks, and RF testing.',
+          tags: ['Structured Cabling', 'UTP Cat6', 'Conduit Routing', 'Patch Panels', 'Ruijie WLAN'],
+          expIndex: 3,
+        },
+        {
+          year: '2022',
+          label: 'Lab Systems & Computing Foundation',
+          role: 'IT Support & S1 Sistem Informasi',
+          org: 'Faculty of Science and Technology',
+          location: 'UIN Sultan Syarif Kasim Riau',
+          metrics: [
+            { num: '83 Units', label: 'Workstations across 3 labs' },
+            { num: '3.73', label: 'GPA out of 4.00' },
+            { num: '0 Downtime', label: 'Zero-crash practical exam triage' },
+          ],
+          summary: 'Maintained 83 lab computers with mass disk imaging, hardware repairs, and structured LAN/IPv4 diagnostics while maintaining academic excellence in software engineering.',
+          tags: ['Hardware Diagnostics', 'OS Imaging', 'IPv4 & LAN', 'Database Systems', 'AI Literacy'],
+          expIndex: 1,
+        },
+      ];
 
-    scrollContainer.addEventListener('mousedown', (e) => {
-      // Don't drag if clicking directly on a button or link
-      if (e.target.closest('button, a')) return;
-      isDown = true;
-      scrollContainer.classList.add('is-dragging');
-      startX = e.pageX - scrollContainer.offsetLeft;
-      scrollStart = scrollContainer.scrollLeft;
-    });
+      let activeIndex = 0;
 
-    window.addEventListener('mouseup', () => {
-      if (!isDown) return;
-      isDown = false;
-      scrollContainer.classList.remove('is-dragging');
-    });
+      function renderActiveDossier(idx) {
+        activeIndex = idx;
+        const era = curatedEras[idx];
 
-    window.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - scrollContainer.offsetLeft;
-      const walk = (x - startX) * 1.5;
-      scrollContainer.scrollLeft = scrollStart - walk;
-    });
+        // Update nav items active class
+        const navButtons = splitNav.querySelectorAll('.split-nav-btn');
+        navButtons.forEach((b, i) => {
+          if (i === idx) b.classList.add('active');
+          else b.classList.remove('active');
+        });
+
+        // Render Panel
+        splitPanel.innerHTML = `
+          <div class="split-panel-card">
+            <div class="split-panel-header">
+              <div class="split-panel-meta">
+                <span>ERA: ${era.year}</span>
+                <span class="split-meta-sep">/</span>
+                <span>${era.label.toUpperCase()}</span>
+              </div>
+              <span class="split-panel-badge">${era.org}</span>
+            </div>
+
+            <h3 class="split-panel-title">${era.role}</h3>
+            <div class="split-panel-loc">${era.location}</div>
+
+            <div class="split-metrics-grid">
+              ${era.metrics.map(m => `
+                <div class="split-metric-item">
+                  <div class="split-metric-num">${m.num}</div>
+                  <div class="split-metric-label">${m.label}</div>
+                </div>
+              `).join('')}
+            </div>
+
+            <p class="split-panel-summary">${era.summary}</p>
+
+            <div class="split-panel-tags">
+              ${era.tags.map(t => `<span class="split-tag-chip">${t}</span>`).join('')}
+            </div>
+
+            <div class="split-panel-footer">
+              <button class="split-dossier-btn" type="button">
+                <span>VIEW FULL EXPERIENCE DOSSIER</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            </div>
+          </div>
+        `;
+
+        splitPanel.querySelector('.split-dossier-btn')?.addEventListener('click', () => {
+          openExperienceModal(era.expIndex);
+        });
+      }
+
+      // Build Navigation Nodes
+      curatedEras.forEach((era, idx) => {
+        const btn = el('button', {
+          class: `split-nav-btn ${idx === 0 ? 'active' : ''}`,
+          type: 'button',
+          'aria-label': `${era.year}: ${era.label}`,
+        });
+
+        btn.innerHTML = `
+          <div class="split-nav-node">
+            <span class="split-nav-dot" aria-hidden="true"></span>
+          </div>
+          <div class="split-nav-info">
+            <span class="split-nav-year">${era.year}</span>
+            <span class="split-nav-label">${era.label}</span>
+          </div>
+        `;
+
+        btn.addEventListener('click', () => renderActiveDossier(idx));
+        btn.addEventListener('mouseenter', () => renderActiveDossier(idx));
+
+        splitNav.appendChild(btn);
+      });
+
+      // Render initial active state
+      renderActiveDossier(0);
+    }
   }
 
   /* ── Full Snaking Map (Deprecated / Replaced by clean reversed cards) ── */

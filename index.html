@@ -200,21 +200,19 @@
     </div>
   </section>
 
-  <!-- ═══ CAREER JOURNEY SHOWCASE ════════════════════════════════ -->
+  <!-- ═══ CAREER JOURNEY SHOWCASE (DUAL CONCEPT PROTOTYPE) ═══════ -->
   <section class="exp-preview container" id="exp-preview" aria-label="Career journey preview">
     <div class="exp-preview__header">
       <div class="exp-preview__header-left">
         <div class="section-label" style="margin-bottom:0.25rem"><span data-i18n="section_journey_label">Career Journey</span></div>
-        <p class="exp-preview__sub" data-i18n="journey_sub">Milestones from academic foundations to full-stack &amp; cloud systems.</p>
+        <p class="exp-preview__sub">Live prototype comparing 2 distinct editorial directions.</p>
       </div>
       <div class="exp-preview__header-right">
-        <div class="exp-preview__nav-arrows">
-          <button class="exp-preview__nav-btn" id="journeyPrevBtn" type="button" aria-label="Scroll left">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
-          <button class="exp-preview__nav-btn" id="journeyNextBtn" type="button" aria-label="Scroll right">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
+        <!-- Interactive Concept Filter -->
+        <div class="concept-switcher" role="tablist" aria-label="Concept switcher">
+          <button class="concept-pill active" id="btnConceptAll" type="button">Both Concepts</button>
+          <button class="concept-pill" id="btnConceptA" type="button">Concept A (Chrono-Index)</button>
+          <button class="concept-pill" id="btnConceptB" type="button">Concept B (Split-Dossier)</button>
         </div>
         <a href="pages/experience.html" class="exp-preview__view-all-pill">
           <span data-i18n="exp_view_all">View All (8)</span>
@@ -223,13 +221,27 @@
       </div>
     </div>
 
-    <div class="exp-journey-wrapper" id="expJourneyWrapper">
-      <div class="exp-journey-track" id="expPreviewMap" role="list"></div>
+    <!-- ── CONCEPT A: Minimalist Chrono-Index ── -->
+    <div class="concept-block" id="conceptBlockA">
+      <div class="concept-tagline">
+        <span class="concept-badge">CONCEPT A · MINIMALIST CHRONO-INDEX</span>
+        <span class="concept-desc">Linear &amp; Stripe style · High signal-to-noise · Scannable vertical index</span>
+      </div>
+      <div class="chrono-index" id="chronoIndexList" role="list"></div>
     </div>
 
-    <!-- Progress Indicator -->
-    <div class="exp-journey-progress-rail" aria-hidden="true">
-      <div class="exp-journey-progress-indicator" id="journeyProgressIndicator"></div>
+    <!-- ── CONCEPT B: Interactive Split-Dossier Roadmap ── -->
+    <div class="concept-block" id="conceptBlockB" style="margin-top: 3.5rem;">
+      <div class="concept-tagline">
+        <span class="concept-badge">CONCEPT B · INTERACTIVE SPLIT DOSSIER</span>
+        <span class="concept-desc">Dieter Rams inspired · Interactive timeline rail with live technical metrics panel</span>
+      </div>
+      <div class="split-roadmap" id="splitRoadmap">
+        <!-- Left: Interactive rail -->
+        <div class="split-roadmap__nav" id="splitRoadmapNav" role="tablist"></div>
+        <!-- Right: Active Dossier Card -->
+        <div class="split-roadmap__panel" id="splitRoadmapPanel" role="region" aria-live="polite"></div>
+      </div>
     </div>
   </section>
 
