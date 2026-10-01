@@ -4331,6 +4331,11 @@ html.theme-transitioning .project-card {
   align-items: center;
   gap: 0.75rem;
 }
+@media (min-width: 769px) {
+  .site-footer__right {
+    margin-right: 95px;
+  }
+}
 .site-footer__link {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
@@ -5157,61 +5162,52 @@ html.theme-transitioning .project-card {
   }
 }
 
-/* ── T-Rex Companion Toggle Button ── */
-.dino-toggle-btn {
-  position: fixed;
-  bottom: 1.15rem;
-  right: 1.15rem;
-  z-index: 9998;
+/* ── T-Rex Companion Navbar Toggle Button ── */
+.navbar__dino-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  background: var(--card-bg, rgba(20, 20, 22, 0.85));
-  border: 1px solid var(--border);
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-mid);
   color: var(--fg);
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  background: transparent;
   cursor: pointer;
-  user-select: none;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-right: 6px;
+  position: relative;
+  transition: border-color var(--theme-dur) var(--theme-ease), transform 240ms var(--ease), background 200ms;
 }
 
-.dino-toggle-btn:hover {
-  transform: translateY(-2px);
-  border-color: var(--fg);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+.navbar__dino-btn:hover {
+  border-color: var(--border-str);
+  transform: scale(1.08);
 }
 
-.dino-toggle-btn.is-resting {
+.navbar__dino-btn:active {
+  transform: scale(0.92);
+}
+
+.navbar__dino-btn.is-resting {
   border-style: dashed;
-  opacity: 0.85;
+  opacity: 0.82;
 }
 
-.dino-toggle-btn.is-resting:hover {
-  opacity: 1;
-}
-
-.dino-toggle-icon {
-  font-size: 0.875rem;
+.navbar__dino-btn .dino-nav-icon {
+  font-size: 0.9375rem;
   line-height: 1;
   display: inline-block;
   transition: transform 0.2s ease;
+  user-select: none;
 }
 
-.dino-toggle-btn:hover .dino-toggle-icon {
+.navbar__dino-btn:hover .dino-nav-icon {
   transform: scale(1.18);
 }
 
-/* Hide on touch screens or small devices where custom cursor is disabled */
+/* Hide on mobile & touch devices where custom cursor is disabled */
 @media (max-width: 768px), (hover: none), (pointer: coarse) {
-  .dino-toggle-btn {
+  .navbar__dino-btn {
     display: none !important;
   }
 }

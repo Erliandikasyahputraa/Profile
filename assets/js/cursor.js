@@ -371,8 +371,8 @@
     const width = W || window.innerWidth || 1200;
     const height = H || window.innerHeight || 800;
     return {
-      x: Math.max(10, width - 230),
-      y: Math.max(10, height - 52)
+      x: Math.max(10, width - 84),
+      y: Math.max(10, height - 42)
     };
   }
 
@@ -410,40 +410,46 @@
     zzzParticles.length = 0;
     playYawnSound();
     foodVisible = true;
+    document.body.style.cursor = '';
     document.documentElement.classList.add('custom-cursor-active');
     updateDinoToggleBtn();
   }
 
   function updateDinoToggleBtn() {
-    const btn = document.getElementById('dinoToggleBtn');
+    const btn = document.getElementById('dinoToggle') || document.getElementById('dinoToggleBtn');
     if (!btn) return;
     const isIndo = (window.currentLang === 'id') || (document.documentElement.lang === 'id');
     const isAsleep = isManualResting || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING;
     if (isAsleep) {
       btn.classList.add('is-resting');
-      btn.innerHTML = `
-        <span class="dino-toggle-icon">💤</span>
-        <span class="dino-toggle-text">${isIndo ? 'T-Rex: Istirahat' : 'T-Rex: Resting'}</span>
-      `;
-      btn.title = isIndo ? 'T-Rex sedang tidur di sudut. Klik untuk bangunkan.' : 'T-Rex is resting in the corner. Click to wake.';
+      btn.innerHTML = `<span class="dino-nav-icon" aria-hidden="true">💤</span>`;
+      btn.title = isIndo ? 'T-Rex sedang istirahat di sudut. Klik untuk bangunkan.' : 'T-Rex is resting in the corner. Click to wake.';
     } else {
       btn.classList.remove('is-resting');
-      btn.innerHTML = `
-        <span class="dino-toggle-icon">🦖</span>
-        <span class="dino-toggle-text">${isIndo ? 'T-Rex: Aktif' : 'T-Rex: Active'}</span>
-      `;
-      btn.title = isIndo ? 'Klik untuk suruh T-Rex istirahat ke sudut.' : 'Click to send T-Rex to rest in the corner.';
+      btn.innerHTML = `<span class="dino-nav-icon" aria-hidden="true">🦖</span>`;
+      btn.title = isIndo ? 'T-Rex Aktif. Klik untuk suruh istirahat ke sudut.' : 'T-Rex Active. Click to send to rest in the corner.';
     }
   }
 
   function initDinoToggle() {
-    if (document.getElementById('dinoToggleBtn')) return;
-    const btn = document.createElement('button');
-    btn.id = 'dinoToggleBtn';
-    btn.className = 'dino-toggle-btn';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Toggle T-Rex Companion');
-    document.body.appendChild(btn);
+    let btn = document.getElementById('dinoToggle') || document.getElementById('dinoToggleBtn');
+    if (!btn) {
+      const themeBtn = document.getElementById('themeToggle');
+      const navbar = document.querySelector('.navbar');
+      btn = document.createElement('button');
+      btn.id = 'dinoToggle';
+      btn.className = 'navbar__toggle navbar__dino-btn';
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Toggle T-Rex Companion');
+
+      if (themeBtn && themeBtn.parentNode) {
+        themeBtn.parentNode.insertBefore(btn, themeBtn);
+      } else if (navbar) {
+        navbar.appendChild(btn);
+      } else {
+        return;
+      }
+    }
 
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -530,6 +536,22 @@
       isHoveringClickable = false;
     }
 
+    if (isManualResting || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
+      document.documentElement.classList.remove('custom-cursor-active');
+      foodVisible = false;
+      const spriteW = 26 * PX;
+      const spriteH = 18 * PX;
+      const isOverDino = (
+        e.clientX >= dinoX - 10 &&
+        e.clientX <= dinoX + spriteW + 10 &&
+        e.clientY >= dinoY - 10 &&
+        e.clientY <= dinoY + spriteH + 10
+      );
+      document.body.style.cursor = isOverDino ? 'pointer' : '';
+    } else {
+      document.body.style.cursor = '';
+    }
+
     if (currentState === STATES.SLEEPING) {
       if (!isManualResting) {
         // Waking up: start cute morning cat stretch & yawn transition!
@@ -570,6 +592,7 @@
     mouseInside = false;
     isHoveringClickable = false;
     isPointerDown = false;
+    document.body.style.cursor = '';
     document.documentElement.classList.remove('custom-cursor-active');
   });
 
@@ -577,7 +600,7 @@
   document.addEventListener('click', (e) => {
     if (isTouchActive) return;
     // Don't trigger roar on controls, modals, or companion toggle button
-    if (e.target.closest('#themeToggle, #themeToggleMobile, #langToggle, #langToggleMobile, .navbar__toggle, .navbar__lang-pill, .modal-close-btn, .dino-toggle-btn')) {
+    if (e.target.closest('#themeToggle, #themeToggleMobile, #langToggle, #langToggleMobile, .navbar__toggle, .navbar__lang-pill, .modal-close-btn, #dinoToggle, .navbar__dino-btn, .dino-toggle-btn')) {
       return;
     }
     // If dino is resting or going to bed, check if user tapped the sleeping dino to wake it up!
