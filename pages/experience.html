@@ -139,8 +139,24 @@
     <h1 class="exp-page__heading" data-i18n="exp_page_heading">Experience &amp; Education</h1>
     <p class="exp-page__sub" data-i18n="exp_page_sub">My journey so far.</p>
 
-    <!-- Experience Cards List (Newest first, editorial format) -->
+    <!-- Experience View Mode Switcher -->
+    <div class="exp-view-switcher" role="tablist" aria-label="Experience layout view modes">
+      <button class="exp-view-pill active" id="btnModeEditorial" data-mode="editorial" role="tab" aria-selected="true">
+        <span>Mode 1: Full Editorial Dossier</span>
+      </button>
+      <button class="exp-view-pill" id="btnModeAccordion" data-mode="accordion" role="tab" aria-selected="false">
+        <span>Mode 2: In-Place Accordion</span>
+      </button>
+      <button class="exp-view-pill" id="btnModeSplit" data-mode="split" role="tab" aria-selected="false">
+        <span>Mode 3: Split Master-Detail</span>
+      </button>
+    </div>
+
+    <!-- Container for Mode 1 (Editorial) & Mode 2 (Accordion) -->
     <div class="exp-cards-list" id="expCardsList" role="list"></div>
+
+    <!-- Container for Mode 3 (Split Master-Detail Inspector) -->
+    <div class="exp-split-view" id="expSplitView" style="display:none;" role="region" aria-label="Split master-detail experience inspector"></div>
 
     <!-- Certifications section -->
     <section class="certs-section" aria-labelledby="certsHeading">

@@ -1445,70 +1445,418 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ── Interactive Cards List (Newest First, No Numbers) ── */
-  function buildExperienceCards() {
+  let activeExpViewMode = 'editorial';
+  let activeSplitIdx = 0;
+
+  if (IS.exp) {
+    initExperiencePage();
+  }
+
+  function initExperiencePage() {
+    initExpViewSwitcher();
+    renderActiveExpMode();
+    buildCertifications();
+  }
+
+  function initExpViewSwitcher() {
+    const savedMode = localStorage.getItem('exp-view-mode') || 'editorial';
+    activeExpViewMode = ['editorial', 'accordion', 'split'].includes(savedMode) ? savedMode : 'editorial';
+
+    const updateSwitcherUI = () => {
+      document.querySelectorAll('.exp-view-pill').forEach(btn => {
+        const isMatch = btn.getAttribute('data-mode') === activeExpViewMode;
+        btn.classList.toggle('active', isMatch);
+        btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+      });
+    };
+
+    document.querySelectorAll('.exp-view-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode');
+        if (mode && mode !== activeExpViewMode) {
+          activeExpViewMode = mode;
+          try { localStorage.setItem('exp-view-mode', mode); } catch (e) {}
+          updateSwitcherUI();
+          renderActiveExpMode();
+        }
+      });
+    });
+
+    updateSwitcherUI();
+  }
+
+  function renderActiveExpMode() {
+    const listWrap = document.getElementById('expCardsList');
+    const splitWrap = document.getElementById('expSplitView');
+    if (!listWrap || !splitWrap || !D.experience) return;
+
+    if (activeExpViewMode === 'split') {
+      listWrap.style.display = 'none';
+      splitWrap.style.display = 'block';
+      renderModeSplit();
+    } else {
+      splitWrap.style.display = 'none';
+      listWrap.style.display = 'flex';
+      if (activeExpViewMode === 'accordion') {
+        renderModeAccordion();
+      } else {
+        renderModeEditorial();
+      }
+    }
+  }
+
+  /* ── Mode 1: Full Editorial Dossier (Complete, Open, Printable Resume) ── */
+  function renderModeEditorial() {
     const listWrap = document.getElementById('expCardsList');
     if (!listWrap || !D.experience) return;
     listWrap.innerHTML = '';
 
-    // D.experience is already chronological from newest to oldest (2026 -> 2022)
-    const items = D.experience.map((item, originalIdx) => ({ item, originalIdx }));
+    const isIndo = window.currentLang === 'id';
+    const labels = {
+      scopeTitle: isIndo ? 'Lingkup Rekayasa & Tanggung Jawab' : 'Engineering Scope & Execution',
+      bulletsTitle: isIndo ? 'Capaian & Sorotan Utama' : 'Key Deliverables & Highlights',
+      challengeLabel: isIndo ? 'Tantangan Teknis:' : 'Technical Challenge:',
+      impactLabel: isIndo ? 'Dampak Terukur:' : 'Measured Outcome:',
+    };
 
-    items.forEach(({ item, originalIdx }) => {
+    D.experience.forEach((item, originalIdx) => {
       const catText = getLoc(item, 'typeLabel') || 'EXPERIENCE';
-      const headlineText = getLoc(item, 'headline');
       const roleText = getLoc(item, 'role');
       const orgText = getLoc(item, 'org');
+      const headlineText = getLoc(item, 'headline');
+      const workText = getLoc(item, 'work') || getLoc(item, 'beginning');
+      const probText = getLoc(item, 'problem');
+      const impactText = getLoc(item, 'impact');
 
       const card = el('article', {
-        class: 'exp-detail-card',
-        id: `exp-card-${originalIdx}`,
-        role: 'button',
-        tabindex: '0',
+        class: 'exp-editorial-card',
+        id: `exp-editorial-${originalIdx}`,
         'aria-label': `${roleText} · ${orgText} (${item.period})`,
       });
 
       card.innerHTML = `
-        <div class="exp-card__header">
+        <header class="exp-editorial-card__header">
           <div class="exp-card__badge-row">
             <span class="exp-card__type-badge">${catText.toUpperCase()}</span>
             <span class="exp-card__period">${item.period}</span>
           </div>
-          <h2 class="exp-card__role">${roleText}</h2>
-          <div class="exp-card__org">${orgText} · <span class="exp-card__loc">${item.location}</span></div>
-          ${item.gpa ? `<div class="exp-card__gpa">GPA: ${item.gpa}</div>` : ''}
-        </div>
+          <h2 class="exp-editorial-card__role">${roleText}</h2>
+          <div class="exp-editorial-card__org">${orgText} · <span class="exp-editorial-card__loc">${item.location}</span></div>
+          ${item.gpa ? `<div class="exp-editorial-card__gpa">GPA: ${item.gpa}</div>` : ''}
+          ${headlineText ? `<p class="exp-editorial-card__headline">${headlineText}</p>` : ''}
+        </header>
 
-        <div class="exp-card__body">
-          ${headlineText ? `<p class="exp-card__headline">${headlineText}</p>` : ''}
-          
+        <div class="exp-editorial-card__body">
+          ${workText ? `
+            <div class="exp-editorial-sec">
+              <h3 class="exp-editorial-sec__title">${labels.scopeTitle}</h3>
+              <p class="exp-editorial-sec__text">${workText}</p>
+            </div>
+          ` : ''}
+
+          ${item.bullets && item.bullets.length ? `
+            <div class="exp-editorial-sec">
+              <h3 class="exp-editorial-sec__title">${labels.bulletsTitle}</h3>
+              <ul class="exp-bullet-list">
+                ${item.bullets.map(b => `<li>${b}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          ${(probText || impactText) ? `
+            <div class="exp-callout-box">
+              ${probText ? `
+                <div class="exp-callout-row">
+                  <span class="exp-callout-label">${labels.challengeLabel}</span>
+                  <p class="exp-callout-desc">${probText}</p>
+                </div>
+              ` : ''}
+              ${impactText ? `
+                <div class="exp-callout-row">
+                  <span class="exp-callout-label">${labels.impactLabel}</span>
+                  <p class="exp-callout-desc">${impactText}</p>
+                </div>
+              ` : ''}
+            </div>
+          ` : ''}
+
           ${item.technologies && item.technologies.length ? `
-            <div class="exp-card__tech-row">
-              ${item.technologies.map(t => `<span class="exp-card__tech-pill">${t}</span>`).join('')}
+            <div class="exp-tech-chips">
+              ${item.technologies.map(t => `<span class="exp-tech-chip">${t}</span>`).join('')}
             </div>
           ` : ''}
         </div>
+      `;
 
-        <div class="exp-card__footer-cta">
-          <span>${window.t('exp_view_cta')}</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      listWrap.appendChild(card);
+    });
+  }
+
+  /* ── Mode 2: In-Place Accordion (Progressive Disclosure) ── */
+  function renderModeAccordion() {
+    const listWrap = document.getElementById('expCardsList');
+    if (!listWrap || !D.experience) return;
+    listWrap.innerHTML = '';
+
+    const isIndo = window.currentLang === 'id';
+    const labels = {
+      openBtn: isIndo ? 'Rincian Lengkap' : 'Detailed Breakdown',
+      closeBtn: isIndo ? 'Sembunyikan' : 'Show Less',
+      scopeTitle: isIndo ? 'Lingkup Rekayasa & Tanggung Jawab' : 'Engineering Scope & Execution',
+      challengeLabel: isIndo ? 'Tantangan Teknis:' : 'Technical Challenge:',
+      impactLabel: isIndo ? 'Dampak Terukur:' : 'Measured Outcome:',
+    };
+
+    D.experience.forEach((item, originalIdx) => {
+      const catText = getLoc(item, 'typeLabel') || 'EXPERIENCE';
+      const roleText = getLoc(item, 'role');
+      const orgText = getLoc(item, 'org');
+      const headlineText = getLoc(item, 'headline');
+      const workText = getLoc(item, 'work') || getLoc(item, 'beginning');
+      const probText = getLoc(item, 'problem');
+      const impactText = getLoc(item, 'impact');
+
+      const card = el('article', {
+        class: 'exp-accordion-card',
+        id: `exp-acc-${originalIdx}`,
+      });
+
+      card.innerHTML = `
+        <header class="exp-editorial-card__header" style="margin-bottom:0.75rem; padding-bottom:0.75rem;">
+          <div class="exp-card__badge-row">
+            <span class="exp-card__type-badge">${catText.toUpperCase()}</span>
+            <span class="exp-card__period">${item.period}</span>
+          </div>
+          <h2 class="exp-editorial-card__role">${roleText}</h2>
+          <div class="exp-editorial-card__org">${orgText} · <span class="exp-editorial-card__loc">${item.location}</span></div>
+          ${item.gpa ? `<div class="exp-editorial-card__gpa">GPA: ${item.gpa}</div>` : ''}
+        </header>
+
+        <div class="exp-accordion-preview">
+          ${headlineText ? `<p class="exp-editorial-card__headline" style="margin-top:0.35rem; margin-bottom:0.75rem;">${headlineText}</p>` : ''}
+          
+          ${item.bullets && item.bullets.length ? `
+            <ul class="exp-bullet-list">
+              ${item.bullets.slice(0, 2).map(b => `<li>${b}</li>`).join('')}
+            </ul>
+          ` : ''}
+
+          ${item.technologies && item.technologies.length ? `
+            <div class="exp-tech-chips" style="margin-top:0.75rem;">
+              ${item.technologies.slice(0, 5).map(t => `<span class="exp-tech-chip">${t}</span>`).join('')}
+            </div>
+          ` : ''}
+
+          <button class="exp-accordion-toggle" type="button" aria-expanded="false">
+            <span class="exp-acc-toggle-text">${labels.openBtn}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+
+        <div class="exp-accordion-drawer">
+          ${workText ? `
+            <div class="exp-editorial-sec" style="margin-top:0;">
+              <h3 class="exp-editorial-sec__title">${labels.scopeTitle}</h3>
+              <p class="exp-editorial-sec__text">${workText}</p>
+            </div>
+          ` : ''}
+
+          ${item.bullets && item.bullets.length > 2 ? `
+            <div class="exp-editorial-sec">
+              <ul class="exp-bullet-list">
+                ${item.bullets.slice(2).map(b => `<li>${b}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          ${(probText || impactText) ? `
+            <div class="exp-callout-box">
+              ${probText ? `
+                <div class="exp-callout-row">
+                  <span class="exp-callout-label">${labels.challengeLabel}</span>
+                  <p class="exp-callout-desc">${probText}</p>
+                </div>
+              ` : ''}
+              ${impactText ? `
+                <div class="exp-callout-row">
+                  <span class="exp-callout-label">${labels.impactLabel}</span>
+                  <p class="exp-callout-desc">${impactText}</p>
+                </div>
+              ` : ''}
+            </div>
+          ` : ''}
+
+          ${item.technologies && item.technologies.length > 5 ? `
+            <div class="exp-tech-chips">
+              ${item.technologies.slice(5).map(t => `<span class="exp-tech-chip">${t}</span>`).join('')}
+            </div>
+          ` : ''}
         </div>
       `;
 
-      card.addEventListener('click', () => {
-        openExperienceModal(originalIdx);
-      });
-
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          openExperienceModal(originalIdx);
-        }
+      const toggleBtn = card.querySelector('.exp-accordion-toggle');
+      const toggleText = card.querySelector('.exp-acc-toggle-text');
+      toggleBtn?.addEventListener('click', () => {
+        const isOpen = card.classList.toggle('open');
+        toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        if (toggleText) toggleText.textContent = isOpen ? labels.closeBtn : labels.openBtn;
       });
 
       listWrap.appendChild(card);
     });
   }
+
+  /* ── Mode 3: Split Master-Detail Layout (IDE / System Architecture) ── */
+  function renderModeSplit() {
+    const splitWrap = document.getElementById('expSplitView');
+    if (!splitWrap || !D.experience) return;
+    splitWrap.innerHTML = '';
+
+    const isIndo = window.currentLang === 'id';
+    const total = D.experience.length;
+    if (activeSplitIdx >= total) activeSplitIdx = 0;
+
+    const layout = el('div', { class: 'exp-split-layout' });
+    const nav = el('div', { class: 'exp-split-nav', role: 'tablist' });
+    const inspector = el('div', { class: 'exp-split-inspector', role: 'tabpanel' });
+
+    function renderInspector(idx) {
+      activeSplitIdx = idx;
+      const item = D.experience[idx];
+      const catText = getLoc(item, 'typeLabel') || 'EXPERIENCE';
+      const roleText = getLoc(item, 'role');
+      const orgText = getLoc(item, 'org');
+      const headlineText = getLoc(item, 'headline');
+      const workText = getLoc(item, 'work') || getLoc(item, 'beginning');
+      const probText = getLoc(item, 'problem');
+      const impactText = getLoc(item, 'impact');
+
+      inspector.innerHTML = `
+        <header class="exp-editorial-card__header">
+          <div class="exp-card__badge-row">
+            <span class="exp-card__type-badge">${catText.toUpperCase()}</span>
+            <span class="exp-card__period">${item.period}</span>
+          </div>
+          <h2 class="exp-editorial-card__role">${roleText}</h2>
+          <div class="exp-editorial-card__org">${orgText} · <span class="exp-editorial-card__loc">${item.location}</span></div>
+          ${item.gpa ? `<div class="exp-editorial-card__gpa">GPA: ${item.gpa}</div>` : ''}
+          ${headlineText ? `<p class="exp-editorial-card__headline">${headlineText}</p>` : ''}
+        </header>
+
+        <div class="exp-editorial-card__body">
+          ${workText ? `
+            <div class="exp-editorial-sec">
+              <h3 class="exp-editorial-sec__title">${isIndo ? 'Lingkup Rekayasa & Tanggung Jawab' : 'Engineering Scope & Execution'}</h3>
+              <p class="exp-editorial-sec__text">${workText}</p>
+            </div>
+          ` : ''}
+
+          ${item.bullets && item.bullets.length ? `
+            <div class="exp-editorial-sec">
+              <h3 class="exp-editorial-sec__title">${isIndo ? 'Capaian & Sorotan Utama' : 'Key Deliverables & Highlights'}</h3>
+              <ul class="exp-bullet-list">
+                ${item.bullets.map(b => `<li>${b}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          ${(probText || impactText) ? `
+            <div class="exp-callout-box">
+              ${probText ? `
+                <div class="exp-callout-row">
+                  <span class="exp-callout-label">${isIndo ? 'Tantangan Teknis:' : 'Technical Challenge:'}</span>
+                  <p class="exp-callout-desc">${probText}</p>
+                </div>
+              ` : ''}
+              ${impactText ? `
+                <div class="exp-callout-row">
+                  <span class="exp-callout-label">${isIndo ? 'Dampak Terukur:' : 'Measured Outcome:'}</span>
+                  <p class="exp-callout-desc">${impactText}</p>
+                </div>
+              ` : ''}
+            </div>
+          ` : ''}
+
+          ${item.technologies && item.technologies.length ? `
+            <div class="exp-tech-chips">
+              ${item.technologies.map(t => `<span class="exp-tech-chip">${t}</span>`).join('')}
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="exp-split-inspector__nav">
+          <button class="exp-split-inspector__nav-btn" id="splitPrevBtn" ${idx === 0 ? 'disabled' : ''}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>${isIndo ? 'Sebelumnya' : 'Previous'}</span>
+          </button>
+          <span style="font-family:var(--font-mono);font-size:0.6875rem;color:var(--muted);">${idx + 1} / ${total}</span>
+          <button class="exp-split-inspector__nav-btn" id="splitNextBtn" ${idx === total - 1 ? 'disabled' : ''}>
+            <span>${isIndo ? 'Selanjutnya' : 'Next'}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      `;
+
+      inspector.querySelector('#splitPrevBtn')?.addEventListener('click', () => {
+        if (activeSplitIdx > 0) updateSplit(activeSplitIdx - 1);
+      });
+      inspector.querySelector('#splitNextBtn')?.addEventListener('click', () => {
+        if (activeSplitIdx < total - 1) updateSplit(activeSplitIdx + 1);
+      });
+    }
+
+    function updateSplit(idx) {
+      nav.querySelectorAll('.exp-split-nav-item').forEach((n, i) => {
+        n.classList.toggle('active', i === idx);
+        n.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+      });
+      renderInspector(idx);
+    }
+
+    D.experience.forEach((item, idx) => {
+      const catText = getLoc(item, 'typeLabel') || 'EXPERIENCE';
+      const roleText = getLoc(item, 'role');
+      const orgText = getLoc(item, 'org');
+
+      const navItem = el('div', {
+        class: `exp-split-nav-item ${idx === activeSplitIdx ? 'active' : ''}`,
+        role: 'tab',
+        tabindex: '0',
+        'aria-selected': idx === activeSplitIdx ? 'true' : 'false',
+      });
+
+      navItem.innerHTML = `
+        <div class="exp-split-nav-item__badge-row">
+          <span class="exp-split-nav-item__cat">${catText}</span>
+          <span class="exp-split-nav-item__period">${item.period}</span>
+        </div>
+        <div class="exp-split-nav-item__role">${roleText}</div>
+        <div class="exp-split-nav-item__org">${orgText}</div>
+      `;
+
+      navItem.addEventListener('click', () => updateSplit(idx));
+      navItem.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          updateSplit(idx);
+        }
+      });
+
+      nav.appendChild(navItem);
+    });
+
+    layout.appendChild(nav);
+    layout.appendChild(inspector);
+    splitWrap.appendChild(layout);
+
+    renderInspector(activeSplitIdx);
+  }
+
+  // Reactive listener for language switch across the entire app
+  document.addEventListener('langchange', () => {
+    if (IS.home) buildExpPreviewMap();
+    if (IS.exp) renderActiveExpMode();
+  });
 
   /* ── Rich Inline Certifications Grid (Direct Image Visuals) ── */
   function buildCertifications() {

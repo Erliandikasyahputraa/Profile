@@ -2231,41 +2231,68 @@ html.theme-transitioning .project-card {
 }
 
 /* ── Experience Details List ── */
+/* ── Experience Layout View Mode Switcher ── */
+.exp-view-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2.75rem;
+}
+.exp-view-pill {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-mid);
+  background: var(--bg-card);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 180ms ease;
+  user-select: none;
+}
+.exp-view-pill:hover {
+  color: var(--fg);
+  border-color: var(--border-str);
+}
+.exp-view-pill.active {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+/* ── Container for Mode 1 (Editorial) & Mode 2 (Accordion) ── */
 .exp-cards-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 2rem;
+  gap: 2rem;
   margin-bottom: 4rem;
 }
-.exp-detail-card {
-  padding: 1.75rem 2rem;
+
+/* ── Mode 1: Full Editorial Dossier Card ── */
+.exp-editorial-card {
+  padding: 2.25rem 2.5rem;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--bg-card);
-  cursor: pointer;
-  transition: color 200ms var(--ease), background-color 200ms var(--ease), border-color 200ms var(--ease), box-shadow 200ms var(--ease), transform 200ms var(--ease);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
 }
-.exp-detail-card:hover {
+.exp-editorial-card:hover {
   border-color: var(--border-str);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
 }
-.exp-detail-card.highlighted {
-  border-color: var(--fg);
-  outline: 2px solid var(--fg);
-  outline-offset: 4px;
-}
-.exp-card__header {
-  margin-bottom: 1rem;
-  padding-bottom: 0.875rem;
+.exp-editorial-card__header {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.1rem;
   border-bottom: 1px solid var(--border);
 }
 .exp-card__badge-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
 }
 .exp-card__type-badge {
   font-family: var(--font-mono);
@@ -2280,52 +2307,120 @@ html.theme-transitioning .project-card {
 }
 .exp-card__period {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   color: var(--muted);
   letter-spacing: 0.04em;
 }
-.exp-card__role {
+.exp-editorial-card__role {
   font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-size: clamp(1.35rem, 2.5vw, 1.7rem);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--fg);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
-.exp-card__org {
-  font-size: 0.875rem;
+.exp-editorial-card__org {
+  font-size: 0.9375rem;
   color: var(--muted);
   font-weight: 500;
 }
-.exp-card__loc {
+.exp-editorial-card__loc {
   color: var(--muted);
   font-weight: 400;
 }
-.exp-card__gpa {
+.exp-editorial-card__gpa {
+  display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 700;
   color: var(--fg);
-  margin-top: 0.35rem;
+  background: var(--border);
+  padding: 2px 7px;
+  border-radius: 3px;
+  margin-top: 0.5rem;
 }
-.exp-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-.exp-card__headline {
-  font-size: 0.875rem;
-  font-weight: 500;
+.exp-editorial-card__headline {
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--fg);
   line-height: 1.5;
+  margin-top: 0.85rem;
 }
-.exp-card__tech-row {
+.exp-editorial-sec {
+  margin-top: 1.35rem;
+}
+.exp-editorial-sec__title {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.exp-editorial-sec__text {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--fg);
+}
+.exp-bullet-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.exp-bullet-list li {
+  position: relative;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.exp-bullet-list li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  color: var(--muted);
+}
+.exp-callout-box {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--fg);
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0 4px 4px 0;
+  background: rgba(125,125,125,0.03);
+}
+.exp-callout-row {
+  margin-bottom: 0.5rem;
+}
+.exp-callout-row:last-child {
+  margin-bottom: 0;
+}
+.exp-callout-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+.exp-callout-desc {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--fg);
+}
+.exp-tech-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-top: 0.5rem;
+  margin-top: 1.25rem;
 }
-.exp-card__tech-pill {
+.exp-tech-chip {
   font-family: var(--font-mono);
   font-size: 0.5625rem;
   padding: 3px 9px;
@@ -2335,17 +2430,184 @@ html.theme-transitioning .project-card {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-.exp-card__footer-cta {
+
+/* ── Mode 2: In-Place Accordion Card ── */
+.exp-accordion-card {
+  padding: 1.75rem 2rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  transition: border-color 200ms ease;
+}
+.exp-accordion-card:hover {
+  border-color: var(--border-str);
+}
+.exp-accordion-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   margin-top: 1.25rem;
+  padding: 7px 15px;
+  border: 1px solid var(--border-mid);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--fg);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 700;
-  color: var(--fg);
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+.exp-accordion-toggle:hover {
+  background: var(--border);
+  border-color: var(--fg);
+}
+.exp-accordion-toggle svg {
+  transition: transform 240ms ease;
+}
+.exp-accordion-card.open .exp-accordion-toggle svg {
+  transform: rotate(180deg);
+}
+.exp-accordion-drawer {
+  display: none;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed var(--border-mid);
+  animation: expFadeDown 220ms ease;
+}
+.exp-accordion-card.open .exp-accordion-drawer {
+  display: block;
+}
+@keyframes expFadeDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Mode 3: Split Master-Detail Layout ── */
+.exp-split-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 4rem;
+}
+@media (max-width: 900px) {
+  .exp-split-layout {
+    grid-template-columns: 1fr;
+  }
+}
+.exp-split-nav {
+  position: sticky;
+  top: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+.exp-split-nav::-webkit-scrollbar {
+  width: 4px;
+}
+.exp-split-nav::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+  border-radius: 4px;
+}
+.exp-split-nav-item {
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all 180ms ease;
+  user-select: none;
+}
+.exp-split-nav-item:hover {
+  border-color: var(--border-str);
+  transform: translateX(2px);
+}
+.exp-split-nav-item.active {
+  border-color: var(--fg);
+  background: var(--border);
+}
+.exp-split-nav-item__badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+.exp-split-nav-item__cat {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.exp-split-nav-item.active .exp-split-nav-item__cat {
+  color: var(--fg);
+}
+.exp-split-nav-item__period {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--muted);
+}
+.exp-split-nav-item__role {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1.3;
+}
+.exp-split-nav-item__org {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+.exp-split-inspector {
+  position: sticky;
+  top: 90px;
+  padding: 2.25rem 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+.exp-split-inspector__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.exp-split-inspector__nav-btn {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border-mid);
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 180ms ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.exp-split-inspector__nav-btn:hover:not(:disabled) {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+.exp-split-inspector__nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 /* ── Premium 4-Column Balanced Certifications Grid (4 x 2 = 8 Cards) ── */
