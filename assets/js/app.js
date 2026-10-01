@@ -308,253 +308,477 @@ document.addEventListener('DOMContentLoaded', () => {
     photoContainer.addEventListener('pointerleave', triggerGlitchExit);
   }
 
-  /* ── Upgraded Career Journey Showcase (Dual Prototype: Concept A & Concept B) ── */
+  /* ── Upgraded Career Journey Showcase (3 Bespoke Non-Slop Concepts) ── */
   function buildExpPreviewMap() {
-    const chronoList = document.getElementById('chronoIndexList');
-    const splitNav = document.getElementById('splitRoadmapNav');
-    const splitPanel = document.getElementById('splitRoadmapPanel');
-    if (!chronoList && !splitNav) return;
+    const block1 = document.getElementById('conceptBlock1');
+    const block2 = document.getElementById('conceptBlock2');
+    const block3 = document.getElementById('conceptBlock3');
+    if (!block1 && !block2 && !block3) return;
 
     /* ── CONCEPT FILTER SWITCHER ── */
-    const blockA = document.getElementById('conceptBlockA');
-    const blockB = document.getElementById('conceptBlockB');
     const btnAll = document.getElementById('btnConceptAll');
-    const btnA = document.getElementById('btnConceptA');
-    const btnB = document.getElementById('btnConceptB');
+    const btn1 = document.getElementById('btnConcept1');
+    const btn2 = document.getElementById('btnConcept2');
+    const btn3 = document.getElementById('btnConcept3');
 
-    function setActiveFilter(activeBtn, showA, showB) {
-      [btnAll, btnA, btnB].forEach(b => b?.classList.remove('active'));
+    function setActiveFilter(activeBtn, show1, show2, show3) {
+      [btnAll, btn1, btn2, btn3].forEach(b => b?.classList.remove('active'));
       activeBtn?.classList.add('active');
-      if (blockA) blockA.style.display = showA ? 'block' : 'none';
-      if (blockB) blockB.style.display = showB ? 'block' : 'none';
+      if (block1) block1.style.display = show1 ? 'block' : 'none';
+      if (block2) block2.style.display = show2 ? 'block' : 'none';
+      if (block3) block3.style.display = show3 ? 'block' : 'none';
     }
 
-    btnAll?.addEventListener('click', () => setActiveFilter(btnAll, true, true));
-    btnA?.addEventListener('click', () => setActiveFilter(btnA, true, false));
-    btnB?.addEventListener('click', () => setActiveFilter(btnB, false, true));
+    btnAll?.addEventListener('click', () => setActiveFilter(btnAll, true, true, true));
+    btn1?.addEventListener('click', () => setActiveFilter(btn1, true, false, false));
+    btn2?.addEventListener('click', () => setActiveFilter(btn2, false, true, false));
+    btn3?.addEventListener('click', () => setActiveFilter(btn3, false, false, true));
 
-    /* ── CONCEPT A: Minimalist Chrono-Index (Linear / Stripe style) ── */
-    if (chronoList && D.experience) {
-      chronoList.innerHTML = '';
-      // Newest first
-      const items = D.experience.map((item, originalIdx) => ({ item, originalIdx }));
-      items.reverse();
+    /* ===============================================================
+       CONCEPT 1: GIT GRAPH TREE & TELEMETRY HUD (Developer-Native)
+       =============================================================== */
+    const gitTree = document.getElementById('gitGraphTree');
+    const gitHud = document.getElementById('gitGraphHud');
 
-      items.forEach(({ item, originalIdx }) => {
-        const catText = getLoc(item, 'typeLabel') || 'ENGINEERING';
-        const headlineText = getLoc(item, 'headline');
+    if (gitTree && gitHud) {
+      gitTree.innerHTML = '';
+      gitHud.innerHTML = '';
 
-        const row = el('article', {
-          class: 'chrono-row',
-          tabindex: '0',
-          role: 'button',
-          'aria-label': `${item.year} — ${item.role} at ${item.org}`,
-        });
-
-        row.innerHTML = `
-          <div class="chrono-col-year">
-            <span class="chrono-year-text">${item.year}</span>
-          </div>
-          <div class="chrono-col-main">
-            <div class="chrono-role-line">
-              <h3 class="chrono-role">${item.role}</h3>
-              <span class="chrono-org">(${item.org} · ${item.location})</span>
-            </div>
-            ${headlineText ? `<p class="chrono-headline">${headlineText}</p>` : ''}
-            <div class="chrono-period-tag">${item.period}</div>
-          </div>
-          <div class="chrono-col-tags">
-            <span class="chrono-pill-badge">${catText.toUpperCase()}</span>
-            ${item.technologies && item.technologies.length ? `
-              ${item.technologies.slice(0, 3).map(t => `<span class="chrono-tech-tag">${t}</span>`).join('')}
-            ` : ''}
-          </div>
-          <div class="chrono-col-action" aria-hidden="true">
-            <span class="chrono-action-btn">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </span>
-          </div>
-        `;
-
-        row.addEventListener('click', () => openExperienceModal(originalIdx));
-        row.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openExperienceModal(originalIdx);
-          }
-        });
-
-        chronoList.appendChild(row);
-      });
-    }
-
-    /* ── CONCEPT B: Interactive Split-Dossier Roadmap (Dieter Rams / Apple style) ── */
-    if (splitNav && splitPanel && D.experience) {
-      splitNav.innerHTML = '';
-      splitPanel.innerHTML = '';
-
-      // High-signal curated eras for the split interface (newest to oldest)
-      const curatedEras = [
+      const gitCommits = [
         {
-          year: '2026',
-          label: 'Production Web Systems',
-          role: 'Frontend Developer & Info Architect',
+          hash: 'a7f01c',
+          tag: 'v2026.1-PROD',
+          branch: 'release/gov-tech',
+          commitMsg: 'feat(portal): architect offline-resilient public information portal',
+          role: 'Frontend Architect & Info Systems',
           org: 'Desa Air Putih',
-          location: 'Riau, Indonesia',
-          metrics: [
-            { num: 'React 19', label: 'Architecture & Vite 6' },
-            { num: '70%', label: 'Payload slashed via WebP' },
-            { num: '<90kB', label: 'Gzipped mobile bundle' },
-          ],
-          summary: 'Architected responsive editorial public portal with dynamic route metadata, JSON-LD structured schemas, and progressive lazy loading for rural 3G networks.',
-          tags: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS 4', 'React Router 7', 'JSON-LD'],
+          period: 'Jan 2026 – Feb 2026',
+          telemetry: '70% Payload Slashed · <90kB Mobile Bundle',
+          hook: 'How do you guarantee critical civic services remain functional under unstable rural 3G networks?',
+          tech: ['React 19', 'TypeScript', 'Vite 6', 'Tailwind 4', 'JSON-LD'],
           expIndex: 7,
         },
         {
-          year: '2025',
-          label: 'NLP Sentiment Platform',
-          role: 'Front-End Lead',
+          hash: 'b4e92d',
+          tag: 'v2025.2-NLP',
+          branch: 'feat/emotica-ai',
+          commitMsg: 'feat(nlp-core): productize Indonesian slang Bi-LSTM + Attention inference',
+          role: 'Front-End Lead & Model Integration',
           org: 'MBKM DBS Coding Camp (Emotica)',
-          location: 'Remote · Jakarta',
-          metrics: [
-            { num: '<120ms', label: 'ML Inference latency' },
-            { num: '3-Tier', label: 'Next.js + Flask Architecture' },
-            { num: 'Bi-LSTM', label: 'Indonesian Slang NLP' },
-          ],
-          summary: 'Led the frontend engineering team productizing deep learning text models into an interactive analytics dashboard with real-time emotion visualization.',
-          tags: ['Next.js', 'Tailwind CSS', 'Bi-LSTM + Attention', 'BERT', 'Chart.js', 'Flask'],
+          period: 'Feb 2025 – Jun 2025',
+          telemetry: '<120ms Latency · 3-Tier Client/Flask Stack',
+          hook: 'How do you translate deep learning NLP models into sub-120ms real-time sentiment visualizations for end-users?',
+          tech: ['Next.js', 'Bi-LSTM', 'Flask API', 'Chart.js', 'Attention'],
           expIndex: 5,
         },
         {
-          year: '2024',
-          label: 'Mobile & Cloud Architecture',
-          role: 'Mobile Dev · Capstone Team Lead',
-          org: 'Bangkit Academy by Google, GoTo, Traveloka',
-          location: 'Remote',
-          metrics: [
-            { num: '3 Teams', label: 'Mobile, Cloud, ML Coordination' },
-            { num: '60 FPS', label: 'Jetpack Compose native UI' },
-            { num: 'FastAPI', label: 'Cloud microservice inference' },
-          ],
-          summary: 'Engineered native Android client Penny Path in Kotlin with Jetpack Compose, coordinated technical capstone milestones across Mobile, Cloud, and Machine Learning.',
-          tags: ['Kotlin', 'Jetpack Compose', 'FastAPI', 'TensorFlow', 'Keras', 'Android SDK'],
+          hash: 'c8d34a',
+          tag: 'v2024.3-CLOUD',
+          branch: 'release/penny-path',
+          commitMsg: 'feat(mobile-cloud): coordinate 3-tier capstone & Compose native client',
+          role: 'Mobile Dev & Capstone Team Lead',
+          org: 'Bangkit Academy (Google, GoTo, Traveloka)',
+          period: 'Feb 2024 – Jul 2024',
+          telemetry: 'Top Capstone Project · 3 Cross-Disciplinary Teams',
+          hook: 'How do you seamlessly synchronize Kotlin Jetpack Compose clients with asynchronous FastAPI microservices under strict grading?',
+          tech: ['Kotlin', 'Compose', 'FastAPI', 'TensorFlow', 'Android SDK'],
           expIndex: 4,
         },
         {
-          year: '2024',
-          label: 'Campus-Wide WLAN Deployment',
+          hash: 'd2c18f',
+          tag: 'v2024.1-INFRA',
+          branch: 'infra/campus-wlan',
+          commitMsg: 'deploy(wlan): provision 256 enterprise Ruijie APs across 14 sites',
           role: 'Network Infrastructure Technician',
           org: 'Campus Network Operations — UIN Suska',
-          location: 'Pekanbaru, Riau',
-          metrics: [
-            { num: '256 APs', label: 'Ruijie Access Points deployed' },
-            { num: '14 Buildings', label: 'Multi-story concrete coverage' },
-            { num: '0 Defects', label: '100% throughput test pass' },
-          ],
-          summary: 'Collaborated in a 13-person infrastructure team deploying 256 wireless APs across 14 buildings. Managed structured UTP cabling, patch panel racks, and RF testing.',
-          tags: ['Structured Cabling', 'UTP Cat6', 'Conduit Routing', 'Patch Panels', 'Ruijie WLAN'],
+          period: 'Feb 2024 – Mar 2024',
+          telemetry: '256 Enterprise APs · 100% Pass Rate',
+          hook: 'How do you eliminate co-channel RF collisions and dead zones across 14 multi-story reinforced concrete buildings?',
+          tech: ['Structured Cat6', 'Ruijie WLAN', 'RF Site Plan', 'Patch Panels'],
           expIndex: 3,
         },
         {
-          year: '2022',
-          label: 'Lab Systems & Computing Foundation',
-          role: 'IT Support & S1 Sistem Informasi',
-          org: 'Faculty of Science and Technology',
-          location: 'UIN Sultan Syarif Kasim Riau',
-          metrics: [
-            { num: '83 Units', label: 'Workstations across 3 labs' },
-            { num: '3.73', label: 'GPA out of 4.00' },
-            { num: '0 Downtime', label: 'Zero-crash practical exam triage' },
-          ],
-          summary: 'Maintained 83 lab computers with mass disk imaging, hardware repairs, and structured LAN/IPv4 diagnostics while maintaining academic excellence in software engineering.',
-          tags: ['Hardware Diagnostics', 'OS Imaging', 'IPv4 & LAN', 'Database Systems', 'AI Literacy'],
+          hash: 'e9a47b',
+          tag: 'v2022.0-INIT',
+          branch: 'core/systems-lab',
+          commitMsg: 'init(sys-lab): maintain 83 physical workstations & zero-crash exam triage',
+          role: 'IT Support & Systems Administrator',
+          org: 'Faculty of Science & Technology',
+          period: 'Aug 2022 – Aug 2023',
+          telemetry: '83 Physical Units · Zero Downtime',
+          hook: 'How do you maintain 100% workstation uptime across 3 computer laboratories during high-stakes campus practical exams?',
+          tech: ['Hardware Triage', 'OS Mass Imaging', 'IPv4 & LAN', 'Database Systems'],
           expIndex: 1,
         },
       ];
 
-      let activeIndex = 0;
-
-      function renderActiveDossier(idx) {
-        activeIndex = idx;
-        const era = curatedEras[idx];
-
-        // Update nav items active class
-        const navButtons = splitNav.querySelectorAll('.split-nav-btn');
-        navButtons.forEach((b, i) => {
-          if (i === idx) b.classList.add('active');
-          else b.classList.remove('active');
-        });
-
-        // Render Panel
-        splitPanel.innerHTML = `
-          <div class="split-panel-card">
-            <div class="split-panel-header">
-              <div class="split-panel-meta">
-                <span>ERA: ${era.year}</span>
-                <span class="split-meta-sep">/</span>
-                <span>${era.label.toUpperCase()}</span>
-              </div>
-              <span class="split-panel-badge">${era.org}</span>
+      function renderHud(c) {
+        gitHud.innerHTML = `
+          <div class="git-hud-card">
+            <div class="git-hud-header">
+              <span class="git-hud-terminal-id">TELEMETRY_HUD // ${c.hash}</span>
+              <span class="git-hud-status">COMMITTED</span>
             </div>
 
-            <h3 class="split-panel-title">${era.role}</h3>
-            <div class="split-panel-loc">${era.location}</div>
+            <div class="git-hud-meta">
+              <span class="git-hud-branch">${c.branch}</span>
+              <span class="git-hud-dot">·</span>
+              <span class="git-hud-org">${c.org}</span>
+            </div>
 
-            <div class="split-metrics-grid">
-              ${era.metrics.map(m => `
-                <div class="split-metric-item">
-                  <div class="split-metric-num">${m.num}</div>
-                  <div class="split-metric-label">${m.label}</div>
+            <h4 class="git-hud-role">${c.role}</h4>
+
+            <div class="git-hud-hook-box">
+              <span class="git-hud-hook-label">THE ENGINEERING CHALLENGE:</span>
+              <p class="git-hud-hook-text">"${c.hook}"</p>
+            </div>
+
+            <div class="git-hud-telemetry-badge">
+              <span class="git-hud-telemetry-icon">⚡</span>
+              <span class="git-hud-telemetry-val">${c.telemetry}</span>
+            </div>
+
+            <div class="git-hud-tech-row">
+              ${c.tech.map(t => `<span class="git-hud-tech-pill">${t}</span>`).join('')}
+            </div>
+
+            <div class="git-hud-footer">
+              <a href="pages/experience.html" class="git-hud-action-btn" data-exp="${c.expIndex}">
+                <span>INSPECT DEEP-DIVE IN EXPERIENCE</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </div>
+        `;
+
+        gitHud.querySelector('.git-hud-action-btn')?.addEventListener('click', (e) => {
+          e.preventDefault();
+          openExperienceModal(c.expIndex);
+        });
+      }
+
+      gitCommits.forEach((c, idx) => {
+        const item = el('div', {
+          class: `git-commit-node ${idx === 0 ? 'active' : ''}`,
+          tabindex: '0',
+          role: 'button',
+          'aria-label': `${c.tag}: ${c.role}`,
+        });
+
+        item.innerHTML = `
+          <div class="git-commit-rail">
+            <span class="git-commit-dot"></span>
+          </div>
+          <div class="git-commit-content">
+            <div class="git-commit-header">
+              <span class="git-commit-hash">${c.hash}</span>
+              <span class="git-commit-tag">${c.tag}</span>
+              <span class="git-commit-period">${c.period}</span>
+            </div>
+            <p class="git-commit-msg">${c.commitMsg}</p>
+          </div>
+        `;
+
+        const setNodeActive = () => {
+          gitTree.querySelectorAll('.git-commit-node').forEach(n => n.classList.remove('active'));
+          item.classList.add('active');
+          renderHud(c);
+        };
+
+        item.addEventListener('mouseenter', setNodeActive);
+        item.addEventListener('click', setNodeActive);
+        item.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setNodeActive();
+          }
+        });
+
+        gitTree.appendChild(item);
+      });
+
+      // Initial render
+      renderHud(gitCommits[0]);
+    }
+
+    /* ===============================================================
+       CONCEPT 2: HARDWARE CONSOLE & SPEC SHEET (Dieter Rams style)
+       =============================================================== */
+    const hwBank = document.getElementById('hwConsoleBank');
+    const hwScreen = document.getElementById('hwConsoleScreen');
+
+    if (hwBank && hwScreen) {
+      hwBank.innerHTML = '';
+      hwScreen.innerHTML = '';
+
+      const hwSpecs = [
+        {
+          key: '2026 PROD',
+          unitId: 'SYS-SPEC-2026-WEB',
+          phase: 'Public Sector Web Systems & Modern Info Architecture',
+          target: 'Desa Air Putih · Riau, Indonesia',
+          metrics: '70% Payload Slashed · <90kB Bundle · 100% Responsive',
+          hook: 'Architected dynamic client schema and progressive image delivery for unstable mobile networks.',
+          tags: ['React 19', 'TypeScript', 'Vite 6', 'Tailwind 4', 'JSON-LD'],
+          expIndex: 7,
+        },
+        {
+          key: '2025 AI/NLP',
+          unitId: 'SYS-SPEC-2025-NLP',
+          phase: 'Natural Language Processing & Deep Learning Platform',
+          target: 'MBKM DBS Coding Camp (Emotica) · Jakarta / Remote',
+          metrics: '<120ms Latency · 3-Tier Stack · Bi-LSTM Slang Model',
+          hook: 'Integrated transformer & recurrent neural networks into client dashboards for real-time text analysis.',
+          tags: ['Next.js', 'Bi-LSTM', 'BERT', 'Flask API', 'Chart.js'],
+          expIndex: 5,
+        },
+        {
+          key: '2024 CLOUD',
+          unitId: 'SYS-SPEC-2024-CLOUD',
+          phase: 'Distributed Mobile Client & Cloud Microservices',
+          target: 'Bangkit Academy by Google, GoTo, Traveloka',
+          metrics: 'Top Capstone Project · 3 Cross-Disciplinary Teams · 60 FPS Native UI',
+          hook: 'Led the mobile engineering squad and synchronized Android Jetpack Compose with backend cloud endpoints.',
+          tags: ['Kotlin', 'Jetpack Compose', 'FastAPI', 'Android SDK', 'GCP'],
+          expIndex: 4,
+        },
+        {
+          key: '2024 NET',
+          unitId: 'SYS-SPEC-2024-WLAN',
+          phase: 'Enterprise WLAN Deployment & Physical Topologies',
+          target: 'Campus Network Operations — UIN Suska',
+          metrics: '256 Ruijie AP Nodes · 14 Multi-Story Buildings · Zero Defects',
+          hook: 'Mitigated high RF signal attenuation and co-channel interference across concrete lecture auditoriums.',
+          tags: ['Structured Cat6', 'Ruijie WLAN', 'RF Site Plan', 'Patch Panels'],
+          expIndex: 3,
+        },
+        {
+          key: '2022 LAB',
+          unitId: 'SYS-SPEC-2022-LAB',
+          phase: 'Multi-Workstation Systems Administration & Infrastructure',
+          target: 'Faculty of Science & Technology · UIN Suska Riau',
+          metrics: '83 Physical Units · 3 Computer Laboratories · 0 Exam Downtime',
+          hook: 'Executed mass OS deployment, hardware component triage, and isolated LAN IPv4 diagnostics.',
+          tags: ['Hardware Diagnostics', 'OS Imaging', 'IPv4 & LAN', 'Database Systems'],
+          expIndex: 1,
+        },
+      ];
+
+      function renderHwSpec(spec) {
+        hwScreen.innerHTML = `
+          <div class="hw-screen-card">
+            <div class="hw-screen-header">
+              <span class="hw-screen-title">${spec.unitId}</span>
+              <span class="hw-screen-badge">STATUS: VERIFIED</span>
+            </div>
+
+            <div class="hw-spec-table">
+              <div class="hw-spec-row">
+                <span class="hw-spec-cell-label">01 / ARCHITECTURAL PHASE</span>
+                <span class="hw-spec-cell-val">${spec.phase}</span>
+              </div>
+              <div class="hw-spec-row">
+                <span class="hw-spec-cell-label">02 / DEPLOYMENT TARGET</span>
+                <span class="hw-spec-cell-val">${spec.target}</span>
+              </div>
+              <div class="hw-spec-row">
+                <span class="hw-spec-cell-label">03 / SCALE &amp; HARD TELEMETRY</span>
+                <span class="hw-spec-cell-val hw-spec-highlight">${spec.metrics}</span>
+              </div>
+              <div class="hw-spec-row">
+                <span class="hw-spec-cell-label">04 / THE CORE CONSTRAINT</span>
+                <span class="hw-spec-cell-val">"${spec.hook}"</span>
+              </div>
+            </div>
+
+            <div class="hw-screen-footer">
+              <div class="hw-screen-tags">
+                ${spec.tags.map(t => `<span class="hw-tag-pill">${t}</span>`).join('')}
+              </div>
+              <a href="pages/experience.html" class="hw-action-btn" data-exp="${spec.expIndex}">
+                <span>OPEN ARCHITECTURAL DOSSIER IN EXPERIENCE ↗</span>
+              </a>
+            </div>
+          </div>
+        `;
+
+        hwScreen.querySelector('.hw-action-btn')?.addEventListener('click', (e) => {
+          e.preventDefault();
+          openExperienceModal(spec.expIndex);
+        });
+      }
+
+      hwSpecs.forEach((spec, idx) => {
+        const btn = el('button', {
+          class: `hw-bank-btn ${idx === 0 ? 'active' : ''}`,
+          type: 'button',
+          'aria-label': spec.key,
+        });
+
+        btn.innerHTML = `
+          <span class="hw-led ${idx === 0 ? 'on' : ''}"></span>
+          <span class="hw-btn-label">${spec.key}</span>
+        `;
+
+        btn.addEventListener('click', () => {
+          hwBank.querySelectorAll('.hw-bank-btn').forEach(b => {
+            b.classList.remove('active');
+            b.querySelector('.hw-led')?.classList.remove('on');
+          });
+          btn.classList.add('active');
+          btn.querySelector('.hw-led')?.classList.add('on');
+          renderHwSpec(spec);
+        });
+
+        hwBank.appendChild(btn);
+      });
+
+      // Initial render
+      renderHwSpec(hwSpecs[0]);
+    }
+
+    /* ===============================================================
+       CONCEPT 3: T-SHAPED CAPABILITY RADAR (Pillar Matrix)
+       =============================================================== */
+    const radarTabs = document.getElementById('radarMatrixTabs');
+    const radarContent = document.getElementById('radarMatrixContent');
+
+    if (radarTabs && radarContent) {
+      radarTabs.innerHTML = '';
+      radarContent.innerHTML = '';
+
+      const pillars = [
+        {
+          id: 'web',
+          num: '01',
+          name: 'Full-Stack & Civic Web Systems',
+          badge: 'PRODUCTION READY',
+          thesis: 'Building resilient, offline-tolerant web architectures that load instantly on low-bandwidth rural networks without sacrificing accessibility or semantic structure.',
+          flagship: 'Desa Air Putih Public Civic Information System (2026)',
+          proofPoints: [
+            '70% media payload slashed via automated next-gen WebP compression pipeline.',
+            '<90kB total gzipped mobile initial bundle with React 19 and Vite 6.',
+            'Structured JSON-LD schema integration for rich public search engine indexing.',
+          ],
+          certs: ['Bangkit Mobile/Web Cert', 'Responsive Web Foundations'],
+          expIndex: 7,
+        },
+        {
+          id: 'ml',
+          num: '02',
+          name: 'Applied Machine Learning & NLP',
+          badge: 'RESEARCH & DEPLOY',
+          thesis: 'Productizing natural language models and classification pipelines into clean, sub-120ms user interfaces for high-value sentiment and text analytics.',
+          flagship: 'MBKM DBS Coding Camp (Emotica) & Data Mining Workshop (2025)',
+          proofPoints: [
+            'End-to-end integration of BERT & Bi-LSTM neural networks into an interactive dashboard.',
+            'Speaker & Mentor for 60+ participants on rapid data preprocessing & clustering.',
+            'Robust handling of unstandardized Indonesian informal slang & conversational syntax.',
+          ],
+          certs: ['Speaker Data Mining Cert', 'MBKM DBS Coding Camp Cert'],
+          expIndex: 5,
+        },
+        {
+          id: 'cloud',
+          num: '03',
+          name: 'Cloud & Distributed Mobile Architecture',
+          badge: 'CROSS-DISCIPLINARY',
+          thesis: 'Bridging native mobile clients with scalable cloud microservices, driving technical alignment across disparate engineering squads under high-stakes timelines.',
+          flagship: 'Bangkit Academy by Google, GoTo, Traveloka (2024)',
+          proofPoints: [
+            'Technical Capstone Team Lead coordinating Mobile, Cloud, and Machine Learning teams.',
+            'Architected 60 FPS Android native UI in Kotlin using modern Jetpack Compose.',
+            'Connected client side to asynchronous FastAPI inference microservices.',
+          ],
+          certs: ['Official Bangkit Academy Cert (Distinction)', 'Google Cloud Foundations'],
+          expIndex: 4,
+        },
+        {
+          id: 'infra',
+          num: '04',
+          name: 'Enterprise Network & Infrastructure',
+          badge: 'FIELD TESTED',
+          thesis: 'Hands-on hardware topology, structured UTP Cat6 cabling, and large-scale enterprise wireless access point deployments across challenging multi-story facilities.',
+          flagship: 'Campus Network Operations (256 APs) & Computer Laboratories (83 PCs)',
+          proofPoints: [
+            'Coordinated deployment of 256 Ruijie enterprise wireless APs across 14 buildings.',
+            'Zero co-channel interference and 100% throughput test pass rate in dense auditoriums.',
+            'Maintained 83 physical workstations across 3 labs with 0 downtime during major exams.',
+          ],
+          certs: ['Campus Network Technician Verification', 'Faculty IT Support Credential'],
+          expIndex: 3,
+        },
+      ];
+
+      function renderPillar(p) {
+        radarContent.innerHTML = `
+          <div class="radar-card">
+            <div class="radar-card-header">
+              <div class="radar-pillar-num-wrap">
+                <span class="radar-num">${p.num}</span>
+                <span class="radar-pillar-name">${p.name}</span>
+              </div>
+              <span class="radar-badge">${p.badge}</span>
+            </div>
+
+            <p class="radar-thesis">"${p.thesis}"</p>
+
+            <div class="radar-flagship-box">
+              <span class="radar-flagship-label">BATTLE-TESTED DEPLOYMENT:</span>
+              <span class="radar-flagship-name">${p.flagship}</span>
+            </div>
+
+            <div class="radar-proof-list">
+              ${p.proofPoints.map(pt => `
+                <div class="radar-proof-item">
+                  <span class="radar-proof-check">✓</span>
+                  <span class="radar-proof-text">${pt}</span>
                 </div>
               `).join('')}
             </div>
 
-            <p class="split-panel-summary">${era.summary}</p>
-
-            <div class="split-panel-tags">
-              ${era.tags.map(t => `<span class="split-tag-chip">${t}</span>`).join('')}
+            <div class="radar-certs-row">
+              <span class="radar-certs-label">VERIFIED CREDENTIALS:</span>
+              ${p.certs.map(c => `<span class="radar-cert-pill">${c}</span>`).join('')}
             </div>
 
-            <div class="split-panel-footer">
-              <button class="split-dossier-btn" type="button">
-                <span>VIEW FULL EXPERIENCE DOSSIER</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </button>
+            <div class="radar-footer">
+              <a href="pages/experience.html" class="radar-action-btn" data-exp="${p.expIndex}">
+                <span>EXPLORE DETAILED ARCHITECTURE &amp; ARTIFACTS IN EXPERIENCE →</span>
+              </a>
             </div>
           </div>
         `;
 
-        splitPanel.querySelector('.split-dossier-btn')?.addEventListener('click', () => {
-          openExperienceModal(era.expIndex);
+        radarContent.querySelector('.radar-action-btn')?.addEventListener('click', (e) => {
+          e.preventDefault();
+          openExperienceModal(p.expIndex);
         });
       }
 
-      // Build Navigation Nodes
-      curatedEras.forEach((era, idx) => {
-        const btn = el('button', {
-          class: `split-nav-btn ${idx === 0 ? 'active' : ''}`,
+      pillars.forEach((p, idx) => {
+        const tab = el('button', {
+          class: `radar-tab-btn ${idx === 0 ? 'active' : ''}`,
           type: 'button',
-          'aria-label': `${era.year}: ${era.label}`,
+          'aria-label': p.name,
         });
 
-        btn.innerHTML = `
-          <div class="split-nav-node">
-            <span class="split-nav-dot" aria-hidden="true"></span>
-          </div>
-          <div class="split-nav-info">
-            <span class="split-nav-year">${era.year}</span>
-            <span class="split-nav-label">${era.label}</span>
-          </div>
+        tab.innerHTML = `
+          <span class="radar-tab-num">${p.num}</span>
+          <span class="radar-tab-title">${p.name}</span>
         `;
 
-        btn.addEventListener('click', () => renderActiveDossier(idx));
-        btn.addEventListener('mouseenter', () => renderActiveDossier(idx));
+        tab.addEventListener('click', () => {
+          radarTabs.querySelectorAll('.radar-tab-btn').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          renderPillar(p);
+        });
 
-        splitNav.appendChild(btn);
+        radarTabs.appendChild(tab);
       });
 
-      // Render initial active state
-      renderActiveDossier(0);
+      // Initial render
+      renderPillar(pillars[0]);
     }
   }
 

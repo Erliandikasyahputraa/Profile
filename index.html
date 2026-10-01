@@ -200,47 +200,63 @@
     </div>
   </section>
 
-  <!-- ═══ CAREER JOURNEY SHOWCASE (DUAL CONCEPT PROTOTYPE) ═══════ -->
+  <!-- ═══ CAREER JOURNEY SHOWCASE (3 NON-SLOP EDITORIAL CONCEPTS) ═══ -->
   <section class="exp-preview container" id="exp-preview" aria-label="Career journey preview">
     <div class="exp-preview__header">
       <div class="exp-preview__header-left">
         <div class="section-label" style="margin-bottom:0.25rem"><span data-i18n="section_journey_label">Career Journey</span></div>
-        <p class="exp-preview__sub">Live prototype comparing 2 distinct editorial directions.</p>
+        <p class="exp-preview__sub">Executive teaser comparing 3 authentic engineering presentations.</p>
       </div>
       <div class="exp-preview__header-right">
         <!-- Interactive Concept Filter -->
         <div class="concept-switcher" role="tablist" aria-label="Concept switcher">
-          <button class="concept-pill active" id="btnConceptAll" type="button">Both Concepts</button>
-          <button class="concept-pill" id="btnConceptA" type="button">Concept A (Chrono-Index)</button>
-          <button class="concept-pill" id="btnConceptB" type="button">Concept B (Split-Dossier)</button>
+          <button class="concept-pill active" id="btnConceptAll" type="button">All 3 Concepts</button>
+          <button class="concept-pill" id="btnConcept1" type="button">1. Git Graph Tree</button>
+          <button class="concept-pill" id="btnConcept2" type="button">2. Hardware Console</button>
+          <button class="concept-pill" id="btnConcept3" type="button">3. Capability Matrix</button>
         </div>
         <a href="pages/experience.html" class="exp-preview__view-all-pill">
-          <span data-i18n="exp_view_all">View All (8)</span>
+          <span data-i18n="exp_view_all">Full Dossier (8)</span>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
       </div>
     </div>
 
-    <!-- ── CONCEPT A: Minimalist Chrono-Index ── -->
-    <div class="concept-block" id="conceptBlockA">
+    <!-- ── CONCEPT 1: Git Graph / System Evolution Tree ── -->
+    <div class="concept-block" id="conceptBlock1">
       <div class="concept-tagline">
-        <span class="concept-badge">CONCEPT A · MINIMALIST CHRONO-INDEX</span>
-        <span class="concept-desc">Linear &amp; Stripe style · High signal-to-noise · Scannable vertical index</span>
+        <span class="concept-badge">CONCEPT 1 · GIT GRAPH &amp; TELEMETRY HUD</span>
+        <span class="concept-desc">Developer-native commit topology · Live telemetry inspector · Zero fluff curiosity hooks</span>
       </div>
-      <div class="chrono-index" id="chronoIndexList" role="list"></div>
+      <div class="git-graph-layout" id="gitGraphLayout">
+        <div class="git-graph-tree" id="gitGraphTree" role="list"></div>
+        <div class="git-graph-hud" id="gitGraphHud" role="region" aria-live="polite"></div>
+      </div>
     </div>
 
-    <!-- ── CONCEPT B: Interactive Split-Dossier Roadmap ── -->
-    <div class="concept-block" id="conceptBlockB" style="margin-top: 3.5rem;">
+    <!-- ── CONCEPT 2: Hardware Console & Precision Spec Sheet ── -->
+    <div class="concept-block" id="conceptBlock2" style="margin-top: 3.5rem;">
       <div class="concept-tagline">
-        <span class="concept-badge">CONCEPT B · INTERACTIVE SPLIT DOSSIER</span>
-        <span class="concept-desc">Dieter Rams inspired · Interactive timeline rail with live technical metrics panel</span>
+        <span class="concept-badge">CONCEPT 2 · HARDWARE CONSOLE SPEC SHEET</span>
+        <span class="concept-desc">Dieter Rams / Teenage Engineering · Precision rotary era bank · Architectural spec sheet</span>
       </div>
-      <div class="split-roadmap" id="splitRoadmap">
-        <!-- Left: Interactive rail -->
-        <div class="split-roadmap__nav" id="splitRoadmapNav" role="tablist"></div>
-        <!-- Right: Active Dossier Card -->
-        <div class="split-roadmap__panel" id="splitRoadmapPanel" role="region" aria-live="polite"></div>
+      <div class="hw-console" id="hwConsole">
+        <div class="hw-console__deck">
+          <div class="hw-console__led-group" id="hwConsoleBank" role="tablist"></div>
+        </div>
+        <div class="hw-console__screen" id="hwConsoleScreen" role="region" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <!-- ── CONCEPT 3: Capability Radar / T-Shaped Capability Matrix ── -->
+    <div class="concept-block" id="conceptBlock3" style="margin-top: 3.5rem;">
+      <div class="concept-tagline">
+        <span class="concept-badge">CONCEPT 3 · T-SHAPED CAPABILITY MATRIX</span>
+        <span class="concept-desc">Executive engineering matrix · 4 core technological pillars · Depth &amp; cross-disciplinary proof</span>
+      </div>
+      <div class="radar-matrix" id="radarMatrix">
+        <div class="radar-matrix__tabs" id="radarMatrixTabs" role="tablist"></div>
+        <div class="radar-matrix__content" id="radarMatrixContent" role="region" aria-live="polite"></div>
       </div>
     </div>
   </section>
