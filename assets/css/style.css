@@ -4794,6 +4794,7 @@ html.theme-transitioning .project-card {
   cursor: pointer;
   position: relative;
   z-index: 1;
+  overflow: hidden; /* Garis 100% terkunci di dalam batas card, tidak ada yang keluar kolom */
   transition: border-color 180ms var(--ease), background 180ms var(--ease), box-shadow 180ms var(--ease);
   outline: none;
 }
@@ -4829,17 +4830,17 @@ html.theme-transitioning .project-card {
   transform: translateX(-50%);
   width: 2px;
   background: var(--border-mid);
-  top: calc(-1 * var(--node-pad-y) - var(--node-gap-y) - 1px);
-  bottom: calc(-1 * var(--node-pad-y) - 1px);
+  top: calc(-1 * var(--node-pad-y));
+  bottom: calc(-1 * var(--node-pad-y));
   z-index: 1;
   transition: background 180ms var(--ease);
 }
 .git-commit-node:first-child .git-commit-rail::before {
   top: 9px;
-  bottom: calc(-1 * var(--node-pad-y) - 1px);
+  bottom: calc(-1 * var(--node-pad-y));
 }
 .git-commit-node:last-child .git-commit-rail::before {
-  top: calc(-1 * var(--node-pad-y) - var(--node-gap-y) - 1px);
+  top: calc(-1 * var(--node-pad-y));
   bottom: calc(100% - 9px);
 }
 .git-commit-node:hover .git-commit-rail::before,
@@ -4976,10 +4977,10 @@ html.theme-transitioning .project-card {
 }
 .git-hud-summary-box {
   background: var(--bg);
-  border-left: 2px solid var(--fg);
+  border: 1px solid var(--border);
   padding: 0.875rem 1.15rem;
   margin-bottom: 1.25rem;
-  border-radius: 0 4px 4px 0;
+  border-radius: 6px;
 }
 .git-hud-summary-label {
   display: block;
