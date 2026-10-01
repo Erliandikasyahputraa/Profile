@@ -62,9 +62,10 @@
     WAITING:          'WAITING',         // 4th time: hunter wait
     ANTICIPATING:     'ANTICIPATING',    // 4th time: hunter crouch
     CHASING:          'CHASING',         // 4th time: hunter sprint
-    EATING:           'EATING',
-    SATISFIED:        'SATISFIED',
-    ROARING:          'ROARING',  // Cold predator growl on click
+    EATING:             'EATING',
+    SATISFIED:          'SATISFIED',
+    STUFFED_BURP:       'STUFFED_BURP', // Full round chubby belly & dinosaur sendawa/burp
+    ROARING:            'ROARING',  // Cold predator growl on click
     SLEEPING:           'SLEEPING', // Stuffed / gemoy sleep after 15s idle or 10 drumsticks
     WAKING:             'WAKING',   // Seamless cat stretch & yawn when waking up
     YAWNING_BEFORE_BED: 'YAWNING_BEFORE_BED', // Sleepy yawn & heavy blink when commanded to sleep
@@ -225,6 +226,36 @@
     [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
+
+  /* ── Leg Frame: Chubby Gemuk Belly (Perut Buncit & Kenyang sehabis makan) ── */
+  const LEGS_CHUBBY = [
+    //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r0 belly bulges out to col 16
+    [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], // r1 round potbelly to col 17
+    [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r2 belly hangs down over thighs
+    [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r3 lower belly sag
+    [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r4 legs
+    [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r5 claws
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // r6 ground
+  ];
+  const LEGS_CHUBBY_STRIDE_A = [
+    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+  const LEGS_CHUBBY_STRIDE_B = [
+    [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ];
   const LEGS_STRIDE_A = [
     [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -381,6 +412,38 @@
     });
   }
 
+  // Burp Sendawa particles & state
+  const burpParticles = [];
+  let hasBurped = false;
+
+  function spawnBurp(x, y) {
+    burpParticles.push({
+      x, y,
+      vx: isFacingLeft ? -0.85 : 0.85,
+      vy: -0.45,
+      text: 'BURP!',
+      size: 11,
+      life: 1.0,
+      decay: 0.022,
+    });
+    // Add comic burp smoke puffs
+    for (let i = 0; i < 3; i++) {
+      dustParticles.push({
+        x: x + (isFacingLeft ? -i * 5 : i * 5),
+        y: y + (Math.random() - 0.5) * 4,
+        vx: (isFacingLeft ? -1.1 : 1.1) + (Math.random() - 0.5) * 0.4,
+        vy: -0.35 - Math.random() * 0.35,
+        baseR: 1.8,
+        maxR: 4.2,
+        satOffsetX: 0,
+        satOffsetY: 0,
+        satR: 1.4,
+        life: 1.0,
+        decay: 0.038,
+      });
+    }
+  }
+
   /* ── Pet Resting State (Persistent) ── */
   let isManualResting = false;
   try {
@@ -530,9 +593,12 @@
     currentState = STATES.WAKING;
     stateTimer = performance.now();
     consecutiveEats = 0;
-    zzzParticles.length = 0;
-    playYawnSound();
+    foodScale = 1.0;
     foodVisible = true;
+    hasBurped = false;
+    zzzParticles.length = 0;
+    burpParticles.length = 0;
+    playYawnSound();
     document.body.style.cursor = '';
     document.documentElement.classList.add('custom-cursor-active');
     updateDinoToggleBtn();
@@ -542,7 +608,7 @@
     const btn = document.getElementById('dinoToggle') || document.getElementById('dinoToggleBtn');
     if (!btn) return;
     const isIndo = (window.currentLang === 'id') || (document.documentElement.lang === 'id');
-    const isAsleep = isManualResting || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING;
+    const isAsleep = isManualResting || currentState === STATES.STUFFED_BURP || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING;
     if (isAsleep) {
       btn.classList.add('is-resting');
       btn.innerHTML = `<span class="dino-nav-icon" aria-hidden="true">💤</span>`;
@@ -576,7 +642,7 @@
 
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (isManualResting || currentState === STATES.SLEEPING || currentState === STATES.GOING_TO_BED || currentState === STATES.YAWNING_BEFORE_BED) {
+      if (isManualResting || currentState === STATES.SLEEPING || currentState === STATES.GOING_TO_BED || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.STUFFED_BURP) {
         wakeUpDino();
       } else {
         sendDinoToBed();
@@ -658,10 +724,15 @@
       return;
     }
 
-    // T-Rex is ACTIVE: Always show custom cursor
-    document.body.style.cursor = '';
-    foodVisible = true;
-    document.documentElement.classList.add('custom-cursor-active');
+    // T-Rex is ACTIVE: Show custom cursor only if meat is not fully eaten
+    if (foodScale > 0.04 && consecutiveEats < 5 && currentState !== STATES.STUFFED_BURP && currentState !== STATES.GOING_TO_BED && currentState !== STATES.SLEEPING && currentState !== STATES.YAWNING_BEFORE_BED) {
+      document.body.style.cursor = '';
+      foodVisible = true;
+      document.documentElement.classList.add('custom-cursor-active');
+    } else {
+      document.documentElement.classList.remove('custom-cursor-active');
+      foodVisible = false;
+    }
 
     // Check if hovering over clickable / interactive elements
     const target = e.target;
@@ -680,11 +751,13 @@
       currentState = STATES.WAKING;
       stateTimer   = performance.now();
       consecutiveEats = 0;
+      foodScale = 1.0;
+      foodVisible = true;
       zzzParticles.length = 0;
+      burpParticles.length = 0;
       playYawnSound();
     } else if (currentState === STATES.WAITING || currentState === STATES.ANTICIPATING || currentState === STATES.CHASING || currentState === STATES.WALKING_TO_FOOD) {
       currentState = STATES.LAZY_FOLLOW;
-      consecutiveEats = 0;
     }
   });
 
@@ -702,7 +775,7 @@
   document.addEventListener('mouseenter', () => {
     if (!isTouchActive) {
       mouseInside = true;
-      if (!isManualResting && currentState !== STATES.GOING_TO_BED && currentState !== STATES.SLEEPING && currentState !== STATES.YAWNING_BEFORE_BED) {
+      if (!isManualResting && currentState !== STATES.GOING_TO_BED && currentState !== STATES.SLEEPING && currentState !== STATES.YAWNING_BEFORE_BED && currentState !== STATES.STUFFED_BURP && consecutiveEats < 5) {
         document.documentElement.classList.add('custom-cursor-active');
       }
     }
@@ -722,8 +795,8 @@
     if (e.target.closest('#themeToggle, #themeToggleMobile, #langToggle, #langToggleMobile, .navbar__toggle, .navbar__lang-pill, .modal-close-btn, #dinoToggle, .navbar__dino-btn, .dino-toggle-btn')) {
       return;
     }
-    // If dino is resting or going to bed, check if user tapped the sleeping dino to wake it up!
-    if (isManualResting || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
+    // If dino is resting, burping, or going to bed, check if user tapped the sleeping dino to wake it up!
+    if (isManualResting || currentState === STATES.STUFFED_BURP || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
       const spriteW = 26 * PX;
       const spriteH = 18 * PX;
       const dinoDist = Math.hypot(e.clientX - (dinoX + spriteW * 0.5), e.clientY - (dinoY + spriteH * 0.5));
@@ -734,8 +807,8 @@
     }
     if (!mouseInside) return;
     // Trigger roar on any click — it's a cool surprise, no hitbox required.
-    // Guard: don't interrupt eating, don't stack.
-    if (currentState !== STATES.EATING && currentState !== STATES.ROARING) {
+    // Guard: don't interrupt eating, burping, or roar stack.
+    if (currentState !== STATES.EATING && currentState !== STATES.ROARING && currentState !== STATES.STUFFED_BURP) {
       currentState  = STATES.ROARING;
       stateTimer    = performance.now();
       roarStartTime = stateTimer;
@@ -1288,6 +1361,79 @@
     } catch (e) {}
   }
 
+  /* ── Comical Dinosaur Burp / Sendawa Synthesizer ── */
+  function playBurpSound() {
+    try {
+      const actx = getAudioContext();
+      if (!actx) return;
+      if (actx.state === 'suspended') actx.resume().catch(() => {});
+      const now = actx.currentTime;
+      const t = now;
+
+      const master = actx.createGain();
+      master.gain.setValueAtTime(0.32, t);
+      master.connect(actx.destination);
+
+      // 1. Gurgling belly bass (pitch modulates with throat tremor)
+      const osc = actx.createOscillator();
+      const oscGain = actx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(110, t);
+      osc.frequency.exponentialRampToValueAtTime(75, t + 0.18);
+      osc.frequency.exponentialRampToValueAtTime(140, t + 0.32);
+
+      // Throat gurgle flutter LFO (22Hz rapid throat vibration)
+      const lfo = actx.createOscillator();
+      const lfoGain = actx.createGain();
+      lfo.type = 'square';
+      lfo.frequency.setValueAtTime(22, t);
+      lfoGain.gain.setValueAtTime(28, t);
+      lfo.connect(osc.frequency);
+
+      // Resonant filter for hollow belly/throat acoustics
+      const filter = actx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(650, t);
+      filter.Q.setValueAtTime(5.0, t);
+
+      oscGain.gain.setValueAtTime(0.001, t);
+      oscGain.gain.linearRampToValueAtTime(0.28, t + 0.05);
+      oscGain.gain.linearRampToValueAtTime(0.22, t + 0.22);
+      oscGain.gain.linearRampToValueAtTime(0.001, t + 0.38);
+
+      osc.connect(filter);
+      filter.connect(oscGain);
+      oscGain.connect(master);
+
+      osc.start(t);
+      lfo.start(t);
+      osc.stop(t + 0.40);
+      lfo.stop(t + 0.40);
+
+      // 2. Air release puff
+      const bufLen = Math.floor(actx.sampleRate * 0.06);
+      const nBuf = actx.createBuffer(1, bufLen, actx.sampleRate);
+      const data = nBuf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.3));
+      }
+      const nSrc = actx.createBufferSource();
+      nSrc.buffer = nBuf;
+      const nFilter = actx.createBiquadFilter();
+      nFilter.type = 'bandpass';
+      nFilter.frequency.setValueAtTime(1200, t + 0.15);
+      nFilter.Q.setValueAtTime(2.0, t + 0.15);
+      const nGain = actx.createGain();
+      nGain.gain.setValueAtTime(0.12, t + 0.15);
+      nGain.gain.linearRampToValueAtTime(0.001, t + 0.28);
+      nSrc.connect(nFilter);
+      nFilter.connect(nGain);
+      nGain.connect(master);
+      nSrc.start(t + 0.15);
+      nSrc.stop(t + 0.30);
+    } catch (e) {}
+  }
+
   /* ═══════════════════════════════════════════════════════════
      5. MAIN LOOP
   ═══════════════════════════════════════════════════════════ */
@@ -1406,22 +1552,39 @@
         const eatElapsed = now - stateTimer;
         const progress = Math.min(1.0, eatElapsed / EAT_DURATION);
 
-        // Playful chew reaction: gentle squeeze without ever vanishing!
-        foodScale = 1.0 - Math.sin(progress * Math.PI) * 0.16;
-        foodVisible = !isManualResting;
+        // Progressive shrinking over 5 bites:
+        // Bite 0: 1.00 -> 0.80
+        // Bite 1: 0.80 -> 0.60
+        // Bite 2: 0.60 -> 0.40
+        // Bite 3: 0.40 -> 0.20
+        // Bite 4: 0.20 -> 0.00 (completely eaten!)
+        const startFraction = Math.max(0, 1.0 - (consecutiveEats * 0.20));
+        const endFraction   = Math.max(0, 1.0 - ((consecutiveEats + 1) * 0.20));
+        const currentFraction = startFraction + (endFraction - startFraction) * progress;
 
-        if (progress > 0.30 && progress < 0.36 && biteCrumbs.length < 4) {
+        // Playful chew reaction: gentle squeeze without vanishing prematurely
+        foodScale = Math.max(0, currentFraction * (1.0 - Math.sin(progress * Math.PI) * 0.16));
+        foodVisible = foodScale > 0.03 && !isManualResting;
+
+        if (progress > 0.30 && progress < 0.36 && biteCrumbs.length < 6) {
           spawnBiteCrumbs(snoutWorldX, snoutWorldY);
         }
 
         if (progress >= 1.0) {
           consecutiveEats++;
-          foodScale = 1.0;
+          const newLevel = Math.max(0, 1.0 - (consecutiveEats * 0.20));
+          foodScale = newLevel;
+
           if (consecutiveEats >= 5) {
-            // Eaten 5 times consecutively -> stuffed full, fall asleep!
-            currentState = STATES.SLEEPING;
+            // Eaten all 5 bites -> meat is GONE (habis!), enters STUFFED_BURP state!
+            foodScale = 0;
+            foodVisible = false;
+            document.documentElement.classList.remove('custom-cursor-active');
+            currentState = STATES.STUFFED_BURP;
             stateTimer   = now;
-            lastZzzTime  = now;
+            hasBurped    = false;
+            velX = 0;
+            velY = 0;
           } else {
             currentState = STATES.SATISFIED;
             stateTimer   = now;
@@ -1430,13 +1593,36 @@
         break;
       }
 
-      case STATES.SATISFIED:
-        foodScale = 1.0;
-        foodVisible = !isManualResting;
+      case STATES.SATISFIED: {
+        const currentLevel = Math.max(0, 1.0 - (consecutiveEats * 0.20));
+        foodScale = currentLevel;
+        foodVisible = foodScale > 0.03 && !isManualResting;
         if (now - stateTimer >= SATISFIED_PAUSE) {
           currentState = STATES.LAZY_FOLLOW;
         }
         break;
+      }
+
+      case STATES.STUFFED_BURP: {
+        const burpElapsed = now - stateTimer;
+        // At 420ms: Big comical dinosaur sendawa / burp!
+        if (burpElapsed >= 420 && !hasBurped) {
+          hasBurped = true;
+          playBurpSound();
+          const mouthX = isFacingLeft ? dinoX + 2 : dinoX + spriteW - 4;
+          const mouthY = dinoY + 6;
+          spawnBurp(mouthX, mouthY);
+          shakeIntensity = 2.0;
+        }
+
+        // At 1800ms: satisfied after burping & chubby belly -> trudge to bed!
+        if (burpElapsed >= 1800) {
+          currentState = STATES.GOING_TO_BED;
+          stateTimer = now;
+          lastWearyZzz = now;
+        }
+        break;
+      }
 
       case STATES.SLEEPING:
         // Stuffed sleeping state: periodic floating 'Zzz' particles drifting from head + soft cute snore
@@ -1523,7 +1709,7 @@
         velX = 0;
         velY = 0;
       }
-    } else if (currentState === STATES.YAWNING_BEFORE_BED) {
+    } else if (currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.STUFFED_BURP) {
       velX *= 0.3;
       velY *= 0.3;
       if (Math.hypot(velX, velY) < 0.05) {
@@ -1597,8 +1783,8 @@
 
     // Direction update: Stable hysteresis deadzone based on cursor relative to dino center (±30px).
     // If cursor is on or near dino's body, lock facing completely to eliminate any rapid flip jitter (linglung).
-    if (currentState === STATES.SLEEPING || currentState === STATES.WAKING || currentState === STATES.EATING || currentState === STATES.ROARING || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED) {
-      // Keep facing locked during static / bite / sleep / waking stretch / tired trudge animations
+    if (currentState === STATES.SLEEPING || currentState === STATES.WAKING || currentState === STATES.EATING || currentState === STATES.ROARING || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.STUFFED_BURP) {
+      // Keep facing locked during static / bite / sleep / waking stretch / tired trudge / burp animations
     } else if (distFromCenter < 35 || Math.abs(centerDeltaX) < 30 || isCursorOnDino) {
       // Cursor is on or right next to dino's body -> LOCK FACING, DO NOT FLIP!
     } else if (centerDeltaX < -30) {
@@ -1760,14 +1946,18 @@
     } else if (currentState === STATES.ANTICIPATING) {
       activeLegs = LEGS_STAND;
       verticalBob = 1;
+    } else if (currentState === STATES.STUFFED_BURP) {
+      activeLegs = LEGS_CHUBBY;
+      verticalBob = 1; // Round tummy stance
     } else if (currentState === STATES.YAWNING_BEFORE_BED) {
-      activeLegs = LEGS_STAND;
+      activeLegs = consecutiveEats >= 5 ? LEGS_CHUBBY : LEGS_STAND;
       verticalBob = 1; // Sleepy relaxed stance
     } else if (currentState === STATES.GOING_TO_BED) {
       // Sluggish heavy trudge ("lunglai") — heavy sag down on steps
-      if (walkFrame === 0)      { activeLegs = LEGS_STRIDE_A; verticalBob = 2; }
+      const isFatTrudge = consecutiveEats >= 5;
+      if (walkFrame === 0)      { activeLegs = isFatTrudge ? LEGS_CHUBBY_STRIDE_A : LEGS_STRIDE_A; verticalBob = 2; }
       else if (walkFrame === 1) { activeLegs = LEGS_PASSING;  verticalBob = 0; }
-      else if (walkFrame === 2) { activeLegs = LEGS_STRIDE_B; verticalBob = 2; }
+      else if (walkFrame === 2) { activeLegs = isFatTrudge ? LEGS_CHUBBY_STRIDE_B : LEGS_STRIDE_B; verticalBob = 2; }
       else if (walkFrame === 3) { activeLegs = LEGS_PASSING;  verticalBob = 0; }
     } else if (currentSpeed > 0.4) {
       if (walkFrame === 0)      { activeLegs = LEGS_STRIDE_A; verticalBob = 1;  }
@@ -1783,6 +1973,18 @@
       const snapPhase = Math.floor(roarT * 5) % 2;
       activeHead = snapPhase === 0 ? HEAD_ROAR : HEAD_CHOMP;
       verticalBob = -2; // Head throws back then forward
+    } else if (currentState === STATES.STUFFED_BURP) {
+      const burpElapsed = now - stateTimer;
+      if (burpElapsed < 420) {
+        activeHead = HEAD_NORMAL; // Proud full belly
+        verticalBob = 0;
+      } else if (burpElapsed < 900) {
+        activeHead = HEAD_OPEN_WIDE; // Head throws back burping!
+        verticalBob = -2;
+      } else {
+        activeHead = HEAD_TIRED_DROOP; // Contented post-burp sigh
+        verticalBob = 2;
+      }
     } else if (currentState === STATES.YAWNING_BEFORE_BED) {
       const yawnElapsed = now - stateTimer;
       const progress = Math.min(1.0, yawnElapsed / 1200);
@@ -1832,7 +2034,20 @@
       fullDinoMatrix = [...activeHead, ...activeLegs];
     }
 
-    /* ── E7. Sleeping Zzz Particles ── */
+    /* ── E7. Burp Particles ── */
+    for (let i = burpParticles.length - 1; i >= 0; i--) {
+      const bp = burpParticles[i];
+      bp.x += bp.vx;
+      bp.y += bp.vy;
+      bp.life -= bp.decay;
+      if (bp.life <= 0) { burpParticles.splice(i, 1); continue; }
+      ctx.font = `800 ${Math.round(bp.size)}px 'JetBrains Mono', monospace`;
+      ctx.fillStyle = fg;
+      ctx.globalAlpha = Math.max(0, Math.min(1, bp.life * 0.90));
+      ctx.fillText(bp.text, Math.round(bp.x), Math.round(bp.y));
+    }
+
+    /* ── E8. Sleeping Zzz Particles ── */
     for (let i = zzzParticles.length - 1; i >= 0; i--) {
       const z = zzzParticles[i];
       z.x += z.vx;
@@ -1849,15 +2064,38 @@
     ctx.globalAlpha = 1.0;
 
     /* ── G0. Draw Prehistoric Habitat Nest (Sangkar Ranting & Rerumputan) ── */
-    if (isManualResting || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
+    if (isManualResting || currentState === STATES.STUFFED_BURP || currentState === STATES.YAWNING_BEFORE_BED || currentState === STATES.GOING_TO_BED || currentState === STATES.SLEEPING) {
       drawPetBed(fg, bg);
     }
 
     /* ── G. Draw Dino ──
+       During STUFFED_BURP: comical belly bounce and expansion
        During ROARING: scale the sprite up slightly (Godzilla chest-puff)
        During WAKING: slow-motion cat stretch (elastic stretch with anchor at paws)
     ── */
-    if (currentState === STATES.ROARING) {
+    if (currentState === STATES.STUFFED_BURP) {
+      const burpElapsed = now - stateTimer;
+      let bellyScaleX = 1.0;
+      let bellyScaleY = 1.0;
+      if (burpElapsed >= 400 && burpElapsed <= 850) {
+        const bp = (burpElapsed - 400) / 450;
+        bellyScaleX = 1.0 + Math.sin(bp * Math.PI) * 0.16; // Big tummy stretch
+        bellyScaleY = 1.0 - Math.sin(bp * Math.PI) * 0.06;
+      }
+      const cx = Math.round(dinoX + spriteW * 0.5);
+      const cy = Math.round(dinoY + spriteH);
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(bellyScaleX, bellyScaleY);
+      ctx.translate(-cx, -cy);
+      drawMatrix(
+        fullDinoMatrix,
+        Math.round(dinoX),
+        Math.round(dinoY + verticalBob * PX),
+        fg, bg, isFacingLeft, 1.0
+      );
+      ctx.restore();
+    } else if (currentState === STATES.ROARING) {
       const roarProgress = Math.min(1, (now - roarStartTime) / ROAR_DURATION);
       // Sine envelope: 0 → peak at 40% → 0 again. Max +20% scale.
       const swell = 1.0 + Math.sin(roarProgress * Math.PI) * 0.20;
@@ -1906,7 +2144,7 @@
     ctx.globalAlpha = 1.0;
 
     /* ── H. Draw Meat Cursor (Transforms on Hover & Click) ── */
-    if (foodVisible && mouseInside) {
+    if (foodVisible && mouseInside && foodScale > 0.04) {
       let activeMeatSprite = SPRITE_MEAT_NORMAL;
       let targetScale = foodScale;
 
