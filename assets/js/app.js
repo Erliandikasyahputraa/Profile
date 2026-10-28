@@ -838,7 +838,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="pmodal__actions">
             <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="pmodal__action-btn pmodal__action-btn--primary">
               <span>${window.t('modal_btn_live_demo')}</span>
-              ${p.isDemo ? `<span class="demo-tag-pill">${window.t('demo_tag')}</span>` : ''}
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
             </a>
             ${p.github ? `
@@ -860,15 +859,32 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="pmodal__left-col">
             <div class="pmodal__showcase-wrap" id="modalShowcaseWrap">
               <img id="modalShowcaseImg" src="${images[0]}" alt="${p.name} showcase" loading="eager" decoding="async" class="pmodal__showcase-img" onerror="this.onerror=null;this.src='${fallbackSvg}'">
+              ${images.length > 1 ? `
+                <button type="button" class="showcase-nav-btn showcase-nav-btn--prev" id="modalShowcasePrev" aria-label="Previous screenshot">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <button type="button" class="showcase-nav-btn showcase-nav-btn--next" id="modalShowcaseNext" aria-label="Next screenshot">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+                <div class="showcase-counter-badge" id="modalShowcaseCounter">1 / ${images.length}</div>
+              ` : ''}
             </div>
 
             ${images.length > 1 ? `
-              <div class="pmodal__gallery-strip">
-                ${images.map((src, i) => `
-                  <button class="pmodal__thumb-btn ${i === 0 ? 'active' : ''}" data-src="${src}" aria-label="View preview ${i + 1}">
-                    <img src="${src}" alt="Thumbnail ${i + 1}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fallbackSvg}'">
-                  </button>
-                `).join('')}
+              <div class="pmodal__gallery-wrapper">
+                <button type="button" class="gallery-scroll-arrow gallery-scroll-arrow--left" id="modalGalleryScrollLeft" aria-label="Scroll thumbnails left">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <div class="pmodal__gallery-strip" id="modalGalleryStrip">
+                  ${images.map((src, i) => `
+                    <button class="pmodal__thumb-btn ${i === 0 ? 'active' : ''}" data-src="${src}" data-index="${i}" aria-label="View preview ${i + 1}">
+                      <img src="${src}" alt="Thumbnail ${i + 1}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fallbackSvg}'">
+                    </button>
+                  `).join('')}
+                </div>
+                <button type="button" class="gallery-scroll-arrow gallery-scroll-arrow--right" id="modalGalleryScrollRight" aria-label="Scroll thumbnails right">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
               </div>
             ` : ''}
 
@@ -942,20 +958,86 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      // Interactive thumbnail switcher
+      // Interactive slider & gallery controller
+      let currentImageIndex = 0;
       const thumbs = modalContent.querySelectorAll('.pmodal__thumb-btn');
       const mainImg = modalContent.querySelector('#modalShowcaseImg');
-      thumbs.forEach(btn => {
-        btn.addEventListener('click', () => {
-          thumbs.forEach(t => t.classList.remove('active'));
-          btn.classList.add('active');
-          if (mainImg) {
-            mainImg.src = btn.getAttribute('data-src');
+      const counterBadge = modalContent.querySelector('#modalShowcaseCounter');
+      const prevImgBtn = modalContent.querySelector('#modalShowcasePrev');
+      const nextImgBtn = modalContent.querySelector('#modalShowcaseNext');
+      const galleryStrip = modalContent.querySelector('#modalGalleryStrip');
+      const scrollLeftBtn = modalContent.querySelector('#modalGalleryScrollLeft');
+      const scrollRightBtn = modalContent.querySelector('#modalGalleryScrollRight');
+
+      function setModalSlide(index) {
+        if (!images.length) return;
+        currentImageIndex = (index + images.length) % images.length;
+        const newSrc = images[currentImageIndex];
+        if (mainImg) {
+          mainImg.style.opacity = '0.4';
+          mainImg.src = newSrc;
+          setTimeout(() => { if (mainImg) mainImg.style.opacity = '1'; }, 100);
+        }
+        if (counterBadge) {
+          counterBadge.textContent = `${currentImageIndex + 1} / ${images.length}`;
+        }
+        thumbs.forEach((t, i) => {
+          if (i === currentImageIndex) {
+            t.classList.add('active');
+            t.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          } else {
+            t.classList.remove('active');
           }
         });
+      }
+
+      thumbs.forEach((btn, idx) => {
+        btn.addEventListener('click', () => setModalSlide(idx));
       });
 
-      // Prev / Next button listeners
+      if (prevImgBtn) {
+        prevImgBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setModalSlide(currentImageIndex - 1);
+        });
+      }
+      if (nextImgBtn) {
+        nextImgBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setModalSlide(currentImageIndex + 1);
+        });
+      }
+
+      if (scrollLeftBtn && galleryStrip) {
+        scrollLeftBtn.addEventListener('click', () => {
+          galleryStrip.scrollBy({ left: -140, behavior: 'smooth' });
+        });
+      }
+      if (scrollRightBtn && galleryStrip) {
+        scrollRightBtn.addEventListener('click', () => {
+          galleryStrip.scrollBy({ left: 140, behavior: 'smooth' });
+        });
+      }
+
+      // Touch swipe on showcase
+      const showcaseWrap = modalContent.querySelector('#modalShowcaseWrap');
+      if (showcaseWrap && images.length > 1) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        showcaseWrap.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        showcaseWrap.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          const diff = touchStartX - touchEndX;
+          if (Math.abs(diff) > 40) {
+            if (diff > 0) setModalSlide(currentImageIndex + 1);
+            else setModalSlide(currentImageIndex - 1);
+          }
+        }, { passive: true });
+      }
+
+      // Prev / Next project listeners
       const prevBtn = modalContent.querySelector('#modalPrevBtn');
       const nextBtn = modalContent.querySelector('#modalNextBtn');
       if (prevBtn && prevProject) {
@@ -1111,7 +1193,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </button>
               <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="parow__ext-link ${p.isDemo ? 'parow__ext-link--demo' : ''}" aria-label="Live demo for ${p.name}">
                 <span>${window.t('modal_btn_live_demo')}</span>
-                ${p.isDemo ? `<span class="demo-tag-pill">DEMO</span>` : ''}
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
               </a>
               ${p.github ? `
@@ -1269,15 +1350,32 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="pdetail__col-showcase">
           <div class="pdetail__showcase-main" id="showcaseMainWrap">
             <img id="showcaseMainImg" src="${images[0]}" alt="${project.name} main showcase" loading="eager" class="pdetail__main-img" onerror="this.onerror=null;this.src='${getProjectSvgPlaceholder(project.name, catText)}'">
+            ${images.length > 1 ? `
+              <button type="button" class="showcase-nav-btn showcase-nav-btn--prev" id="showcaseMainPrev" aria-label="Previous screenshot">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button type="button" class="showcase-nav-btn showcase-nav-btn--next" id="showcaseMainNext" aria-label="Next screenshot">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <div class="showcase-counter-badge" id="showcaseMainCounter">1 / ${images.length}</div>
+            ` : ''}
           </div>
 
           ${images.length > 1 ? `
-            <div class="pdetail__gallery">
-              ${images.map((src, i) => `
-                <button class="pdetail__thumb-btn ${i === 0 ? 'active' : ''}" data-src="${src}" aria-label="View screenshot ${i + 1}">
-                  <img src="${src}" alt="Thumbnail ${i + 1}" loading="lazy" onerror="this.onerror=null;this.src='${getProjectSvgPlaceholder(project.name, catText)}'">
-                </button>
-              `).join('')}
+            <div class="pdetail__gallery-wrapper">
+              <button type="button" class="gallery-scroll-arrow gallery-scroll-arrow--left" id="galleryScrollLeft" aria-label="Scroll thumbnails left">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="pdetail__gallery" id="pdetailGalleryStrip">
+                ${images.map((src, i) => `
+                  <button class="pdetail__thumb-btn ${i === 0 ? 'active' : ''}" data-src="${src}" data-index="${i}" aria-label="View screenshot ${i + 1}">
+                    <img src="${src}" alt="Thumbnail ${i + 1}" loading="lazy" onerror="this.onerror=null;this.src='${getProjectSvgPlaceholder(project.name, catText)}'">
+                  </button>
+                `).join('')}
+              </div>
+              <button type="button" class="gallery-scroll-arrow gallery-scroll-arrow--right" id="galleryScrollRight" aria-label="Scroll thumbnails right">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
             </div>
           ` : ''}
 
@@ -1317,7 +1415,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="pdetail__actions">
               <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="pdetail__btn primary" aria-label="Visit Live Demo for ${project.name}">
                 <span>${window.t('modal_btn_live_demo')}</span>
-                ${project.isDemo ? `<span class="demo-tag-pill">${window.t('demo_tag')}</span>` : ''}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
               </a>
               ${project.github ? `
@@ -1345,18 +1442,92 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    // Thumbnail click interaction
+    // Interactive slider & gallery controller for project detail page
+    let currentIdx = 0;
     const mainImg = document.getElementById('showcaseMainImg');
     const thumbs  = root.querySelectorAll('.pdetail__thumb-btn');
+    const counterBadge = document.getElementById('showcaseMainCounter');
+    const prevBtn = document.getElementById('showcaseMainPrev');
+    const nextBtn = document.getElementById('showcaseMainNext');
+    const galleryStrip = document.getElementById('pdetailGalleryStrip');
+    const scrollLeftBtn = document.getElementById('galleryScrollLeft');
+    const scrollRightBtn = document.getElementById('galleryScrollRight');
 
-    thumbs.forEach(btn => {
-      btn.addEventListener('click', () => {
-        thumbs.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const src = btn.getAttribute('data-src');
-        if (mainImg) mainImg.src = src;
+    function setDetailSlide(index) {
+      if (!images.length) return;
+      currentIdx = (index + images.length) % images.length;
+      const newSrc = images[currentIdx];
+      if (mainImg) {
+        mainImg.style.opacity = '0.4';
+        mainImg.src = newSrc;
+        setTimeout(() => { if (mainImg) mainImg.style.opacity = '1'; }, 100);
+      }
+      if (counterBadge) {
+        counterBadge.textContent = `${currentIdx + 1} / ${images.length}`;
+      }
+      thumbs.forEach((t, i) => {
+        if (i === currentIdx) {
+          t.classList.add('active');
+          t.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        } else {
+          t.classList.remove('active');
+        }
       });
+    }
+
+    thumbs.forEach((btn, idx) => {
+      btn.addEventListener('click', () => setDetailSlide(idx));
     });
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setDetailSlide(currentIdx - 1);
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setDetailSlide(currentIdx + 1);
+      });
+    }
+
+    if (scrollLeftBtn && galleryStrip) {
+      scrollLeftBtn.addEventListener('click', () => {
+        galleryStrip.scrollBy({ left: -140, behavior: 'smooth' });
+      });
+    }
+    if (scrollRightBtn && galleryStrip) {
+      scrollRightBtn.addEventListener('click', () => {
+        galleryStrip.scrollBy({ left: 140, behavior: 'smooth' });
+      });
+    }
+
+    // Touch swipe support for main showcase
+    const mainWrap = document.getElementById('showcaseMainWrap');
+    if (mainWrap && images.length > 1) {
+      let touchStartX = 0;
+      let touchEndX = 0;
+      mainWrap.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      mainWrap.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 40) {
+          if (diff > 0) setDetailSlide(currentIdx + 1);
+          else setDetailSlide(currentIdx - 1);
+        }
+      }, { passive: true });
+    }
+
+    // Keyboard arrow navigation
+    const keyHandler = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowLeft') setDetailSlide(currentIdx - 1);
+      if (e.key === 'ArrowRight') setDetailSlide(currentIdx + 1);
+    };
+    window.addEventListener('keydown', keyHandler);
   }
 
   /* ════════════════════════════════════════════

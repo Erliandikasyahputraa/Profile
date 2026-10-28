@@ -1738,13 +1738,14 @@ html.theme-transitioning .project-card {
   width: 100%;
   aspect-ratio: 16/10;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: #ffffff !important;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 }
 .pdetail__main-img {
   width: 100%;
@@ -1753,43 +1754,143 @@ html.theme-transitioning .project-card {
   background: #ffffff !important;
   padding: 12px 16px;
   filter: none !important;
+  transition: opacity 180ms ease, transform 200ms ease;
 }
 .pdetail__showcase-main:hover .pdetail__main-img {
   filter: none !important;
   transform: none !important;
 }
+
+/* ── Interactive Slider Controls (Floating Arrows & Counter) ── */
+.showcase-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(18, 18, 18, 0.72);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0.85;
+}
+.showcase-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.92);
+  border-color: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+  opacity: 1;
+}
+.showcase-nav-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+.showcase-nav-btn--prev { left: 12px; }
+.showcase-nav-btn--next { right: 12px; }
+
+.showcase-counter-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(18, 18, 18, 0.75);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+  z-index: 9;
+}
+
+/* ── Thumbnail Gallery Strip with Horizontal Scroll Arrows ── */
+.pdetail__gallery-wrapper,
+.pmodal__gallery-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
 .pdetail__gallery {
   display: flex;
   gap: 0.5rem;
   overflow-x: auto;
+  scroll-behavior: smooth;
   scrollbar-width: none;
+  width: 100%;
+  padding: 2px 2px;
 }
 .pdetail__gallery::-webkit-scrollbar { display: none; }
 .pdetail__thumb-btn {
-  width: 64px;
-  height: 42px;
-  border-radius: 3px;
+  width: 68px;
+  height: 44px;
+  border-radius: 4px;
   border: 1px solid var(--border);
   overflow: hidden;
   cursor: pointer;
   background: #ffffff !important;
-  opacity: 0.7;
-  transition: opacity 200ms, border-color 200ms;
+  opacity: 0.6;
+  transition: opacity 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
   flex-shrink: 0;
-  padding: 3px;
+  padding: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.pdetail__thumb-btn:hover { opacity: 1; }
-.pdetail__thumb-btn.active { opacity: 1; border-color: var(--fg); }
+.pdetail__thumb-btn:hover {
+  opacity: 0.95;
+  border-color: var(--fg);
+  transform: translateY(-1px);
+}
+.pdetail__thumb-btn.active {
+  opacity: 1;
+  border-color: var(--fg);
+  box-shadow: 0 0 0 1.5px var(--fg);
+  transform: scale(1.02);
+}
 .pdetail__thumb-btn img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   filter: none !important;
   background: #ffffff !important;
+  pointer-events: none;
 }
+
+.gallery-scroll-arrow {
+  width: 26px;
+  height: 44px;
+  border: 1px solid var(--border-str);
+  background: var(--bg-card);
+  color: var(--fg);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 150ms ease;
+  z-index: 2;
+}
+.gallery-scroll-arrow:hover {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+.gallery-scroll-arrow--left { margin-right: 0.4rem; }
+.gallery-scroll-arrow--right { margin-left: 0.4rem; }
+
 .showcase-hover-preview {
   display: none !important;
 }
@@ -3949,25 +4050,37 @@ html.theme-transitioning .project-card {
   display: flex;
   gap: 0.5rem;
   overflow-x: auto;
+  scroll-behavior: smooth;
   scrollbar-width: none;
   margin-top: 0.65rem;
+  width: 100%;
+  padding: 2px 2px;
 }
 .pmodal__gallery-strip::-webkit-scrollbar { display: none; }
 .pmodal__thumb-btn {
-  width: 58px;
-  height: 38px;
-  border-radius: 3px;
+  width: 60px;
+  height: 40px;
+  border-radius: 4px;
   border: 1px solid var(--border);
   background: #ffffff !important;
   overflow: hidden;
   cursor: pointer;
-  opacity: 0.7;
+  opacity: 0.6;
   padding: 2px;
-  transition: color 180ms var(--theme-ease), background-color 180ms var(--theme-ease), border-color 180ms var(--theme-ease), box-shadow 180ms var(--theme-ease), transform 180ms var(--theme-ease);
+  transition: opacity 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
   flex-shrink: 0;
 }
-.pmodal__thumb-btn:hover { opacity: 1; }
-.pmodal__thumb-btn.active { opacity: 1; border-color: var(--fg); box-shadow: 0 0 0 1px var(--fg); }
+.pmodal__thumb-btn:hover {
+  opacity: 0.95;
+  border-color: var(--fg);
+  transform: translateY(-1px);
+}
+.pmodal__thumb-btn.active {
+  opacity: 1;
+  border-color: var(--fg);
+  box-shadow: 0 0 0 1.5px var(--fg);
+  transform: scale(1.02);
+}
 .pmodal__thumb-btn img {
   width: 100%;
   height: 100%;

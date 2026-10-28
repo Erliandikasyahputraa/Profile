@@ -452,15 +452,39 @@
     }
   }
 
-  /* ── Pet Resting State (Persistent) ── */
+  /* ── Pet Resting State (Persistent & Nearby Dynamic Bed) ── */
   let isManualResting = false;
   try {
     isManualResting = localStorage.getItem('porto_dino_resting') === 'true';
   } catch (e) {}
 
-  function getBedPos() {
+  let dynamicBedPos = null;
+
+  function placeBedNearDino() {
     const width = W || window.innerWidth || 1200;
     const height = H || window.innerHeight || 800;
+    const spriteW = 26 * PX;
+    const spriteH = 18 * PX;
+
+    // Place bed just ~50-80px away from the dino's current location
+    // Prefer right side if room permits, otherwise left side
+    const offsetDirection = (dinoX + spriteW + 90 < width - 20) ? 1 : -1;
+    const targetX = dinoX + (offsetDirection * 70);
+    const targetY = dinoY + 6;
+
+    dynamicBedPos = {
+      x: Math.max(16, Math.min(width - 75, targetX)),
+      y: Math.max(16, Math.min(height - 45, targetY))
+    };
+  }
+
+  function getBedPos() {
+    if (dynamicBedPos) {
+      return dynamicBedPos;
+    }
+    const width = W || window.innerWidth || 1200;
+    const height = H || window.innerHeight || 800;
+    // Fallback if not initialized dynamically: bottom-right corner
     return {
       x: Math.max(10, width - 88),
       y: Math.max(10, height - 44)
@@ -582,6 +606,7 @@
   function sendDinoToBed() {
     isManualResting = true;
     try { localStorage.setItem('porto_dino_resting', 'true'); } catch (e) {}
+    placeBedNearDino();
     currentState = STATES.YAWNING_BEFORE_BED;
     stateTimer = performance.now();
     foodVisible = false;
@@ -598,6 +623,7 @@
   function wakeUpDino() {
     isManualResting = false;
     try { localStorage.setItem('porto_dino_resting', 'false'); } catch (e) {}
+    dynamicBedPos = null;
     currentState = STATES.WAKING;
     stateTimer = performance.now();
     consecutiveEats = 0;
@@ -1623,8 +1649,9 @@
           shakeIntensity = 2.0;
         }
 
-        // At 1800ms: satisfied after burping & chubby belly -> trudge to bed!
-        if (burpElapsed >= 1800) {
+        // At 750ms: satisfied after burping & chubby belly -> quickly trudge to nearby bed!
+        if (burpElapsed >= 750) {
+          placeBedNearDino();
           currentState = STATES.GOING_TO_BED;
           stateTimer = now;
           lastWearyZzz = now;
@@ -1645,8 +1672,8 @@
 
       case STATES.YAWNING_BEFORE_BED: {
         const yawnElapsed = now - stateTimer;
-        // Dino pauses, yawns sleepily for 1200ms before starting to walk to bed
-        if (yawnElapsed >= 1200) {
+        // Dino yawns briefly for 550ms before walking quickly to nearby bed
+        if (yawnElapsed >= 550) {
           currentState = STATES.GOING_TO_BED;
           stateTimer = now;
           lastWearyZzz = now;
@@ -1660,8 +1687,8 @@
         const bedDy = bed.y - dinoY;
         const distToBed = Math.hypot(bedDx, bedDy);
 
-        // Periodic sleepy 'z' puff while trudging wearily to nest
-        if (now - lastWearyZzz > 900) {
+        // Periodic sleepy 'z' puff while heading to nest
+        if (now - lastWearyZzz > 500) {
           lastWearyZzz = now;
           const zX = isFacingLeft ? dinoX + 4 : dinoX + spriteW - 12;
           spawnZzz(zX, dinoY - 2, 7, 'z');
@@ -1709,8 +1736,8 @@
       const distToBed = Math.hypot(bedDeltaX, bedDeltaY);
       isFacingLeft = bedDeltaX < 0;
       if (distToBed > 4) {
-        // Weary, sluggish trudge walk (lunglai & lelah)
-        const wearySpeed = Math.min(1.4, Math.max(0.65, distToBed * 0.035));
+        // Swift, cute scamper to nearby bed (short distance, rapid bedtime)
+        const wearySpeed = Math.min(3.8, Math.max(2.2, distToBed * 0.08));
         velX = (bedDeltaX / distToBed) * wearySpeed;
         velY = (bedDeltaY / distToBed) * wearySpeed;
       } else {
