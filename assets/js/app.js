@@ -626,9 +626,11 @@ document.addEventListener('DOMContentLoaded', () => {
         'aria-label': `${p.name} — ${getLoc(p, 'category')}`,
       });
 
-      const rawList = (p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0)
-        ? p.temporaryPreviewImages
-        : ['assets/images/profile-primary.webp'];
+      const rawList = (p.images && p.images.length > 0)
+        ? p.images
+        : ((p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0)
+          ? p.temporaryPreviewImages
+          : ['assets/images/profile-primary.webp']);
       const imgSrc = resolveAsset(rawList[0]);
       const fanImg1 = resolveAsset(rawList[1] || rawList[0]);
       const fanImg2 = resolveAsset(rawList[2] || rawList[0]);
@@ -806,8 +808,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const prevProject = currentIndex > 0 ? currentListRef[currentIndex - 1] : null;
       const nextProject = currentIndex < currentListRef.length - 1 ? currentListRef[currentIndex + 1] : null;
 
-      const hasImages = p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0;
-      const rawImages = hasImages ? p.temporaryPreviewImages : ['assets/images/profile-primary.webp'];
+      const hasImages = (p.images && p.images.length > 0) || (p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0);
+      const rawImages = (p.images && p.images.length > 0) ? p.images : (hasImages ? p.temporaryPreviewImages : ['assets/images/profile-primary.webp']);
       const images = rawImages.map(resolveAsset);
 
       const catText = getLoc(p, 'category') || 'SOFTWARE';
@@ -1061,9 +1063,11 @@ document.addEventListener('DOMContentLoaded', () => {
           'aria-label': `${p.name} — ${getLoc(p, 'category')}`,
         });
 
-        const rawList = (p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0)
-          ? p.temporaryPreviewImages
-          : ['assets/images/profile-primary.webp'];
+        const rawList = (p.images && p.images.length > 0)
+          ? p.images
+          : ((p.temporaryPreviewImages && p.temporaryPreviewImages.length > 0)
+            ? p.temporaryPreviewImages
+            : ['assets/images/profile-primary.webp']);
         const imgSrc = resolveAsset(rawList[0]);
 
         const catText = getLoc(p, 'category') || 'PROJECT';
@@ -1198,8 +1202,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.title = `${project.name} — Erliandika Syahputra | Software Engineer`;
 
-    const hasImages = project.temporaryPreviewImages && project.temporaryPreviewImages.length > 0;
-    const rawImages = hasImages ? project.temporaryPreviewImages : ['assets/images/profile-primary.webp'];
+    const hasImages = (project.images && project.images.length > 0) || (project.temporaryPreviewImages && project.temporaryPreviewImages.length > 0);
+    const rawImages = (project.images && project.images.length > 0) ? project.images : (hasImages ? project.temporaryPreviewImages : ['assets/images/profile-primary.webp']);
     const images = rawImages.map(resolveAsset);
 
     const catText = getLoc(project, 'category') || 'SOFTWARE';

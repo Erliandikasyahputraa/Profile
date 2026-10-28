@@ -1,0 +1,24 @@
+# Dependencies & runtime
+node_modules/
+.pnpm-store/
+
+# Build and showcase references (Local only - DO NOT COMMIT)
+portfolio-showcase-hub/
+scratch/
+
+# Environment and logs
+.env
+.env*.local
+*.log
+npm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
