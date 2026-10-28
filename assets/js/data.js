@@ -497,14 +497,22 @@ window.PORTFOLIO_DATA = {
         { tech: 'PDF.js berbasis Canvas', reason: 'Render materi PDF beresolusi tinggi langsung di browser dengan streaming terproteksi.' }
       ],
       images: [
-        'assets/images/projects/tekateki-puzzle.webp',
-        'assets/images/projects/tekateki-courses.webp',
-        'assets/images/projects/tekateki-history.webp'
+        'assets/images/projects/tekateki-01-courses.webp',
+        'assets/images/projects/tekateki-02-puzzle.webp',
+        'assets/images/projects/tekateki-03-history.webp',
+        'assets/images/projects/tekateki-tablet-01.webp',
+        'assets/images/projects/tekateki-tablet-02.webp',
+        'assets/images/projects/tekateki-mobile-01.webp',
+        'assets/images/projects/tekateki-mobile-02.webp'
       ],
       temporaryPreviewImages: [
-        'assets/images/projects/tekateki-puzzle.webp',
-        'assets/images/projects/tekateki-courses.webp',
-        'assets/images/projects/tekateki-history.webp'
+        'assets/images/projects/tekateki-01-courses.webp',
+        'assets/images/projects/tekateki-02-puzzle.webp',
+        'assets/images/projects/tekateki-03-history.webp',
+        'assets/images/projects/tekateki-tablet-01.webp',
+        'assets/images/projects/tekateki-tablet-02.webp',
+        'assets/images/projects/tekateki-mobile-01.webp',
+        'assets/images/projects/tekateki-mobile-02.webp'
       ],
       github: 'https://github.com/Erliandikasyahputraa/Scrabbleword-School',
       liveDemo: 'https://demo-crosswordlabs.vercel.app/',
@@ -551,18 +559,26 @@ window.PORTFOLIO_DATA = {
         { tech: 'DomPDF & Laravel Excel', reason: 'Ekspor instan PDF Surat Jalan dan lembar kerja audit Excel untuk operasional staf gudang.' }
       ],
       images: [
-        'assets/images/projects/bincard-dashboard.webp',
-        'assets/images/projects/bincard-ledger.webp',
-        'assets/images/projects/bincard-opname.webp',
-        'assets/images/projects/bincard-inbound.webp',
-        'assets/images/projects/bincard-catalog.webp'
+        'assets/images/projects/bincard-01-dashboard.webp',
+        'assets/images/projects/bincard-02-bincard.webp',
+        'assets/images/projects/bincard-03-opname.webp',
+        'assets/images/projects/bincard-04-inbound.webp',
+        'assets/images/projects/bincard-05-catalog.webp',
+        'assets/images/projects/bincard-tablet-01.webp',
+        'assets/images/projects/bincard-tablet-02.webp',
+        'assets/images/projects/bincard-mobile-01.webp',
+        'assets/images/projects/bincard-mobile-02.webp'
       ],
       temporaryPreviewImages: [
-        'assets/images/projects/bincard-dashboard.webp',
-        'assets/images/projects/bincard-ledger.webp',
-        'assets/images/projects/bincard-opname.webp',
-        'assets/images/projects/bincard-inbound.webp',
-        'assets/images/projects/bincard-catalog.webp'
+        'assets/images/projects/bincard-01-dashboard.webp',
+        'assets/images/projects/bincard-02-bincard.webp',
+        'assets/images/projects/bincard-03-opname.webp',
+        'assets/images/projects/bincard-04-inbound.webp',
+        'assets/images/projects/bincard-05-catalog.webp',
+        'assets/images/projects/bincard-tablet-01.webp',
+        'assets/images/projects/bincard-tablet-02.webp',
+        'assets/images/projects/bincard-mobile-01.webp',
+        'assets/images/projects/bincard-mobile-02.webp'
       ],
       github: 'https://github.com/Erliandikasyahputraa/bincard-inventory',
       liveDemo: 'https://demo-bincard.vercel.app/',
@@ -609,18 +625,32 @@ window.PORTFOLIO_DATA = {
         { tech: 'Web Audio API & Radix UI', reason: 'Sintesis audio ambient di browser untuk Zen Mode dan navigasi mengambang responsif ala Dynamic Island.' }
       ],
       images: [
-        'assets/images/projects/anti-nganggur-hero.webp',
-        'assets/images/projects/anti-nganggur-kanban.webp',
-        'assets/images/projects/anti-nganggur-tracker.webp',
-        'assets/images/projects/anti-nganggur-resume.webp',
-        'assets/images/projects/anti-nganggur-mobile.webp'
+        'assets/images/projects/anti-nganggur-01-dashboard.webp',
+        'assets/images/projects/anti-nganggur-02-auth.webp',
+        'assets/images/projects/anti-nganggur-03-board.webp',
+        'assets/images/projects/anti-nganggur-04-analytics.webp',
+        'assets/images/projects/anti-nganggur-05-contacts.webp',
+        'assets/images/projects/anti-nganggur-06-zenmode.webp',
+        'assets/images/projects/anti-nganggur-mobile-01.webp',
+        'assets/images/projects/anti-nganggur-mobile-02.webp',
+        'assets/images/projects/anti-nganggur-mobile-03.webp',
+        'assets/images/projects/anti-nganggur-mobile-04.webp',
+        'assets/images/projects/anti-nganggur-mobile-05.webp',
+        'assets/images/projects/anti-nganggur-mobile-06.webp'
       ],
       temporaryPreviewImages: [
-        'assets/images/projects/anti-nganggur-hero.webp',
-        'assets/images/projects/anti-nganggur-kanban.webp',
-        'assets/images/projects/anti-nganggur-tracker.webp',
-        'assets/images/projects/anti-nganggur-resume.webp',
-        'assets/images/projects/anti-nganggur-mobile.webp'
+        'assets/images/projects/anti-nganggur-01-dashboard.webp',
+        'assets/images/projects/anti-nganggur-02-auth.webp',
+        'assets/images/projects/anti-nganggur-03-board.webp',
+        'assets/images/projects/anti-nganggur-04-analytics.webp',
+        'assets/images/projects/anti-nganggur-05-contacts.webp',
+        'assets/images/projects/anti-nganggur-06-zenmode.webp',
+        'assets/images/projects/anti-nganggur-mobile-01.webp',
+        'assets/images/projects/anti-nganggur-mobile-02.webp',
+        'assets/images/projects/anti-nganggur-mobile-03.webp',
+        'assets/images/projects/anti-nganggur-mobile-04.webp',
+        'assets/images/projects/anti-nganggur-mobile-05.webp',
+        'assets/images/projects/anti-nganggur-mobile-06.webp'
       ],
       github: 'https://github.com/Erliandikasyahputraa/jobhunt',
       liveDemo: 'https://anti-nganggur.vercel.app/',
@@ -667,22 +697,34 @@ window.PORTFOLIO_DATA = {
         { tech: 'Workbox PWA & Scanner Kamera', reason: 'Caching service worker lengkap dan pemindai barcode/QR langsung lewat kamera perangkat tanpa alat tambahan.' }
       ],
       images: [
-        'assets/images/projects/barakasir-pos.webp',
-        'assets/images/projects/barakasir-products.webp',
-        'assets/images/projects/barakasir-reports.webp',
-        'assets/images/projects/barakasir-history.webp',
-        'assets/images/projects/barakasir-stockin.webp',
-        'assets/images/projects/barakasir-stockreport.webp',
-        'assets/images/projects/barakasir-settings.webp'
+        'assets/images/projects/barakasir-01-pos.webp',
+        'assets/images/projects/barakasir-02-products.webp',
+        'assets/images/projects/barakasir-03-reports.webp',
+        'assets/images/projects/barakasir-04-history.webp',
+        'assets/images/projects/barakasir-05-stockin.webp',
+        'assets/images/projects/barakasir-06-stockreport.webp',
+        'assets/images/projects/barakasir-07-settings.webp',
+        'assets/images/projects/barakasir-tablet-01.webp',
+        'assets/images/projects/barakasir-tablet-02.webp',
+        'assets/images/projects/barakasir-tablet-03.webp',
+        'assets/images/projects/barakasir-mobile-01.webp',
+        'assets/images/projects/barakasir-mobile-02.webp',
+        'assets/images/projects/barakasir-mobile-03.webp'
       ],
       temporaryPreviewImages: [
-        'assets/images/projects/barakasir-pos.webp',
-        'assets/images/projects/barakasir-products.webp',
-        'assets/images/projects/barakasir-reports.webp',
-        'assets/images/projects/barakasir-history.webp',
-        'assets/images/projects/barakasir-stockin.webp',
-        'assets/images/projects/barakasir-stockreport.webp',
-        'assets/images/projects/barakasir-settings.webp'
+        'assets/images/projects/barakasir-01-pos.webp',
+        'assets/images/projects/barakasir-02-products.webp',
+        'assets/images/projects/barakasir-03-reports.webp',
+        'assets/images/projects/barakasir-04-history.webp',
+        'assets/images/projects/barakasir-05-stockin.webp',
+        'assets/images/projects/barakasir-06-stockreport.webp',
+        'assets/images/projects/barakasir-07-settings.webp',
+        'assets/images/projects/barakasir-tablet-01.webp',
+        'assets/images/projects/barakasir-tablet-02.webp',
+        'assets/images/projects/barakasir-tablet-03.webp',
+        'assets/images/projects/barakasir-mobile-01.webp',
+        'assets/images/projects/barakasir-mobile-02.webp',
+        'assets/images/projects/barakasir-mobile-03.webp'
       ],
       github: 'https://github.com/Erliandikasyahputraa/bara-kasir',
       liveDemo: 'https://demo-barakasir.vercel.app/',
@@ -773,14 +815,18 @@ window.PORTFOLIO_DATA = {
         { tech: 'Chart.js & Next.js', reason: 'Visualisasi grafik distribusi emosi multi-dimensi yang interaktif untuk content creator.' }
       ],
       images: [
-        'assets/images/projects/emotica-dashboard.webp',
-        'assets/images/projects/emotica-home.webp',
-        'assets/images/projects/emotica-history.webp'
+        'assets/images/projects/emotica-01-home.webp',
+        'assets/images/projects/emotica-02-dashboard.webp',
+        'assets/images/projects/emotica-03-history.webp',
+        'assets/images/projects/emotica-tablet-02.webp',
+        'assets/images/projects/emotica-mobile-02.webp'
       ],
       temporaryPreviewImages: [
-        'assets/images/projects/emotica-dashboard.webp',
-        'assets/images/projects/emotica-home.webp',
-        'assets/images/projects/emotica-history.webp'
+        'assets/images/projects/emotica-01-home.webp',
+        'assets/images/projects/emotica-02-dashboard.webp',
+        'assets/images/projects/emotica-03-history.webp',
+        'assets/images/projects/emotica-tablet-02.webp',
+        'assets/images/projects/emotica-mobile-02.webp'
       ],
       github: 'https://github.com/Emotica-DBS',
       liveDemo: 'https://demo-emotica.vercel.app/',
