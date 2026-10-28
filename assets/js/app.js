@@ -371,11 +371,11 @@ document.addEventListener('DOMContentLoaded', () => {
       {
         category: 'Pengembangan Mobile',
         period: 'Feb 2024 – Jul 2024',
-        role: 'Lulusan Mobile Development & Leader Tim Capstone',
+        role: 'Android Developer — Mobile Development Cohort',
         org: 'Google Bangkit Academy (Google, GoTo, Traveloka)',
         location: 'Program Nasional (Remote)',
         shortDesc: 'Pengembangan aplikasi Android native Penny Path dengan Kotlin Jetpack Compose dan arsitektur MVVM.',
-        responsibilities: 'Menyelesaikan kurikulum pengembangan Android native: bahasa Kotlin, Jetpack Compose, arsitektur MVVM, Coroutines, Room Database, dan Retrofit. Memimpin tim mobile development pada proyek capstone Penny Path, mengintegrasikan antarmuka aplikasi dengan REST API dan model rekomendasi machine learning.',
+        responsibilities: 'Menyelesaikan kurikulum pengembangan Android native: bahasa Kotlin, Jetpack Compose, arsitektur MVVM, Coroutines, Room Database, dan Retrofit. Mengembangkan antarmuka dan integrasi aplikasi Android native pada proyek capstone Penny Path, menghubungkan UI dengan REST API dan model rekomendasi machine learning.',
         highlights: 'Android Native Kotlin · Jetpack Compose · Arsitektur MVVM · Integrasi ML',
         tech: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'MVVM', 'Retrofit', 'Coroutines & Flow'],
         expIndex: 6,
@@ -444,11 +444,11 @@ document.addEventListener('DOMContentLoaded', () => {
       {
         category: 'Mobile Development',
         period: 'Feb 2024 – Jul 2024',
-        role: 'Mobile Development Cohort Graduate & Capstone Lead',
+        role: 'Android Developer — Mobile Development Cohort',
         org: 'Google Bangkit Academy (Google, GoTo, Traveloka)',
         location: 'National Cohort (Remote)',
         shortDesc: 'Engineered native Android app Penny Path using Kotlin, Jetpack Compose, and Clean MVVM architecture.',
-        responsibilities: 'Completed rigorous Android native engineering curriculum: Kotlin, Android SDK, Jetpack Compose, MVVM Clean Architecture, Coroutines, Room Database, and Retrofit. Led the mobile development track for capstone product Penny Path, integrating cloud REST APIs and machine learning recommendation models.',
+        responsibilities: 'Completed rigorous Android native engineering curriculum: Kotlin, Android SDK, Jetpack Compose, MVVM Clean Architecture, Coroutines, Room Database, and Retrofit. Engineered native Android client features for capstone product Penny Path, integrating cloud REST APIs and machine learning recommendation models.',
         highlights: 'Native Android Kotlin · Jetpack Compose · MVVM Clean Architecture · ML Integration',
         tech: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'MVVM', 'Retrofit', 'Coroutines & Flow'],
         expIndex: 6,
@@ -836,6 +836,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="pmodal__actions">
             <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="pmodal__action-btn pmodal__action-btn--primary">
               <span>${window.t('modal_btn_live_demo')}</span>
+              ${p.isDemo ? `<span class="demo-tag-pill">${window.t('demo_tag')}</span>` : ''}
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
             </a>
             ${p.github ? `
@@ -845,6 +846,12 @@ document.addEventListener('DOMContentLoaded', () => {
               </a>
             ` : ''}
           </div>
+          ${p.isDemo ? `
+            <div class="pmodal__demo-callout" role="note">
+              <span class="pmodal__demo-dot" aria-hidden="true"></span>
+              <span class="pmodal__demo-text">${isIndo ? (p.demoNote_id || window.t('demo_preview_note')) : (p.demoNote || window.t('demo_preview_note'))}</span>
+            </div>
+          ` : ''}
         </div>
 
         <div class="pmodal__body">
@@ -1098,8 +1105,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>${ctaText}</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
-              <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="parow__ext-link" aria-label="Live demo for ${p.name}">
+              <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="parow__ext-link ${p.isDemo ? 'parow__ext-link--demo' : ''}" aria-label="Live demo for ${p.name}">
                 <span>${window.t('modal_btn_live_demo')}</span>
+                ${p.isDemo ? `<span class="demo-tag-pill">DEMO</span>` : ''}
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
               </a>
               ${p.github ? `
@@ -1303,8 +1311,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="pdetail__links-box">
             <h2 class="pdetail__sec-label">${window.t('pdetail_links_label')}</h2>
             <div class="pdetail__actions">
-              <a href="${liveDemoTarget}" class="pdetail__btn primary" aria-label="Visit Live Demo for ${project.name}">
+              <a href="${liveDemoTarget}" target="_blank" rel="noopener noreferrer" class="pdetail__btn primary" aria-label="Visit Live Demo for ${project.name}">
                 <span>${window.t('modal_btn_live_demo')}</span>
+                ${project.isDemo ? `<span class="demo-tag-pill">${window.t('demo_tag')}</span>` : ''}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
               </a>
               ${project.github ? `
@@ -1320,6 +1329,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </a>
               ` : ''}
             </div>
+            ${project.isDemo ? `
+              <div class="pdetail__demo-notice" role="note">
+                <span class="pdetail__demo-dot" aria-hidden="true"></span>
+                <span>${isIndo ? (project.demoNote_id || window.t('demo_preview_note')) : (project.demoNote || window.t('demo_preview_note'))}</span>
+              </div>
+            ` : ''}
           </div>
         </div>
 
