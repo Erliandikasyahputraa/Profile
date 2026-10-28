@@ -130,28 +130,28 @@
     <div class="pdetail__grid">
       <!-- 30% LEFT: WHY / STORY -->
       <div class="pdetail__col-story">
-        <div class="pdetail__meta-tag">JOB SEARCH & APPLICATION MANAGEMENT PLATFORM · 2026</div>
+        <div class="pdetail__meta-tag">JOB SEARCH &amp; APPLICATION PIPELINE PLATFORM · 2026</div>
         <h1 class="pdetail__title">Anti-Nganggur</h1>
-        <p class="pdetail__lead">Full-stack job search and application management platform with Kanban workflows, automated resume builder, and calendar tracking.</p>
+        <p class="pdetail__lead">Enterprise-grade job application operations platform architected on Next.js 14 and Supabase. Transformed through a 197-file refactor (+25k LoC) with zero-waterfall auth (&lt;500ms loads), multi-tenant PostgreSQL RLS, Zen Mode Web Audio focus suite, and 613 automated tests.</p>
 
         <div class="pdetail__story-block">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_problem">THE PROBLEM</h2>
-          <p class="pdetail__sec-text">Job seekers lose track of applications scattered across email, job portals, and spreadsheets, missing interviews and follow-up deadlines.</p>
+          <p class="pdetail__sec-text">Job seekers lose track of 30+ applications across LinkedIn, Jobstreet, and emails, while standard open-source tools suffer from severe auth waterfalls (several-second lag), insecure multi-tenancy without DB-level row isolation, and no dedicated interview prep environment.</p>
         </div>
 
         <div class="pdetail__story-block">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_why">WHY I BUILT IT</h2>
-          <p class="pdetail__sec-text">Created as a personal flagship product to centralize the entire job hunt lifecycle from application submission to final offer.</p>
+          <p class="pdetail__sec-text">Engineered to transform a basic job hunt concept into a resilient, production-ready career operations workspace with sub-500ms queries, bulletproof PostgreSQL row security, and interview focus tooling verified by 613 automated tests.</p>
         </div>
 
         <div class="pdetail__story-block">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_solution">THE SOLUTION</h2>
-          <p class="pdetail__sec-text">Multi-tenant Next.js application with drag-and-drop Kanban board, interview calendar, resume builder, PostgreSQL Row-Level Security, and CSV export.</p>
+          <p class="pdetail__sec-text">Next.js 14 App Router application with optimistic Kanban board, Zen Mode (Pomodoro + Web Audio ambient sounds), priority task management, company research hub, versioned document tracking, and 100% tenant-isolated Supabase PostgreSQL RLS.</p>
         </div>
 
         <div class="pdetail__story-block">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_role">MY ROLE</h2>
-          <p class="pdetail__sec-text">Full-Stack Developer</p>
+          <p class="pdetail__sec-text">Full-Stack Developer &amp; Software Architect</p>
         </div>
       </div>
 
@@ -163,7 +163,7 @@
 
         <div class="pdetail__story-block" style="margin-top: 2rem;">
           <h2 class="pdetail__sec-label" data-i18n="architecture_label">ARCHITECTURE &amp; DECISIONS</h2>
-          <p class="pdetail__sec-text">Architected with Next.js 14 App Router, dynamic drag-and-drop Kanban state, and TypeScript/Zod validation. Implemented Supabase PostgreSQL with strict Row-Level Security (RLS) for multi-tenant data isolation and optimized SSR for sub-second page loads.</p>
+          <p class="pdetail__sec-text">Engineered zero-waterfall server actions by eliminating 7x redundant Supabase auth roundtrips, reducing cold load times to &lt;500ms. Implemented strict database-level RLS policies (auth.uid() = user_id) across 5 relational tables, built an ambient sound generator using Web Audio API, and verified full system reliability with 613 unit/integration tests in Vitest.</p>
         </div>
       </div>
 
@@ -172,14 +172,14 @@
         <div class="pdetail__tech-box">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_tech_stack">TECH STACK &amp; TOOLS</h2>
           <div class="pdetail__tech-badges">
-            <span class="pdetail__tech-pill">Next.js 14</span><span class="pdetail__tech-pill">React</span><span class="pdetail__tech-pill">TypeScript</span><span class="pdetail__tech-pill">Tailwind CSS</span><span class="pdetail__tech-pill">Supabase</span><span class="pdetail__tech-pill">PostgreSQL</span><span class="pdetail__tech-pill">Shadcn UI</span><span class="pdetail__tech-pill">Zod</span>
+            <span class="pdetail__tech-pill">Next.js 14</span><span class="pdetail__tech-pill">React</span><span class="pdetail__tech-pill">TypeScript</span><span class="pdetail__tech-pill">Tailwind CSS</span><span class="pdetail__tech-pill">Supabase</span><span class="pdetail__tech-pill">PostgreSQL</span><span class="pdetail__tech-pill">Vitest</span><span class="pdetail__tech-pill">Web Audio API</span><span class="pdetail__tech-pill">Shadcn UI</span><span class="pdetail__tech-pill">Zod</span>
           </div>
         </div>
 
         <div class="pdetail__tech-box pmodal__rationale-box">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_why_tech">WHY THIS TECH STACK</h2>
           <div class="pmodal__rationale-grid">
-            <div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Next.js 14 App Router</span><span class="pmodal__rationale-reason">Hybrid Server Components deliver sub-second initial loads with SEO optimization for public profile sharing.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Supabase PostgreSQL & RLS</span><span class="pmodal__rationale-reason">Strict database-level Row-Level Security ensures 100% data isolation across multi-tenant job seekers.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">TypeScript & Zod</span><span class="pmodal__rationale-reason">End-to-end schema validation preventing corrupted resume output and invalid interview scheduling.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Tailwind CSS & shadcn/ui</span><span class="pmodal__rationale-reason">Accessible, keyboard-navigable Kanban board with seamless dark/light theme tokens.</span></div>
+            <div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Next.js 14 App Router</span><span class="pmodal__rationale-reason">Consolidated Server Actions with zero-waterfall auth query projection for sub-500ms dashboard cold loads.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Supabase PostgreSQL &amp; RLS</span><span class="pmodal__rationale-reason">Strict database-level Row-Level Security (auth.uid() = user_id) ensuring 100% data confidentiality across tenants.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Vitest Suite (613 Tests)</span><span class="pmodal__rationale-reason">Rigorous automated unit and integration testing covering drag-and-drop state, CSRF tokens, and API schemas.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Web Audio API &amp; Radix UI</span><span class="pmodal__rationale-reason">Client-side synthesized ambient white noise/lo-fi audio for Zen Mode and responsive floating navigation notch.</span></div>
           </div>
         </div>
 
