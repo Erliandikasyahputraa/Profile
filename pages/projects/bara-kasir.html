@@ -130,28 +130,28 @@
     <div class="pdetail__grid">
       <!-- 30% LEFT: WHY / STORY -->
       <div class="pdetail__col-story">
-        <div class="pdetail__meta-tag">OFFLINE-FIRST POS & RETAIL MANAGEMENT PWA · 2025</div>
+        <div class="pdetail__meta-tag">RETAIL TECH / ENTERPRISE POS &amp; INVENTORY · 2025</div>
         <h1 class="pdetail__title">Bara Kasir</h1>
-        <p class="pdetail__lead">Free, open-source, offline-first Point of Sale PWA for Indonesian MSMEs with automatic weighted-average COGS and Bluetooth receipt printing.</p>
+        <p class="pdetail__lead">Enterprise-grade offline-first POS &amp; inventory PWA evolved from open-source KasirGratisan. Architected with a two-way Supabase sync engine, automated weighted-average COGS, Open Bill table workflows, camera barcode scanning, and multi-user role security.</p>
 
         <div class="pdetail__story-block">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_problem">THE PROBLEM</h2>
-          <p class="pdetail__sec-text">Indonesian MSMEs (UMKM) face unstable internet connectivity and high POS subscription fees, yet need reliable sales tracking, stock adjustments, and profit calculations.</p>
+          <p class="pdetail__sec-text">MSME food &amp; retail businesses suffer from expensive SaaS POS subscriptions that freeze when Wi-Fi drops. Furthermore, basic POS tools lack automated weighted-average COGS calculations, leading to distorted profit margins as raw ingredient purchase prices fluctuate.</p>
         </div>
 
         <div class="pdetail__story-block">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_why">WHY I BUILT IT</h2>
-          <p class="pdetail__sec-text">Built as a free, 100% offline-first PWA requiring zero servers, zero registration, and zero subscription costs, running entirely on local IndexedDB storage.</p>
+          <p class="pdetail__sec-text">Originating as an MIT-licensed fork of Aji Prakoso’s KasirGratisan, I re-engineered it from a single-device utility into an enterprise-ready retail engine: adding two-way Supabase cloud reconciliation, role-based access (Owner vs Staff), and camera-based barcode scanning to eliminate 100% of SaaS fees without losing transaction integrity.</p>
         </div>
 
         <div class="pdetail__story-block">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_solution">THE SOLUTION</h2>
-          <p class="pdetail__sec-text">Complete POS system featuring cashier cart, open bills for restaurants/cafes, barcode camera scanning, automatic weighted-average COGS calculation, sales charts, JSON backup/restore, and Bluetooth printing.</p>
+          <p class="pdetail__sec-text">Local-first React 18 &amp; Dexie.js (IndexedDB) architecture with zero cloud dependency during active shifts. Features dynamic weighted-average COGS recalculation, cafe table Open Bill holds, Web Bluetooth ESC/POS printing, and responsive viewports tailored for desktop, iPad, and handheld smartphones.</p>
         </div>
 
         <div class="pdetail__story-block">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_role">MY ROLE</h2>
-          <p class="pdetail__sec-text">Frontend & Offline Architecture Engineer (Contributor)</p>
+          <p class="pdetail__sec-text">Full-Stack Engineer &amp; Open-Source Architect</p>
         </div>
       </div>
 
@@ -163,7 +163,7 @@
 
         <div class="pdetail__story-block" style="margin-top: 2rem;">
           <h2 class="pdetail__sec-label" data-i18n="architecture_label">ARCHITECTURE &amp; DECISIONS</h2>
-          <p class="pdetail__sec-text">Engineered offline-first persistence using Dexie.js over browser IndexedDB. Implemented automated weighted-average COGS calculation on stock-in: ((Old Stock * Old COGS) + (New Qty * Buy Price)) / (Old Stock + New Qty). Integrated Web Bluetooth API for thermal printing and Workbox for PWA installability.</p>
+          <p class="pdetail__sec-text">Re-engineered data persistence with Dexie.js over browser IndexedDB for sub-10ms checkout operations. Built a two-way hybrid synchronization engine to Supabase using Dexie change hooks, implemented strict weighted-average formulas on restocks: ((Old Stock * Old COGS) + (New Qty * Buy Price)) / (Old Stock + New Qty), and integrated in-browser camera scanning for EAN-13/QR formats.</p>
         </div>
       </div>
 
@@ -172,14 +172,14 @@
         <div class="pdetail__tech-box">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_tech_stack">TECH STACK &amp; TOOLS</h2>
           <div class="pdetail__tech-badges">
-            <span class="pdetail__tech-pill">React 18</span><span class="pdetail__tech-pill">TypeScript</span><span class="pdetail__tech-pill">Vite</span><span class="pdetail__tech-pill">Tailwind CSS</span><span class="pdetail__tech-pill">shadcn/ui</span><span class="pdetail__tech-pill">IndexedDB</span><span class="pdetail__tech-pill">Dexie.js</span><span class="pdetail__tech-pill">Recharts</span><span class="pdetail__tech-pill">TanStack Query</span><span class="pdetail__tech-pill">PWA / Workbox</span><span class="pdetail__tech-pill">Web Bluetooth Print</span>
+            <span class="pdetail__tech-pill">React 18</span><span class="pdetail__tech-pill">TypeScript</span><span class="pdetail__tech-pill">Vite</span><span class="pdetail__tech-pill">Tailwind CSS</span><span class="pdetail__tech-pill">IndexedDB</span><span class="pdetail__tech-pill">Dexie.js</span><span class="pdetail__tech-pill">Supabase</span><span class="pdetail__tech-pill">PWA / Workbox</span><span class="pdetail__tech-pill">Recharts</span><span class="pdetail__tech-pill">Web Bluetooth Print</span>
           </div>
         </div>
 
         <div class="pdetail__tech-box pmodal__rationale-box">
           <h2 class="pdetail__sec-label" data-i18n="modal_label_why_tech">WHY THIS TECH STACK</h2>
           <div class="pmodal__rationale-grid">
-            <div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Dexie.js & IndexedDB</span><span class="pmodal__rationale-reason">100% client-side persistence with zero cloud costs and zero server latency, operating flawlessly without internet.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">React 18 & Vite</span><span class="pmodal__rationale-reason">Sub-16ms render loop providing snappy cashier cart updates during rapid barcode scans.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Web Bluetooth API</span><span class="pmodal__rationale-reason">Direct client-side raw ESC/POS byte streaming to thermal receipt printers without desktop drivers.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Workbox PWA</span><span class="pmodal__rationale-reason">Full offline asset caching allowing instant installation on budget Android tablets and smartphones.</span></div>
+            <div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Dexie.js &amp; IndexedDB</span><span class="pmodal__rationale-reason">100% client-side persistence with sub-10ms latency, zero cloud bills, and uninterrupted checkout during network or power drops.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Two-Way Hybrid Sync (Supabase)</span><span class="pmodal__rationale-reason">Dexie change hooks stream local mutations to cloud PostgreSQL when online, with multi-user role security (Owner vs Staff).</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Weighted Average COGS Engine</span><span class="pmodal__rationale-reason">Automatic per-unit cost rebalancing on every supplier invoice ensuring 100% accurate gross and net margin reporting.</span></div><div class="pmodal__rationale-item"><span class="pmodal__rationale-tech">Workbox PWA &amp; Camera Scanner</span><span class="pmodal__rationale-reason">Full offline asset caching and in-browser camera barcode/QR scanning eliminating expensive external hardware.</span></div>
           </div>
         </div>
 
