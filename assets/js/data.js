@@ -883,6 +883,60 @@ window.PORTFOLIO_DATA = {
       status: 'live',
       featured: false,
     },
+    {
+      slug: 'bono-wave',
+      index: '08',
+      name: 'Bono Wave Pariwisata',
+      displayName: 'Bono Wave Pariwisata — Ecotourism Portal & CMS Reservation System',
+      category: 'Tourism Tech / Travel & CMS Portal',
+      category_id: 'Portal Ekowisata Alam & Sistem Reservasi Back-Office CMS',
+      year: '2024',
+      tier: 'web',
+      tags: ['Web', 'BNSP'],
+      shortDescription: 'Multi-page nature tourism portal and back-office CMS reservation system built for the Kampar River tidal bore phenomenon in Pelalawan, Riau, connecting global river surfers with local boat rescue guides and homestays.',
+      shortDescription_id: 'Portal ekowisata alam dan sistem reservasi back-office CMS untuk fenomena gelombang pasang Bono di muara Sungai Kampar, Pelalawan, Riau, yang menghubungkan peselancar sungai mancanegara dengan pemandu boat dan penginapan lokal.',
+      problem: 'The world-famous Bono tidal bore is difficult for international tourists to navigate due to unstructured tidal surge timings, lack of safety guidelines, and offline manual booking of local boat rescue guides and homestays.',
+      problem_id: 'Wisatawan luar daerah dan peselancar mancanegara kesulitan mendapatkan informasi waktu pasang gelombang Bono, panduan keselamatan selancar sungai, serta pemesanan homestay warga dan boat rescue yang masih manual konvensional.',
+      why: 'Engineered as a formal technical competency showcase to modernize community ecotourism, empower Teluk Meranti hospitality operators, and provide administrators with a back-office CMS for articles and reservations.',
+      why_id: 'Dikembangkan sebagai pembuktian kompetensi rekayasa sistem web untuk mendigitalisasi potensi ekowisata Bono, memberdayakan ekonomi warga Teluk Meranti, dan menyediakan panel CMS bagi pengelola pariwisata daerah.',
+      solution: 'Responsive multi-page architecture featuring high-resolution photography, streaming river wave documentary media, interactive travel route planner from Pekanbaru, local homestay directory, and a back-office admin CMS panel.',
+      solution_id: 'Arsitektur multi-page responsif dengan fotografi definisi tinggi, integrasi video dokumenter gelombang Bono, panduan rute perjalanan dari Pekanbaru, direktori penginapan warga, dan panel back-office CMS admin.',
+      role: 'Full-Stack Web Developer',
+      role_id: 'Full-Stack Web Developer',
+      techStack: ['HTML5', 'CSS3 Modern Grid', 'JavaScript ES6', 'PHP', 'MySQL', 'Admin CMS', 'Responsive Media'],
+      techDetails: 'Architected responsive multi-page layouts with pure CSS Flexbox/Grid systems, embedded streaming video players with fallback buffers, and developed relational database schemas for article publishing, surf guide dispatching, and booking management.',
+      techDetails_id: 'Membangun antarmuka web responsif dengan Flexbox/Grid murni, integrasi streaming video dokumenter, serta perancangan skema basis data relasional untuk artikel panduan wisata dan status pemesanan homestay.',
+      techRationale: [
+        { tech: 'Responsive Semantic HTML5 & CSS3', reason: 'Zero-framework lightweight architecture ensuring instant loading for mobile users traveling in rural areas.' },
+        { tech: 'Back-Office Admin CMS', reason: 'Enables regional operators to publish safety notices and manage ecotourism reservations easily.' },
+        { tech: 'High-Resolution Media Pipeline', reason: 'Optimized WebP imagery capturing the power of tidal waves without causing data bandwidth strain.' }
+      ],
+      techRationale_id: [
+        { tech: 'HTML5 & CSS3 Semantik Ringan', reason: 'Arsitektur murni tanpa beban framework agar dapat diakses dengan cepat saat sinyal seluler terbatas di lokasi wisata.' },
+        { tech: 'Panel Back-Office CMS', reason: 'Memudahkan pengelola lokal memperbarui panduan keselamatan selancar dan mendata pemesanan turis.' },
+        { tech: 'Pipeline Gambar Resolusi Tinggi', reason: 'Optimalisasi aset visual gelombang sungai Bono yang tajam dan hemat kuota data pengunjung.' }
+      ],
+      images: [
+        'assets/images/projects/bonowave-01-home.webp',
+        'assets/images/projects/bonowave-02-admin.webp',
+        'assets/images/projects/bonowave-tablet-01.webp',
+        'assets/images/projects/bonowave-mobile-01.webp'
+      ],
+      temporaryPreviewImages: [
+        'assets/images/projects/bonowave-01-home.webp',
+        'assets/images/projects/bonowave-02-admin.webp',
+        'assets/images/projects/bonowave-tablet-01.webp',
+        'assets/images/projects/bonowave-mobile-01.webp'
+      ],
+      github: 'https://github.com/Erliandikasyahputraa/Bono-Wave-Pariwisata-Project-BNSP',
+      liveDemo: '404.html',
+      isDemo: true,
+      demoNote: 'Original demo site was retired. Preserved as an architectural case study.',
+      demoNote_id: 'Situs demo asli telah dinonaktifkan. Dilestarikan sebagai studi kasus arsitektur portofolio.',
+      figma: null,
+      status: 'built',
+      featured: false,
+    },
   ],
 
   /* ── HOME TRAILER: Selected Projects ─────────── */
